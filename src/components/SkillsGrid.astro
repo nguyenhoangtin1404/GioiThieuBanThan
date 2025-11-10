@@ -1,19 +1,22 @@
 ---
-const skills = [
+const skillGroups = [
   {
-    title: 'Sản phẩm & Chiến lược',
-    tools: ['Product discovery', 'JTBD', 'Design sprint', 'Product analytics'],
-    level: 'Advanced'
+    title: 'Core skills',
+    level: 'Expert',
+    summary: 'Product discovery, định hướng chiến lược, thiết kế hệ thống thiết kế, đo lường trải nghiệm.',
+    items: ['Product discovery', 'JTBD interview', 'Design sprint', 'Design system ops']
   },
   {
-    title: 'Thiết kế',
-    tools: ['Figma', 'Framer', 'Design system', 'Prototyping'],
-    level: 'Expert'
+    title: 'Tech stack',
+    level: 'Advanced',
+    summary: 'Thành thạo các công cụ thiết kế/hand-off và ngôn ngữ front-end cơ bản phục vụ prototype.',
+    items: ['Figma', 'Framer', 'FigJam', 'Astro', 'React', 'TypeScript']
   },
   {
-    title: 'Frontend',
-    tools: ['Astro', 'React', 'TypeScript', 'Tailwind'],
-    level: 'Advanced'
+    title: 'Soft skills',
+    level: 'Advanced',
+    summary: 'Facilitation workshop, storytelling, mentoring designer trẻ và làm việc với stakeholder C-level.',
+    items: ['Workshop facilitation', 'Stakeholder alignment', 'Mentoring', 'Bilingual presentation']
   }
 ];
 ---
@@ -21,19 +24,20 @@ const skills = [
 <section id="ky-nang" class="section">
   <header>
     <p class="eyebrow">Kỹ năng</p>
-    <h2>Đa năng nhưng tập trung</h2>
+    <h2>Stack phục vụ tăng trưởng sản phẩm</h2>
   </header>
 
   <div class="grid">
-    {skills.map((skill) => (
+    {skillGroups.map((group) => (
       <article class="card">
         <div class="card-head">
-          <h3>{skill.title}</h3>
-          <span>{skill.level}</span>
+          <h3>{group.title}</h3>
+          <span>{group.level}</span>
         </div>
+        <p class="summary">{group.summary}</p>
         <ul>
-          {skill.tools.map((tool) => (
-            <li>{tool}</li>
+          {group.items.map((item) => (
+            <li>{item}</li>
           ))}
         </ul>
       </article>
@@ -61,7 +65,7 @@ const skills = [
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
   }
 
@@ -69,14 +73,14 @@ const skills = [
     background: rgba(12, 24, 36, 0.88);
     border-radius: 20px;
     border: 1px solid rgba(56, 189, 248, 0.2);
-    padding: 1.5rem;
+    padding: 1.75rem;
   }
 
   .card-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     gap: 1rem;
   }
 
@@ -86,6 +90,13 @@ const skills = [
     border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 0.8rem;
     color: var(--muted);
+  }
+
+  .summary {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 1rem;
   }
 
   ul {

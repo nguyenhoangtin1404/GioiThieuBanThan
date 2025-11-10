@@ -2,18 +2,21 @@
 const events = [
   {
     year: '2022 — nay',
-    role: 'Senior Product Designer · Northwind',
-    detail: 'Lãnh đạo nhóm thiết kế 5 người, xây dựng design ops và workflow cross-functional.'
+    role: 'Senior Product Designer · NovaLabs',
+    detail: 'Quản lý vision UX cho bộ sản phẩm fintech, đồng thiết kế cùng PM & Engineer để ship release hàng tháng.',
+    highlights: ['Xây dựng NovaOS design system 60+ components', 'Facilitator 8 discovery sprint liên phòng ban']
   },
   {
     year: '2020 — 2022',
     role: 'Product Designer · Aurora Labs',
-    detail: 'Tập trung Fintech và SaaS, kết hợp chặt chẽ với PM & Engineer để ra mắt 6 sản phẩm.'
+    detail: 'Tập trung các sản phẩm SaaS phân tích dữ liệu, kết nối đội Data với Product để ưu tiên roadmap.',
+    highlights: ['Triển khai KPI UX chung giúp giảm 24% churn', 'Đồng tác giả guideline accessibility nội bộ']
   },
   {
-    year: '2018 — 2020',
+    year: '2017 — 2020',
     role: 'UX Engineer · Firefly',
-    detail: 'Thiết kế UI và build components bằng React giúp tiết kiệm 30% thời gian phát triển.'
+    detail: 'Vừa thiết kế UI vừa build component React giúp rút ngắn thời gian bàn giao cho đội front-end.',
+    highlights: ['Mentor 4 designer trẻ', 'Giải thưởng “Rising Talent 2019” của công ty']
   }
 ];
 ---
@@ -30,6 +33,11 @@ const events = [
         <div>
           <h3>{event.role}</h3>
           <p>{event.detail}</p>
+          <ul>
+            {event.highlights.map((highlight) => (
+              <li>{highlight}</li>
+            ))}
+          </ul>
         </div>
       </article>
     ))}
@@ -94,5 +102,18 @@ const events = [
     margin: 0;
     color: var(--muted);
     line-height: 1.6;
+  }
+
+  ul {
+    list-style: disc;
+    margin: 0.75rem 0 0 1.2rem;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  li {
+    line-height: 1.5;
   }
 </style>

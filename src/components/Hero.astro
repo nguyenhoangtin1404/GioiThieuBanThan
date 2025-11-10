@@ -1,27 +1,62 @@
 ---
+const profile = {
+  name: 'Nguyễn Hoàng Tín',
+  role: 'Senior Product Designer tại NovaLabs',
+  location: 'Hà Nội · Việt Nam',
+  focus: 'Fintech · SaaS · Data platform',
+  summary:
+    'Dẫn dắt discovery → launch cho các sản phẩm tài chính và SaaS, kết nối business goal với trải nghiệm người dùng đo lường được.',
+  status: 'Đang mở 2 slot tư vấn UX cho Q1/2025',
+  cvLink: 'https://minhkhaidesign.com/docs/nguyen-minh-khai-cv.pdf',
+  calendarLink: 'https://cal.com/minhkhai/30min'
+};
+
 const stats = [
-  { label: 'Kinh nghiệm', value: '5+ năm' },
-  { label: 'Dự án nổi bật', value: '18' },
-  { label: 'Khách hàng hài lòng', value: '24' }
+  { label: 'Kinh nghiệm', value: '7+ năm' },
+  { label: 'Sản phẩm đã launch', value: '12' },
+  { label: 'Tối ưu chuyển đổi cao nhất', value: '+38%' }
+];
+
+const highlights = [
+  'Facilitator cho discovery sprint đa chức năng',
+  'Xây design system NovaOS (60+ components) bàn giao cho team FE'
 ];
 ---
 
-<section class="hero">
+<section class="hero" id="gioi-thieu">
   <div class="intro">
-    <p class="eyebrow">Xin chào, mình là</p>
-    <h1>Profilio Nguyen</h1>
-    <p class="subtitle">
-      Product Designer & Front-end Engineer với đam mê tạo ra trải nghiệm số sắc nét, cân bằng giữa thẩm mỹ và hiệu
-      quả kinh doanh.
-    </p>
+    <p class="eyebrow">{profile.role}</p>
+    <h1>{profile.name}</h1>
+    <p class="subtitle">{profile.summary}</p>
+    <div class="status-pill">{profile.status}</div>
+    <ul class="meta">
+      <li>{profile.location}</li>
+      <li>{profile.focus}</li>
+    </ul>
     <div class="actions">
-      <a class="primary" href="#du-an">Xem dự án</a>
-      <a class="ghost" href="#lien-he">Kết nối</a>
+      <a class="primary" href="#du-an">Xem case study</a>
+      <a class="ghost" href={profile.calendarLink} target="_blank" rel="noreferrer">
+        Đặt lịch 30'
+      </a>
+    </div>
+    <div class="cta-links">
+      <a class="inline-link" href={profile.cvLink} target="_blank" rel="noreferrer">
+        Tải CV PDF
+      </a>
+      <span aria-hidden="true">•</span>
+      <a class="inline-link" href="#lien-he">
+        Gửi email nhanh
+      </a>
     </div>
   </div>
   <div class="card">
-    <img src="/avatar.svg" width="240" height="240" alt="Ảnh hồ sơ" loading="lazy" />
-    <div class="badge">Đang tìm cơ hội Freelance Q4/2024</div>
+    <img src="/avatar.svg" width="260" height="260" alt="Ảnh hồ sơ của Nguyễn Hoàng Tín" loading="lazy" />
+    <div class="badge">Freelance & tư vấn chiến lược sản phẩm</div>
+    <div class="bio">
+      {highlights.map((item) => (
+        <p>{item}</p>
+      ))}
+    </div>
     <div class="stats">
       {stats.map((stat) => (
         <div class="stat">
@@ -61,10 +96,43 @@ const stats = [
     margin-bottom: 1.5rem;
   }
 
+  .status-pill {
+    display: inline-flex;
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .meta {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .meta li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.6);
+    display: inline-block;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+
   .actions {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 0.75rem;
   }
 
   .actions a {
@@ -88,6 +156,19 @@ const stats = [
     border-color: rgba(255, 255, 255, 0.2);
   }
 
+  .cta-links {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .inline-link {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
   .card {
     background: rgba(12, 24, 36, 0.9);
     border: 1px solid rgba(56, 189, 248, 0.2);
@@ -100,17 +181,38 @@ const stats = [
   .card img {
     border-radius: 24px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .badge {
     display: inline-flex;
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 1rem;
     border-radius: 999px;
-    background: rgba(56, 189, 248, 0.15);
+    background: rgba(56, 189, 248, 0.12);
     color: var(--accent);
     font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .bio {
+    text-align: left;
+    background: rgba(4, 11, 20, 0.55);
+    border-radius: 16px;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 1.5rem;
+  }
+
+  .bio p {
+    margin: 0 0 0.5rem;
+    color: var(--muted);
     font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .bio p:last-child {
+    margin-bottom: 0;
   }
 
   .stats {
@@ -142,6 +244,11 @@ const stats = [
   @media (max-width: 600px) {
     .stats {
       grid-template-columns: 1fr;
+    }
+
+    .cta-links {
+      flex-wrap: wrap;
+      justify-content: flex-start;
     }
   }
 </style>

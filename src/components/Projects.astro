@@ -1,39 +1,45 @@
 ---
 const projects = [
   {
-    name: 'LumenPay',
-    description: 'Ngân hàng số cho nhóm thu nhập tự do với trải nghiệm tiết kiệm linh hoạt và cảnh báo chi tiêu theo thời gian thực.',
-    role: 'Lead Product Designer',
-    impact: '+38% tỉ lệ active savings accounts sau 2 quý',
-    tools: ['Discovery sprint', 'Design system', 'Hi-fi prototype'],
-    link: 'https://tinnh.com/case-studies/lumenpay',
-    cover: 'https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=800&q=80'
+    name: 'TaskHub API',
+    description:
+      'Nền tảng API quản lý công việc với NestJS, JWT auth, RBAC, WebSocket notifications; đóng gói Docker và deploy trên VPS.',
+    role: 'Full‑Stack Developer',
+    impact: 'TTFB giảm 35%, uptime 99.9%',
+    tools: ['NestJS', 'PostgreSQL', 'Redis', 'Docker'],
+    link: '#',
+    cover:
+      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80'
   },
   {
-    name: 'FlowCRM 2.0',
-    description: 'Dashboard kéo-thả cho đội Sales B2B, đồng bộ dữ liệu pipeline và tự động gợi ý hành động ưu tiên.',
-    role: 'Product Design Lead',
-    impact: 'Giảm 27% thời gian onboarding và +15% win-rate',
-    tools: ['Journey mapping', 'Interaction design', 'Frontend collab'],
-    link: 'https://tinnh.com/case-studies/flowcrm',
-    cover: 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=800&q=80'
+    name: 'ShopNext',
+    description:
+      'E‑commerce full‑stack: Next.js App Router, Prisma ORM, Stripe checkout, i18n, SSR caching; triển khai trên Vercel.',
+    role: 'Full‑Stack Developer',
+    impact: '+18% conversion sau 2 quý',
+    tools: ['Next.js', 'Prisma', 'Stripe', 'Vercel'],
+    link: '#',
+    cover:
+      'https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=1000&q=80'
   },
   {
-    name: 'CivicAid',
-    description: 'Nền tảng kết nối cộng đồng và mạnh thường quân, minh bạch dòng tiền và cung cấp dashboard tác động.',
-    role: 'Product Designer',
-    impact: 'Huy động 150k USD trong 45 ngày, NPS +24',
-    tools: ['Branding', 'Mobile UX', 'Design ops'],
-    link: 'https://tinnh.com/case-studies/civicaid',
-    cover: 'https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=800&q=80'
+    name: 'NotifyQ',
+    description:
+      'Hệ thống hàng đợi thông báo: worker Node.js, Redis Streams/BullMQ, retry backoff, dashboard giám sát với Grafana.',
+    role: 'Backend Developer',
+    impact: 'Xử lý 1M+ message/ngày',
+    tools: ['Node.js', 'Redis', 'BullMQ', 'Grafana'],
+    link: '#',
+    cover:
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80'
   }
 ];
 ---
 
 <section id="du-an" class="section">
   <header>
-    <p class="eyebrow">Case study nổi bật</p>
-    <h2>Thiết kế có thể đo lường</h2>
+    <p class="eyebrow">Dự án nổi bật</p>
+    <h2>Từ kiến trúc tới production</h2>
   </header>
   <div class="list">
     {projects.map((project) => (
@@ -52,9 +58,7 @@ const projects = [
             <li>{tag}</li>
           ))}
         </ul>
-        <a class="case-link" href={project.link} target="_blank" rel="noreferrer">
-          Xem case study
-        </a>
+        {/** Link chi tiết đã được bỏ theo yêu cầu **/}
       </article>
     ))}
   </div>
@@ -62,7 +66,7 @@ const projects = [
 
 <style>
   .section {
-    margin-top: 4rem;
+    margin-top: 5rem;
   }
 
   header .eyebrow {
@@ -76,21 +80,41 @@ const projects = [
   header h2 {
     margin-top: 0;
     font-size: clamp(2rem, 4vw, 2.8rem);
+    position: relative;
+  }
+  header h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-top: 0.5rem;
   }
 
   .list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 1024px) {
+    .list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 
   .project {
     padding: 1.75rem;
     border-radius: 24px;
-    background: rgba(4, 11, 20, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--card);
+    border: 1px solid var(--border);
     display: grid;
     gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    height: 100%;
   }
 
   .project img {
@@ -98,7 +122,7 @@ const projects = [
     height: 220px;
     object-fit: cover;
     border-radius: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
   }
 
   .head h3 {
@@ -140,18 +164,20 @@ const projects = [
   }
 
   li {
-    padding: 0.4rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    min-width: 96px; /* equal visual width for short/long labels */
+    padding: 0 14px;
     border-radius: 999px;
-    background: rgba(56, 189, 248, 0.14);
-    font-size: 0.85rem;
+    background: rgba(14, 165, 233, 0.12);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #075985; /* slate-800-ish for contrast */
+    line-height: 1;
+    white-space: nowrap;
   }
 
-  .case-link {
-    display: inline-flex;
-    width: fit-content;
-    align-items: center;
-    gap: 0.4rem;
-    font-weight: 600;
-    color: var(--accent);
-  }
+  /* .case-link removed */
 </style>

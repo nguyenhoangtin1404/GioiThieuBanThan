@@ -1,17 +1,17 @@
 ---
 const channels = [
   { label: 'Email', value: 'tinnh.design@gmail.com', link: 'mailto:tinnh.design@gmail.com' },
+  { label: 'GitHub', value: 'github.com/tinnh', link: 'https://github.com/tinnh' },
   { label: 'LinkedIn', value: 'linkedin.com/in/tinnh', link: 'https://www.linkedin.com/in/tinnh' },
-  { label: 'Behance', value: 'behance.net/tinnh', link: 'https://www.behance.net/tinnh' },
-  { label: 'Calendly', value: 'cal.com/tinnh/30min', link: 'https://cal.com/tinnh/30min' }
+  { label: 'Website', value: 'tinnh.com', link: 'https://tinnh.com' }
 ];
 ---
 
 <section id="lien-he" class="card">
   <h2>Sẵn sàng hợp tác</h2>
   <p>
-    Mình ưu tiên các đội sản phẩm nhỏ, ra quyết định dựa trên dữ liệu và cần người dẫn dắt discovery nhanh gọn.
-    Chọn kênh phù hợp bên dưới hoặc đặt lịch Calendly để chúng ta bàn về mục tiêu tăng trưởng.
+    Ưu tiên giải pháp rõ ràng, có số liệu và bền vững. Nếu bạn đang cần xây dựng
+    web app/API, tối ưu hiệu năng hoặc thiết lập CI/CD, hãy chọn kênh bên dưới để kết nối.
   </p>
 
   <div class="channels">
@@ -29,13 +29,23 @@ const channels = [
     margin-top: 4rem;
     padding: 2rem;
     border-radius: 24px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(14, 165, 233, 0.3));
-    border: 1px solid rgba(56, 189, 248, 0.4);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(14, 165, 233, 0.08));
+    border: 1px solid var(--border);
   }
 
   h2 {
     margin-top: 0;
     font-size: clamp(2rem, 4vw, 2.6rem);
+    position: relative;
+  }
+  h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-top: 0.5rem;
   }
 
   p {
@@ -54,11 +64,12 @@ const channels = [
   a {
     padding: 1rem 1.25rem;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    background: rgba(4, 11, 20, 0.25);
+    border: 1px solid var(--border);
+    background: var(--surface-weak);
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+    text-decoration: none;
   }
 
   span {

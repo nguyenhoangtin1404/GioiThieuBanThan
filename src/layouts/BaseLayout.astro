@@ -5,8 +5,8 @@ export interface Props {
 }
 
 const {
-  title = 'Nguyễn Hoàng Tín — Senior Product Designer',
-  description = 'Portfolio & CV online của Nguyễn Hoàng Tín, Product Designer 7+ năm tối ưu trải nghiệm số cho fintech và SaaS'
+  title = 'Nguyễn Hoàng Tín — Full‑Stack Developer',
+  description = 'Portfolio & CV online của Nguyễn Hoàng Tín, Full‑Stack Developer (Node.js, React, TypeScript). Xây dựng web app, API và triển khai CI/CD trên cloud.'
 } = Astro.props;
 ---
 
@@ -20,25 +20,37 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese"
       rel="stylesheet"
     />
     <style>
+      html { scroll-behavior: smooth; }
       :root {
-        color-scheme: light dark;
-        font-family: 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        --bg: #040b14;
-        --card: #0c1824;
-        --accent: #38bdf8;
-        --muted: rgba(255, 255, 255, 0.65);
-        --text: #f8fafc;
+        color-scheme: light;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        --bg: #ffffff;
+        --card: #ffffff;
+        --accent: #0ea5e9; /* sky-500 */
+        --muted: #475569;  /* slate-600 */
+        --text: #0a0a0a;   /* near-black */
+        --border: rgba(2, 6, 23, 0.08);
+        --surface-weak: rgba(2, 6, 23, 0.04);
+        --surface-softer: rgba(2, 6, 23, 0.03);
+        /* new visuals */
+        --radius-lg: 24px;
+        --radius-md: 16px;
+        --shadow-sm: 0 4px 14px rgba(2, 6, 23, 0.06);
+        --shadow-md: 0 8px 28px rgba(2, 6, 23, 0.09);
       }
 
       body {
         margin: 0;
-        background: radial-gradient(circle at top, rgba(56, 189, 248, 0.16), rgba(4, 11, 20, 1) 55%);
+        background: var(--bg);
         min-height: 100vh;
         color: var(--text);
+        line-height: 1.6;
       }
 
       main {
@@ -58,4 +70,4 @@ const {
       <slot />
     </main>
   </body>
-</html>
+  </html>

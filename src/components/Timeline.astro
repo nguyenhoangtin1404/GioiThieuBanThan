@@ -1,30 +1,33 @@
 ---
 const events = [
   {
-    year: '2022 — nay',
-    role: 'Senior Product Designer · NovaLabs',
-    detail: 'Quản lý vision UX cho bộ sản phẩm fintech, đồng thiết kế cùng PM & Engineer để ship release hàng tháng.',
-    highlights: ['Xây dựng NovaOS design system 60+ components', 'Facilitator 8 discovery sprint liên phòng ban']
+    year: '2023 — nay',
+    role: 'Senior Full‑Stack Developer @ NovaLabs',
+    detail:
+      'Thiết kế kiến trúc, phát triển feature end‑to‑end (React/NestJS), tối ưu hiệu năng, thiết lập CI/CD và giám sát.',
+    highlights: ['Triển khai Docker + GitHub Actions', 'Giảm 30% thời gian build, 20% TTFB']
   },
   {
-    year: '2020 — 2022',
-    role: 'Product Designer · Aurora Labs',
-    detail: 'Tập trung các sản phẩm SaaS phân tích dữ liệu, kết nối đội Data với Product để ưu tiên roadmap.',
-    highlights: ['Triển khai KPI UX chung giúp giảm 24% churn', 'Đồng tác giả guideline accessibility nội bộ']
+    year: '2020 — 2023',
+    role: 'Full‑Stack Developer @ Aurora Labs',
+    detail:
+      'Phát triển SaaS B2B: API REST/GraphQL, RBAC, caching Redis, dashboard realtime, triển khai trên Vercel/VM.',
+    highlights: ['Thiết kế schema PostgreSQL', 'Tự động hóa release hằng tuần']
   },
   {
     year: '2017 — 2020',
-    role: 'UX Engineer · Firefly',
-    detail: 'Vừa thiết kế UI vừa build component React giúp rút ngắn thời gian bàn giao cho đội front-end.',
-    highlights: ['Mentor 4 designer trẻ', 'Giải thưởng “Rising Talent 2019” của công ty']
+    role: 'Software Engineer (Frontend) @ Firefly',
+    detail:
+      'Xây dựng UI component library, hợp tác chặt với backend để rút ngắn thời gian bàn giao và nâng cao chất lượng.',
+    highlights: ['Refactor UI theo design system', 'Mentor lập trình viên junior']
   }
 ];
 ---
 
-<section class="section">
+<section class="section alt">
   <header>
     <p class="eyebrow">Hành trình</p>
-    <h2>Những cột mốc chính</h2>
+    <h2>Kinh nghiệm nổi bật</h2>
   </header>
   <div class="timeline">
     {events.map((event) => (
@@ -46,7 +49,13 @@ const events = [
 
 <style>
   .section {
-    margin-top: 4rem;
+    margin-top: 5rem;
+  }
+  .section.alt {
+    background: var(--surface-weak);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
   }
 
   header .eyebrow {
@@ -60,14 +69,28 @@ const events = [
   header h2 {
     margin-top: 0;
     font-size: clamp(2rem, 4vw, 2.8rem);
+    position: relative;
+  }
+  header h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-top: 0.5rem;
   }
 
   .timeline {
+    --tl-pl: 1.5rem;        /* padding-left */
+    --tl-line: 2px;         /* line width */
+    --tl-dot: 12px;         /* dot size (inside border) */
+    --tl-dot-border: 2px;   /* dot border width */
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    border-left: 2px solid rgba(56, 189, 248, 0.4);
-    padding-left: 1.5rem;
+    border-left: var(--tl-line) solid rgba(56, 189, 248, 0.4);
+    padding-left: var(--tl-pl);
     margin-left: 0.5rem;
   }
 
@@ -78,13 +101,15 @@ const events = [
   .item::before {
     content: '';
     position: absolute;
-    left: -1.7rem;
-    top: 0.7rem;
-    width: 12px;
-    height: 12px;
+    /* center of dot aligns to center of border-left */
+    left: calc(-1 * var(--tl-pl) + var(--tl-line) / 2 - (var(--tl-dot) / 2 + var(--tl-dot-border)));
+    transform: none;
+    top: 0.65rem;
+    width: var(--tl-dot);
+    height: var(--tl-dot);
     border-radius: 999px;
     border: 2px solid var(--accent);
-    background: #040b14;
+    background: var(--bg);
   }
 
   .year {

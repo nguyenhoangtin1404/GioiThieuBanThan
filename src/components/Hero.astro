@@ -1,25 +1,25 @@
 ---
 const profile = {
   name: 'Nguyễn Hoàng Tín',
-  role: 'Senior Product Designer tại NovaLabs',
-  location: 'Hà Nội · Việt Nam',
-  focus: 'Fintech · SaaS · Data platform',
+  role: 'Full‑Stack Developer',
+  location: 'Đắk Lắk, Việt Nam',
+  focus: 'C# • Java • Python • Angular • Microservices',
   summary:
-    'Dẫn dắt discovery → launch cho các sản phẩm tài chính và SaaS, kết nối business goal với trải nghiệm người dùng đo lường được.',
-  status: 'Đang mở 2 slot tư vấn UX cho Q1/2025',
-  cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf',
-  calendarLink: 'https://cal.com/hoangtin/30min'
+    'Phát triển hệ thống Khách hàng doanh nghiệp: Hóa đơn điện tử, Biên lai điện tử<br/>Hệ thống quản lý chính quyền: Phòng họp không giấy tờ, dịch vụ hành chính công, Quản lý văn bản & thông tin điều hành<br/>Quản lý bệnh viện, khám chữa bệnh<br/>Hệ thống Performance Management System  quản lý hiệu năng cell, trạm dành cho các thiết bị viễn thông vô tuyến và có dây của VNPT. Tập trung xây dựng tính năng mở rộng, tối ưu báo cáo thống kê và tích hợp liên thông giữa các hệ thống. Đồng thời triển khai website WordPress theo yêu cầu.',
+  cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
 };
 
 const stats = [
-  { label: 'Kinh nghiệm', value: '7+ năm' },
-  { label: 'Sản phẩm đã launch', value: '12' },
-  { label: 'Tối ưu chuyển đổi cao nhất', value: '+38%' }
+  { label: 'Năm kinh nghiệm', value: '8+' },
+  { label: 'Dự án tham gia', value: '12+' },
+  { label: 'Tính năng/tháng', value: '6–10' }
 ];
 
 const highlights = [
-  'Facilitator cho discovery sprint đa chức năng',
-  'Xây design system NovaOS (60+ components) bàn giao cho team FE'
+  'Microservices ký số, tích hợp PKI/HSM',
+  'Angular frontend; C#/.NET & Java Spring; Python (Django/FastAPI)',
+  'Tối ưu báo cáo thống kê & tích hợp hệ thống',
+  'Triển khai website WordPress theo yêu cầu'
 ];
 ---
 
@@ -27,31 +27,22 @@ const highlights = [
   <div class="intro">
     <p class="eyebrow">{profile.role}</p>
     <h1>{profile.name}</h1>
-    <p class="subtitle">{profile.summary}</p>
-    <div class="status-pill">{profile.status}</div>
+    <p class="subtitle" set:html={profile.summary}></p>
     <ul class="meta">
       <li>{profile.location}</li>
       <li>{profile.focus}</li>
     </ul>
     <div class="actions">
-      <a class="primary" href="#du-an">Xem case study</a>
-      <a class="ghost" href={profile.calendarLink} target="_blank" rel="noreferrer">
-        Đặt lịch 30'
-      </a>
+      <a class="primary" href="#du-an">Xem dự án</a>
+      <a class="ghost" href="#lien-he">Đặt lịch 30'</a>
     </div>
     <div class="cta-links">
-      <a class="inline-link" href={profile.cvLink} target="_blank" rel="noreferrer">
-        Tải CV PDF
-      </a>
-      <span aria-hidden="true">•</span>
-      <a class="inline-link" href="#lien-he">
-        Gửi email nhanh
-      </a>
+      <a class="inline-link" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV PDF</a>
     </div>
   </div>
   <div class="card">
-    <img src="/avatar.svg" width="260" height="260" alt="Ảnh hồ sơ của Nguyễn Hoàng Tín" loading="lazy" />
-    <div class="badge">Freelance & tư vấn chiến lược sản phẩm</div>
+    <div class="avatar"><span class="ring"><img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" /></span></div>
+    <div class="badge">Freelance & Full‑Stack Developer</div>
     <div class="bio">
       {highlights.map((item) => (
         <p>{item}</p>
@@ -69,186 +60,44 @@ const highlights = [
 </section>
 
 <style>
-  .hero {
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    align-items: center;
-  }
+  .hero { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: center; }
 
-  .intro .eyebrow {
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-  }
+  .intro .eyebrow { letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; font-size: 0.85rem; }
+  .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; }
+  .subtitle { color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem; }
 
-  .intro h1 {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    margin: 0 0 1rem;
-  }
+  .meta { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
+  .meta li::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: rgba(14, 165, 233, 0.6); display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
 
-  .subtitle {
-    color: var(--muted);
-    font-size: 1.1rem;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-  }
+  .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .actions a { padding: 0.85rem 1.75rem; border-radius: 999px; font-weight: 600; border: 1px solid transparent; transition: transform 150ms ease, background 150ms ease; text-decoration: none; }
+  .actions a:hover { transform: translateY(-2px); }
+  .primary { background: linear-gradient(135deg, var(--accent), #6366f1); color: #010409; box-shadow: var(--shadow-sm); }
+  .primary:hover { filter: brightness(0.97); box-shadow: var(--shadow-md); }
+  .ghost { border-color: var(--border); background: var(--surface-weak); color: var(--text); border-width: 1px; border-style: solid; }
+  .ghost:hover { background: rgba(14,165,233,.08); border-color: var(--accent); }
 
-  .status-pill {
-    display: inline-flex;
-    border-radius: 999px;
-    padding: 0.35rem 1rem;
-    background: rgba(56, 189, 248, 0.15);
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-  }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-sm); }
 
-  .meta {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1.5rem;
-    display: flex;
-    gap: 1.25rem;
-    flex-wrap: wrap;
-    color: var(--muted);
-    font-size: 0.95rem;
-  }
+  /* Avatar with perfect gradient ring */
+  .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: 0 10px 28px rgba(14, 165, 233, 0.28), var(--shadow-sm); transition: transform 200ms ease, box-shadow 200ms ease; margin-bottom: 1rem; box-sizing: border-box; }
+  .avatar .ring { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
+  .avatar img { width: 100%; height: 100%; border-radius: 50%; display: block; border: 0; object-fit: cover; object-position: 50% 50%; box-shadow: none; margin: 0; }
+  .avatar:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(14,165,233,.35), var(--shadow-md); }
 
-  .meta li::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(56, 189, 248, 0.6);
-    display: inline-block;
-    margin-right: 0.4rem;
-    vertical-align: middle;
-  }
+  .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem; }
 
-  .actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-bottom: 0.75rem;
-  }
+  .bio { text-align: left; background: var(--surface-weak); border-radius: 16px; padding: 1rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .bio p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+  .bio p:last-child { margin-bottom: 0; }
 
-  .actions a {
-    padding: 0.85rem 1.75rem;
-    border-radius: 999px;
-    font-weight: 600;
-    border: 1px solid transparent;
-    transition: transform 150ms ease, background 150ms ease;
-  }
-
-  .actions a:hover {
-    transform: translateY(-2px);
-  }
-
-  .primary {
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    color: #010409;
-  }
-
-  .ghost {
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .cta-links {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.95rem;
-    color: var(--muted);
-  }
-
-  .inline-link {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .card {
-    background: rgba(12, 24, 36, 0.9);
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    border-radius: 24px;
-    padding: 2rem;
-    text-align: center;
-    backdrop-filter: blur(20px);
-  }
-
-  .card img {
-    border-radius: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 1rem;
-  }
-
-  .badge {
-    display: inline-flex;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    background: rgba(56, 189, 248, 0.12);
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .bio {
-    text-align: left;
-    background: rgba(4, 11, 20, 0.55);
-    border-radius: 16px;
-    padding: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    margin-bottom: 1.5rem;
-  }
-
-  .bio p {
-    margin: 0 0 0.5rem;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-
-  .bio p:last-child {
-    margin-bottom: 0;
-  }
-
-  .stats {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: 1.5rem;
-  }
-
-  .stat {
-    background: rgba(4, 11, 20, 0.6);
-    padding: 1rem;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .value {
-    font-size: 1.35rem;
-    font-weight: 600;
-    margin: 0 0 0.35rem;
-  }
-
-  .label {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
+  .stats { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.5rem; }
+  .stat { background: var(--surface-softer); padding: 1rem; border-radius: 16px; border: 1px solid var(--border); }
+  .value { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.35rem; }
+  .label { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
   @media (max-width: 600px) {
-    .stats {
-      grid-template-columns: 1fr;
-    }
-
-    .cta-links {
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
+    .stats { grid-template-columns: 1fr; }
+    .cta-links { flex-wrap: wrap; justify-content: flex-start; }
   }
 </style>

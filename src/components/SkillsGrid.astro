@@ -1,30 +1,30 @@
 ---
 const skillGroups = [
   {
-    title: 'Core skills',
-    level: 'Expert',
-    summary: 'Product discovery, định hướng chiến lược, thiết kế hệ thống thiết kế, đo lường trải nghiệm.',
-    items: ['Product discovery', 'JTBD interview', 'Design sprint', 'Design system ops']
+    title: 'Frontend',
+    level: 'Advanced',
+    summary: 'Xây dựng SPA/SSR với Angular & TypeScript, UI component và tối ưu hiệu năng/SEO.',
+    items: ['Angular', 'TypeScript', 'RxJS', 'TailwindCSS', 'Astro']
   },
   {
-    title: 'Tech stack',
+    title: 'Backend',
     level: 'Advanced',
-    summary: 'Thành thạo các công cụ thiết kế/hand-off và ngôn ngữ front-end cơ bản phục vụ prototype.',
-    items: ['Figma', 'Framer', 'FigJam', 'Astro', 'React', 'TypeScript']
+    summary: 'Microservices, ký số (PKI/HSM), tích hợp hệ thống; thiết kế API, auth/RBAC, queue/cache.',
+    items: ['C#/.NET', 'Java Spring', 'Python (Django/FastAPI)', 'PostgreSQL/MSSQL', 'Redis']
   },
   {
-    title: 'Soft skills',
-    level: 'Advanced',
-    summary: 'Facilitation workshop, storytelling, mentoring designer trẻ và làm việc với stakeholder C-level.',
-    items: ['Workshop facilitation', 'Stakeholder alignment', 'Mentoring', 'Bilingual presentation']
+    title: 'DevOps & QA',
+    level: 'Intermediate',
+    summary: 'CI/CD, container hóa, giám sát; tối ưu báo cáo & chất lượng hệ thống.',
+    items: ['Docker', 'GitHub Actions/Jenkins', 'NGINX', 'k6/JMeter', 'Playwright']
   }
 ];
 ---
 
-<section id="ky-nang" class="section">
+<section id="ky-nang" class="section alt">
   <header>
     <p class="eyebrow">Kỹ năng</p>
-    <h2>Stack phục vụ tăng trưởng sản phẩm</h2>
+    <h2>Stack cho full‑stack development</h2>
   </header>
 
   <div class="grid">
@@ -47,7 +47,13 @@ const skillGroups = [
 
 <style>
   .section {
-    margin-top: 4rem;
+    margin-top: 5rem;
+  }
+  .section.alt {
+    background: var(--surface-weak);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
   }
 
   header .eyebrow {
@@ -61,6 +67,16 @@ const skillGroups = [
   header h2 {
     margin-top: 0;
     font-size: clamp(2rem, 4vw, 2.8rem);
+    position: relative;
+  }
+  header h2::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-top: 0.5rem;
   }
 
   .grid {
@@ -70,10 +86,11 @@ const skillGroups = [
   }
 
   .card {
-    background: rgba(12, 24, 36, 0.88);
+    background: var(--card);
     border-radius: 20px;
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    border: 1px solid var(--border);
     padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
   }
 
   .card-head {
@@ -111,7 +128,7 @@ const skillGroups = [
   li {
     padding: 0.45rem 0.85rem;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-weak);
     font-size: 0.9rem;
   }
 </style>

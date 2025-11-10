@@ -4,8 +4,11 @@ const profile = {
   role: 'Full‑Stack Developer',
   location: 'Đắk Lắk, Việt Nam',
   focus: 'C# • Java • Python • Angular • Microservices',
-  summary:
-    'Phát triển hệ thống Khách hàng doanh nghiệp: Hóa đơn điện tử, Biên lai điện tử<br/>Hệ thống quản lý chính quyền: Phòng họp không giấy tờ, dịch vụ hành chính công, Quản lý văn bản & thông tin điều hành<br/>Quản lý bệnh viện, khám chữa bệnh<br/>Hệ thống Performance Management System  quản lý hiệu năng cell, trạm dành cho các thiết bị viễn thông vô tuyến và có dây của VNPT. Tập trung xây dựng tính năng mở rộng, tối ưu báo cáo thống kê và tích hợp liên thông giữa các hệ thống. Đồng thời triển khai website WordPress theo yêu cầu.',
+  summary: `Phát triển hệ thống Khách hàng doanh nghiệp: Hóa đơn điện tử, Biên lai điện tử.
+Hệ thống quản lý chính quyền: Phòng họp không giấy tờ, dịch vụ hành chính công, Quản lý văn bản & thông tin điều hành.
+Quản lý bệnh viện, khám chữa bệnh.
+PMS (Performance Management System) quản lý hiệu năng cell, trạm dành cho các thiết bị viễn thông vô tuyến và có dây của VNPT.
+Tập trung xây dựng tính năng mở rộng, tối ưu báo cáo thống kê và tích hợp liên thông giữa các hệ thống. Đồng thời triển khai website WordPress theo yêu cầu.`,
   cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
 };
 
@@ -27,7 +30,7 @@ const highlights = [
   <div class="intro">
     <p class="eyebrow">{profile.role}</p>
     <h1>{profile.name}</h1>
-    <p class="subtitle" set:html={profile.summary}></p>
+    <p class="subtitle">{profile.summary}</p>
     <ul class="meta">
       <li>{profile.location}</li>
       <li>{profile.focus}</li>
@@ -42,7 +45,7 @@ const highlights = [
   </div>
   <div class="card">
     <div class="avatar"><span class="ring"><img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" /></span></div>
-    <div class="badge">Freelance & Full‑Stack Developer</div>
+    <div class="badge">Freelance & tư vấn kỹ thuật</div>
     <div class="bio">
       {highlights.map((item) => (
         <p>{item}</p>
@@ -64,7 +67,7 @@ const highlights = [
 
   .intro .eyebrow { letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; font-size: 0.85rem; }
   .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; }
-  .subtitle { color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem; }
+  .subtitle { color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem; white-space: pre-line; }
 
   .meta { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
   .meta li::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: rgba(14, 165, 233, 0.6); display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
@@ -101,3 +104,4 @@ const highlights = [
     .cta-links { flex-wrap: wrap; justify-content: flex-start; }
   }
 </style>
+

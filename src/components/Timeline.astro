@@ -1,0 +1,98 @@
+---
+const events = [
+  {
+    year: '2022 — nay',
+    role: 'Senior Product Designer · Northwind',
+    detail: 'Lãnh đạo nhóm thiết kế 5 người, xây dựng design ops và workflow cross-functional.'
+  },
+  {
+    year: '2020 — 2022',
+    role: 'Product Designer · Aurora Labs',
+    detail: 'Tập trung Fintech và SaaS, kết hợp chặt chẽ với PM & Engineer để ra mắt 6 sản phẩm.'
+  },
+  {
+    year: '2018 — 2020',
+    role: 'UX Engineer · Firefly',
+    detail: 'Thiết kế UI và build components bằng React giúp tiết kiệm 30% thời gian phát triển.'
+  }
+];
+---
+
+<section class="section">
+  <header>
+    <p class="eyebrow">Hành trình</p>
+    <h2>Những cột mốc chính</h2>
+  </header>
+  <div class="timeline">
+    {events.map((event) => (
+      <article class="item">
+        <span class="year">{event.year}</span>
+        <div>
+          <h3>{event.role}</h3>
+          <p>{event.detail}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section {
+    margin-top: 4rem;
+  }
+
+  header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  header h2 {
+    margin-top: 0;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+  }
+
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-left: 2px solid rgba(56, 189, 248, 0.4);
+    padding-left: 1.5rem;
+    margin-left: 0.5rem;
+  }
+
+  .item {
+    position: relative;
+  }
+
+  .item::before {
+    content: '';
+    position: absolute;
+    left: -1.7rem;
+    top: 0.7rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 2px solid var(--accent);
+    background: #040b14;
+  }
+
+  .year {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  h3 {
+    margin: 0.2rem 0;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+</style>

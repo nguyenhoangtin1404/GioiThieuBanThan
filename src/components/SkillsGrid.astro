@@ -1,0 +1,106 @@
+---
+const skills = [
+  {
+    title: 'Sản phẩm & Chiến lược',
+    tools: ['Product discovery', 'JTBD', 'Design sprint', 'Product analytics'],
+    level: 'Advanced'
+  },
+  {
+    title: 'Thiết kế',
+    tools: ['Figma', 'Framer', 'Design system', 'Prototyping'],
+    level: 'Expert'
+  },
+  {
+    title: 'Frontend',
+    tools: ['Astro', 'React', 'TypeScript', 'Tailwind'],
+    level: 'Advanced'
+  }
+];
+---
+
+<section id="ky-nang" class="section">
+  <header>
+    <p class="eyebrow">Kỹ năng</p>
+    <h2>Đa năng nhưng tập trung</h2>
+  </header>
+
+  <div class="grid">
+    {skills.map((skill) => (
+      <article class="card">
+        <div class="card-head">
+          <h3>{skill.title}</h3>
+          <span>{skill.level}</span>
+        </div>
+        <ul>
+          {skill.tools.map((tool) => (
+            <li>{tool}</li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section {
+    margin-top: 4rem;
+  }
+
+  header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  header h2 {
+    margin-top: 0;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .card {
+    background: rgba(12, 24, 36, 0.88);
+    border-radius: 20px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    padding: 1.5rem;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .card-head span {
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  li {
+    padding: 0.45rem 0.85rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,21 @@
+{
+  "name": "profilio",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^4.11.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.7.0",
+    "typescript": "^5.4.0",
+    "tslib": "^2.6.2"
+  }
+}

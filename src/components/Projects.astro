@@ -1,0 +1,112 @@
+---
+const projects = [
+  {
+    name: 'Lunio Bank',
+    description: 'Ngân hàng số tập trung trải nghiệm tiết kiệm cho Gen Z. Dẫn dắt từ discovery đến launch.',
+    impact: 'Tăng 37% tỉ lệ active users sau 3 tháng',
+    tags: ['UX research', 'Design system', 'Web app']
+  },
+  {
+    name: 'FlowCRM',
+    description: 'Dashboard tùy chỉnh cho đội Sales B2B với workflows kéo-thả và automation builder.',
+    impact: 'Giảm 22% thời gian onboarding đội ngũ bán hàng',
+    tags: ['Product thinking', 'Interaction design', 'Frontend']
+  },
+  {
+    name: 'Humnity',
+    description: 'Ứng dụng thiện nguyện giúp kết nối mạnh thường quân và cộng đồng địa phương.',
+    impact: 'Gọi vốn cộng đồng 120k USD vòng Seed',
+    tags: ['Branding', 'Mobile', 'Design ops']
+  }
+];
+---
+
+<section id="du-an" class="section">
+  <header>
+    <p class="eyebrow">Dự án gần đây</p>
+    <h2>Thiết kế có chủ đích</h2>
+  </header>
+  <div class="list">
+    {projects.map((project) => (
+      <article class="project">
+        <div class="head">
+          <h3>{project.name}</h3>
+          <p>{project.description}</p>
+        </div>
+        <p class="impact">{project.impact}</p>
+        <ul>
+          {project.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .section {
+    margin-top: 4rem;
+  }
+
+  header .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+
+  header h2 {
+    margin-top: 0;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .project {
+    padding: 1.75rem;
+    border-radius: 24px;
+    background: rgba(4, 11, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: grid;
+    gap: 1rem;
+  }
+
+  .head h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+  }
+
+  .head p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .impact {
+    margin: 0;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  li {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(56, 189, 248, 0.14);
+    font-size: 0.85rem;
+  }
+</style>

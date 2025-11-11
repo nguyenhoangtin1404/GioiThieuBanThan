@@ -63,7 +63,7 @@ const highlights = [
 </section>
 
 <style>
-  .hero { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: center; }
+  .hero { display: grid; gap: 2rem; grid-template-columns: 1fr; align-items: start; grid-template-areas: 'intro' 'card'; }
 
   .intro .eyebrow { letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; font-size: 0.85rem; }
   .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; }
@@ -81,6 +81,8 @@ const highlights = [
   .ghost:hover { background: rgba(14,165,233,.08); border-color: var(--accent); }
 
   .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-sm); }
+  .card { grid-area: card; }
+  .intro { grid-area: intro; }
 
   /* Avatar with perfect gradient ring */
   .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: 0 10px 28px rgba(14, 165, 233, 0.28), var(--shadow-sm); transition: transform 200ms ease, box-shadow 200ms ease; margin-bottom: 1rem; box-sizing: border-box; }
@@ -102,6 +104,11 @@ const highlights = [
   @media (max-width: 600px) {
     .stats { grid-template-columns: 1fr; }
     .cta-links { flex-wrap: wrap; justify-content: flex-start; }
+  }
+
+  /* Swap positions on wider screens: card left, intro right */
+  @media (min-width: 768px) {
+    .hero { grid-template-columns: 1fr 1fr; grid-template-areas: 'card intro'; }
   }
 </style>
 

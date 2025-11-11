@@ -1,26 +1,41 @@
 ---
 const projects = [
   {
-    name: 'TaskHub API',
+    name: 'Hệ thống quản lý văn bản điều hành',
     description:
-      'Nền tảng API quản lý công việc với NestJS, JWT auth, RBAC, WebSocket notifications; đóng gói Docker và deploy trên VPS.',
-    role: 'Full‑Stack Developer',
-    impact: 'TTFB giảm 35%, uptime 99.9%',
-    tools: ['NestJS', 'PostgreSQL', 'Redis', 'Docker'],
-    link: '#',
-    cover:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80'
+      'VNPT iOffice tích hợp điều hành, quản lý, cộng tác và trao đổi nội bộ trong cùng một giao diện web, vận hành như mạng xã hội doanh nghiệp.',
+    role: 'Kỹ sư phát triển giải pháp (Outsource)',
+    impact: 'Chuẩn hoá báo cáo, liên thông LGSP/VXP và hỗ trợ lãnh đạo theo dõi nhắc việc realtime',
+    tools: [
+      'Biểu mẫu báo cáo thống kê xử lý văn bản',
+      'Tích hợp LGSP & VXP',
+      'Dashboard nhắc việc cho lãnh đạo',
+      'Tối ưu thao tác người dùng'
+    ],
+    cover: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=80'
+    ]
   },
   {
-    name: 'ShopNext',
+    name: 'eCabinet · Phòng họp không giấy',
     description:
-      'E‑commerce full‑stack: Next.js App Router, Prisma ORM, Stripe checkout, i18n, SSR caching; triển khai trên Vercel.',
-    role: 'Full‑Stack Developer',
-    impact: '+18% conversion sau 2 quý',
-    tools: ['Next.js', 'Prisma', 'Stripe', 'Vercel'],
-    link: '#',
-    cover:
-      'https://images.unsplash.com/photo-1516245834210-c4c142787335?auto=format&fit=crop&w=1000&q=80'
+      'Giải pháp quản lý tài liệu phòng họp không giấy, đồng bộ tài liệu họp giữa màn kế hoạch, danh sách và tìm kiếm theo thời gian thực.',
+    role: 'Frontend Developer (Outsource)',
+    impact: 'Luồng sắp xếp tài liệu thống nhất giúp lãnh đạo truy cập tài liệu ưu tiên nhanh hơn',
+    tools: [
+      'UI sắp xếp tài liệu kéo‑thả & mũi tên',
+      'Input số thứ tự',
+      'Sync thứ tự giữa màn danh sách & tìm kiếm'
+    ],
+    cover: 'https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1531497865144-0464ef8fb9a9?auto=format&fit=crop&w=900&q=80'
+    ]
   },
   {
     name: 'NotifyQ',
@@ -29,9 +44,12 @@ const projects = [
     role: 'Backend Developer',
     impact: 'Xử lý 1M+ message/ngày',
     tools: ['Node.js', 'Redis', 'BullMQ', 'Grafana'],
-    link: '#',
-    cover:
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80'
+    cover: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1454165205744-3b78555e5572?auto=format&fit=crop&w=900&q=80'
+    ]
   }
 ];
 ---
@@ -58,7 +76,13 @@ const projects = [
             <li>{tag}</li>
           ))}
         </ul>
-        {/** Link chi tiết đã được bỏ theo yêu cầu **/}
+        <div class="gallery" role="region" aria-label={`Slide hình ảnh cho ${project.name}`}>
+          {project.gallery.map((image, index) => (
+            <figure>
+              <img src={image} alt={`Slide ${index + 1} của ${project.name}`} loading="lazy" />
+            </figure>
+          ))}
+        </div>
       </article>
     ))}
   </div>
@@ -82,6 +106,7 @@ const projects = [
     font-size: clamp(2rem, 4vw, 2.8rem);
     position: relative;
   }
+
   header h2::after {
     content: '';
     display: block;
@@ -99,11 +124,15 @@ const projects = [
   }
 
   @media (min-width: 768px) {
-    .list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (min-width: 1024px) {
-    .list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   .project {
@@ -168,15 +197,47 @@ const projects = [
     align-items: center;
     justify-content: center;
     height: 40px;
-    min-width: 96px; /* equal visual width for short/long labels */
+    min-width: 96px;
     padding: 0 14px;
     border-radius: 999px;
     background: rgba(14, 165, 233, 0.12);
     font-size: 0.9rem;
     font-weight: 600;
-    color: #075985; /* slate-800-ish for contrast */
+    color: #075985;
     line-height: 1;
     white-space: nowrap;
+  }
+
+  .gallery {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+  }
+
+  .gallery figure {
+    margin: 0;
+    min-width: clamp(200px, 45vw, 320px);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    scroll-snap-align: start;
+    background: rgba(15, 23, 42, 0.6);
+  }
+
+  .gallery img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 640px) {
+    .meta-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 
   /* .case-link removed */

@@ -1,61 +1,74 @@
 ---
 const projects = [
   {
-    name: 'Hệ thống quản lý văn bản điều hành',
+    name: 'Hệ thống Thông tin Giải quyết Thủ tục Hành chính',
+    period: '2025 – NAY',
     description:
-      'VNPT iOffice tích hợp điều hành, quản lý, cộng tác và trao đổi nội bộ trong cùng một giao diện web, vận hành như mạng xã hội doanh nghiệp.',
-    role: 'Kỹ sư phát triển giải pháp (Outsource)',
-    impact: 'Chuẩn hoá báo cáo, liên thông LGSP/VXP và hỗ trợ lãnh đạo theo dõi nhắc việc realtime',
-    tools: [
-      'Biểu mẫu báo cáo thống kê xử lý văn bản',
-      'Tích hợp LGSP & VXP',
-      'Dashboard nhắc việc cho lãnh đạo',
-      'Tối ưu thao tác người dùng'
+      'Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.',
+    role: 'Fullstack Developer',
+    tasks: [
+      'Tối ưu báo cáo và hỗ trợ vận hành hệ thống.',
+      'Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp.'
     ],
-    cover: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1000&q=80',
+    impact: 'Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây.',
+    tools: [
+      'Angular',
+      'Java Spring Boot',
+      'MongoDB',
+      'Microservices'
+    ],
     gallery: [
-      'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1483058712412-4245e9b90334?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=80'
+      '/igate1.jpg',
+      '/igate2.jpg',
+      '/igate3.png'
     ]
   },
   {
-    name: 'eCabinet · Phòng họp không giấy',
+    name: 'VNPT eCabinet - Phòng họp không giấy tờ',
+    period: '2021 – 2025',
     description:
-      'Giải pháp quản lý tài liệu phòng họp không giấy, đồng bộ tài liệu họp giữa màn kế hoạch, danh sách và tìm kiếm theo thời gian thực.',
-    role: 'Frontend Developer (Outsource)',
-    impact: 'Luồng sắp xếp tài liệu thống nhất giúp lãnh đạo truy cập tài liệu ưu tiên nhanh hơn',
-    tools: [
-      'Kéo-thả',
-      'Số thứ tự',
-      'Đồng bộ realtime'
+      'Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.',
+    role: 'Trưởng nhóm triển khai',
+    tasks: [
+      'Triển khai và vận hành hệ thống (phần cứng + phần mềm).',
+      'Điều phối nhóm 5 kỹ thuật viên, setup 1–2 kỳ họp/tháng.',
+      'Hỗ trợ kỹ thuật tại hiện trường, đảm bảo hệ thống hoạt động ổn định.'
     ],
-    cover: 'https://images.unsplash.com/photo-1519337265831-281ec6cc8514?auto=format&fit=crop&w=1000&q=80',
+    impact: 'Đảm bảo các kỳ họp HĐND ổn định, không sự cố CNTT trong 5 năm. Duy trì hợp đồng dịch vụ dài hạn cấp tỉnh.',
+    tools: [
+      'C#',
+      '.NET Framework',
+      'Oracle',
+      'IoT'
+    ],
     gallery: [
-      'https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1531497865144-0464ef8fb9a9?auto=format&fit=crop&w=900&q=80'
+      '/ecabinet1.jpg',
+      '/ecabinet2.jpg',
+      '/ecabinet3.jpg'
     ]
   },
   {
-    name: 'Một cửa điện tử & Dịch vụ công',
+    name: 'VNPT iOffice - Điều hành Văn bản',
+    period: '2017 – 2024',
     description:
-      'Nền tảng dịch vụ công được xây dựng trên kiến trúc microservices, cho phép mở rộng và nâng cấp linh hoạt với khả năng chịu tải cao. Ứng dụng được đóng gói bằng Docker và triển khai trên Kubernetes để đảm bảo tính ổn định và hiệu quả trong vận hành.',
-    role: 'Full‑stack Developer',
-    impact:
-      'Tối ưu hoá dữ liệu báo cáo. Mở rộng phạm vi lấy dữ liệu.',
-    tools: [
-      'Microservices',
-      'Docker',
-      'Kubernetes',
-      'API Gateway',
-      'Dịch vụ công'
+      'Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.',
+    role: 'Fullstack Developer',
+    tasks: [
+      'Xử lý 20–30 ticket/tháng theo SLA.',
+      'Phát triển REST API/services, xử lý nghiệp vụ.',
+      'Tối ưu hiệu năng và bảo mật hệ thống.'
     ],
-    cover: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1000&q=80',
+    impact: 'Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.',
+    tools: [
+      'ASP.NET',
+      'C#',
+      'DevExpress',
+      'Oracle'
+    ],
     gallery: [
-      'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1454165205744-3b78555e5572?auto=format&fit=crop&w=900&q=80'
+      '/ioffice1.jpg',
+      '/ioffice2.jpg',
+      '/ioffice3.jpg'
     ]
   }
 ];
@@ -63,37 +76,203 @@ const projects = [
 
 <section id="du-an" class="section">
   <header>
-    <p class="eyebrow">Dự án nổi bật</p>
-    <h2>Từ kiến trúc tới production</h2>
+    <h2>Dự án nổi bật</h2>
   </header>
-  <div class="list">
-    {projects.map((project) => (
-      <article class="project">
-        <img src={project.cover} alt={`Ảnh minh hoạ dự án ${project.name}`} loading="lazy" />
+  <div class="carousel-container">
+    <button class="carousel-btn prev" aria-label="Dự án trước">‹</button>
+    <div class="list" id="projects-carousel">
+      {projects.map((project) => (
+        <article class="project">
         <div class="head">
           <h3>{project.name}</h3>
+          {project.period && <p class="period">{project.period}</p>}
           <p>{project.description}</p>
         </div>
         <div class="meta-row">
           <p><strong>Vai trò:</strong> {project.role}</p>
-          <p class="impact">{project.impact}</p>
         </div>
-        <ul>
-          {project.tools.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
-        <div class="gallery" role="region" aria-label={`Slide hình ảnh cho ${project.name}`}>
-          {project.gallery.map((image, index) => (
-            <figure>
-              <img src={image} alt={`Slide ${index + 1} của ${project.name}`} loading="lazy" />
-            </figure>
-          ))}
+        {project.tasks && project.tasks.length > 0 && (
+          <div class="tasks">
+            <strong>Nhiệm vụ:</strong>
+            <ul class="task-list">
+              {project.tasks.map((task) => (
+                <li>{task}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {project.impact && (
+          <div class="results">
+            <strong>Kết quả:</strong>
+            <p class="impact">{project.impact}</p>
+          </div>
+        )}
+        <div class="tools-section">
+          <strong>Công nghệ:</strong>
+          <ul class="tools">
+            {project.tools.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
         </div>
+        {project.gallery && project.gallery.length > 0 && (
+          <div class="gallery" role="region" aria-label={`Slide hình ảnh cho ${project.name}`}>
+            {project.gallery.map((image, index) => (
+              <figure>
+                <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                  <img src={image} alt={`Slide ${index + 1} của ${project.name}`} loading="lazy" />
+                </a>
+              </figure>
+            ))}
+          </div>
+        )}
       </article>
-    ))}
+      ))}
+    </div>
+    <button class="carousel-btn next" aria-label="Dự án tiếp">›</button>
+    <div class="carousel-indicators">
+      {projects.map((_, index) => (
+        <button class="indicator" aria-label={`Chuyển đến dự án ${index + 1}`} data-slide={index}></button>
+      ))}
+    </div>
   </div>
 </section>
+
+<script is:inline>
+  // Load GLightbox CSS
+  if (!document.querySelector('link[href*="glightbox"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css';
+    document.head.appendChild(link);
+  }
+
+  // Load GLightbox JS
+  if (!document.querySelector('script[src*="glightbox"]')) {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
+    script.onload = function() {
+      if (typeof GLightbox !== 'undefined') {
+        const lightbox = GLightbox({
+          selector: '.glightbox',
+          touchNavigation: true,
+          loop: true,
+          autoplayVideos: true
+        });
+      }
+    };
+    document.head.appendChild(script);
+  }
+</script>
+
+<script>
+  function initCarousel() {
+    const carousel = document.getElementById('projects-carousel');
+    const prevBtn = document.querySelector('.carousel-btn.prev');
+    const nextBtn = document.querySelector('.carousel-btn.next');
+    const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+    const projects = carousel?.querySelectorAll('.project');
+    
+    if (!carousel || !projects || projects.length === 0) return;
+    
+    let currentIndex = 0;
+    const totalSlides = projects.length;
+    let isScrolling = false;
+    
+    function updateIndicators() {
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentIndex);
+      });
+      
+      if (prevBtn) prevBtn.disabled = currentIndex === 0;
+      if (nextBtn) nextBtn.disabled = currentIndex === totalSlides - 1;
+    }
+    
+    function updateCarousel() {
+      if (!carousel || !projects || isScrolling) return;
+      isScrolling = true;
+      
+      const cardWidth = carousel.clientWidth;
+      const scrollPosition = currentIndex * cardWidth;
+      
+      carousel.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
+      
+      updateIndicators();
+      
+      setTimeout(() => {
+        isScrolling = false;
+      }, 300);
+    }
+    
+    function getCurrentSlideIndex() {
+      if (!carousel || !projects) return 0;
+      const cardWidth = carousel.clientWidth;
+      const scrollLeft = carousel.scrollLeft;
+      const newIndex = Math.round(scrollLeft / cardWidth);
+      return Math.max(0, Math.min(newIndex, totalSlides - 1));
+    }
+    
+    function goToSlide(index) {
+      currentIndex = Math.max(0, Math.min(index, totalSlides - 1));
+      updateCarousel();
+    }
+    
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateCarousel();
+      }
+    }
+    
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
+    }
+    
+    // Handle scroll to update current index
+    carousel.addEventListener('scroll', () => {
+      if (!isScrolling) {
+        const newIndex = getCurrentSlideIndex();
+        if (newIndex !== currentIndex) {
+          currentIndex = newIndex;
+          updateIndicators();
+        }
+      }
+    });
+    
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+    
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => goToSlide(index));
+    });
+    
+    // Initialize
+    updateIndicators();
+    
+    // Handle resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        currentIndex = getCurrentSlideIndex();
+        updateIndicators();
+      }, 250);
+    });
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousel);
+  } else {
+    initCarousel();
+  }
+</script>
 
 <style>
   .section {
@@ -124,38 +303,65 @@ const projects = [
     margin-top: 0.5rem;
   }
 
+  .carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+
   .list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 0.5rem 0;
+    width: 100%;
   }
 
-  @media (min-width: 768px) {
-    .list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  .list::-webkit-scrollbar {
+    display: none;
   }
 
   .project {
-    padding: 1.75rem;
+    position: relative;
+    z-index: 1;
+    padding: 1.5rem;
     border-radius: 24px;
     background: var(--card);
     border: 1px solid var(--border);
     display: grid;
     gap: 1rem;
     box-shadow: var(--shadow-sm);
-    height: 100%;
+    min-height: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 640px) {
+    .project {
+      padding: 2rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .project {
+      padding: 2.5rem;
+    }
   }
 
   .project img {
     width: 100%;
-    height: 220px;
+    height: 160px;
     object-fit: cover;
     border-radius: 18px;
     border: 1px solid var(--border);
@@ -163,13 +369,24 @@ const projects = [
 
   .head h3 {
     margin: 0 0 0.5rem;
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .period {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 500;
   }
 
   .head p {
     margin: 0;
     color: var(--muted);
     line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .meta-row {
@@ -178,6 +395,7 @@ const projects = [
     gap: 1rem;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 0.5rem;
   }
 
   .meta-row p {
@@ -185,21 +403,66 @@ const projects = [
     color: var(--muted);
   }
 
-  .impact {
-    font-weight: 600;
-    color: var(--accent);
+  .tasks, .results, .tools-section {
+    margin-top: 1rem;
   }
 
-  ul {
+  .tasks strong, .results strong, .tools-section strong {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .task-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .task-list li {
+    color: var(--muted);
+    line-height: 1.6;
+    display: list-item;
+    padding: 0;
+    height: auto;
+    min-width: auto;
+    border-radius: 0;
+    background: none;
+    font-weight: normal;
+    font-size: 0.95rem;
+    white-space: normal;
+  }
+
+  .results {
+    margin-top: 1rem;
+  }
+
+  .results .impact {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: normal;
+  }
+
+  .tools-section {
+    margin-top: 1rem;
+  }
+
+  .tools {
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0.5rem 0 0;
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
   }
 
-  li {
+  .tools li {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -221,6 +484,7 @@ const projects = [
     overflow-x: auto;
     padding-bottom: 0.5rem;
     scroll-snap-type: x mandatory;
+    margin-top: 1rem;
   }
 
   .gallery figure {
@@ -233,6 +497,16 @@ const projects = [
     background: rgba(15, 23, 42, 0.6);
   }
 
+  .gallery a {
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  .gallery a:hover {
+    opacity: 0.9;
+  }
+
   .gallery img {
     width: 100%;
     height: 180px;
@@ -240,10 +514,111 @@ const projects = [
     display: block;
   }
 
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    line-height: 1;
+  }
+
+  .carousel-btn:hover:not(:disabled) {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .carousel-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .carousel-btn.prev {
+    left: 0;
+  }
+
+  .carousel-btn.next {
+    right: 0;
+  }
+
+  @media (min-width: 768px) {
+    .carousel-btn.prev {
+      left: -24px;
+    }
+
+    .carousel-btn.next {
+      right: -24px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .carousel-btn {
+      display: none;
+    }
+  }
+
+  .carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .carousel-indicators .indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+  }
+
+  .carousel-indicators .indicator:hover {
+    background: var(--muted);
+    transform: scale(1.2);
+  }
+
+  .carousel-indicators .indicator.active {
+    background: var(--accent);
+    width: 24px;
+    border-radius: 5px;
+  }
+
   @media (max-width: 640px) {
+    .project {
+      padding: 1.25rem;
+    }
+
     .meta-row {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .head h3 {
+      font-size: 1.25rem;
+    }
+
+    .tools li {
+      font-size: 0.85rem;
+      padding: 0 12px;
+      min-width: 80px;
     }
   }
 

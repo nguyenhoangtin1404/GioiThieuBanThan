@@ -4,7 +4,7 @@ const profile = {
   role: 'Full‑Stack Developer',
   location: 'Đắk Lắk, Việt Nam',
   focus: 'C# • Java • Python • Angular • Microservices',
-  summary: `Phát triển các hệ thống khách hàng doanh nghiệp (hóa đơn, biên lai điện tử), quản lý chính quyền (phòng họp không giấy, dịch vụ hành chính công, quản lý văn bản–điều hành), cùng với giải pháp quản lý bệnh viện và PMS theo dõi hiệu năng cell/trạm viễn thông VNPT; tập trung mở rộng tính năng, tối ưu báo cáo–thống kê, tích hợp liên thông hệ thống, đồng thời triển khai website WordPress theo yêu cầu.`,
+  summary: `Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.`,
   cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
 };
 
@@ -15,44 +15,43 @@ const stats = [
 ];
 
 const highlights = [
-  'Microservices ký số, tích hợp PKI/HSM',
-  'Angular frontend; C#/.NET & Java Spring; Python (Django/FastAPI)',
-  'Tối ưu báo cáo thống kê & tích hợp hệ thống',
-  'Triển khai website WordPress theo yêu cầu'
+  { title: 'Frontend:', content: 'Angular, Bootstrap, HTML/CSS/JS' },
+  { title: 'Backend:', content: '.NET, Java, Spring Boot, Microservices, Oracle, MongoDB' },
+  { title: 'DevOps & Tools:', content: 'Git, Jira, Docker' },
+  { title: 'Tiếng Anh:', content: 'Đọc tài liệu kỹ thuật, giao tiếp công việc cơ bản' },
+  { title: 'Khác:', content: 'Thuyết trình, Giảng viên nội bộ, Scrum' }
 ];
 ---
 
 <section class="hero" id="gioi-thieu">
   <div class="intro">
-    <p class="eyebrow">{profile.role}</p>
     <h1>{profile.name}</h1>
     <p class="subtitle">{profile.summary}</p>
     <ul class="meta">
-      <li>{profile.location}</li>
-      <li>{profile.focus}</li>
+     <li>{profile.focus}</li>
+     <li>{profile.location}</li>
     </ul>
-    <div class="actions">
-      <a class="primary" href="#du-an">Xem dự án</a>
-      <a class="ghost" href="#lien-he">Liên hệ</a>
-    </div>
-    <div class="cta-links">
-      <a class="inline-link" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV PDF</a>
-    </div>
-  </div>
-  <div class="card">
-    <div class="avatar"><span class="ring"><img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" /></span></div>
-    <div class="badge">Freelance & tư vấn kỹ thuật</div>
-    <div class="bio">
-      {highlights.map((item) => (
-        <p>{item}</p>
-      ))}
-    </div>
     <div class="stats">
       {stats.map((stat) => (
         <div class="stat">
           <p class="value">{stat.value}</p>
           <p class="label">{stat.label}</p>
         </div>
+      ))}
+    </div>
+    <div class="actions">
+      <a class="primary" href="#du-an">Xem dự án</a>
+      <a class="primary" href="#lien-he">Liên hệ</a>
+      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV PDF</a>
+    </div>
+   
+  </div>
+  <div class="card">
+    <div class="avatar"><span class="ring"><img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" /></span></div>
+    <div class="badge">Kỹ sư lập trình</div>
+    <div class="bio">
+      {highlights.map((item) => (
+        <p><strong>{item.title}</strong> {item.content}</p>
       ))}
     </div>
   </div>
@@ -68,7 +67,7 @@ const highlights = [
   .meta { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
   .meta li::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: rgba(14, 165, 233, 0.6); display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
 
-  .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+  .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
   .actions a { padding: 0.85rem 1.75rem; border-radius: 999px; font-weight: 600; border: 1px solid transparent; transition: transform 150ms ease, background 150ms ease; text-decoration: none; }
   .actions a:hover { transform: translateY(-2px); }
   .primary { background: linear-gradient(135deg, var(--accent), #6366f1); color: #010409; box-shadow: var(--shadow-sm); }
@@ -92,7 +91,7 @@ const highlights = [
   .bio p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
   .bio p:last-child { margin-bottom: 0; }
 
-  .stats { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.5rem; }
+  .stats { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 1.5rem 0; }
   .stat { background: var(--surface-softer); padding: 1rem; border-radius: 16px; border: 1px solid var(--border); }
   .value { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.35rem; }
   .label { margin: 0; color: var(--muted); font-size: 0.9rem; }

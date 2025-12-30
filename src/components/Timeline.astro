@@ -1,46 +1,47 @@
 ---
 const events = [
   {
-    year: '2023 — nay',
-    role: 'Senior Full‑Stack Developer @ NovaLabs',
-    detail:
-      'Thiết kế kiến trúc, phát triển feature end‑to‑end (React/NestJS), tối ưu hiệu năng, thiết lập CI/CD và giám sát.',
-    highlights: ['Triển khai Docker + GitHub Actions', 'Giảm 30% thời gian build, 20% TTFB']
-  },
-  {
-    year: '2020 — 2023',
-    role: 'Full‑Stack Developer @ Aurora Labs',
-    detail:
-      'Phát triển SaaS B2B: API REST/GraphQL, RBAC, caching Redis, dashboard realtime, triển khai trên Vercel/VM.',
-    highlights: ['Thiết kế schema PostgreSQL', 'Tự động hóa release hằng tuần']
-  },
-  {
-    year: '2017 — 2020',
-    role: 'Software Engineer (Frontend) @ Firefly',
-    detail:
-      'Xây dựng UI component library, hợp tác chặt với backend để rút ngắn thời gian bàn giao và nâng cao chất lượng.',
-    highlights: ['Refactor UI theo design system', 'Mentor lập trình viên junior']
+    year: '2017 – NAY',
+    company: 'VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM',
+    role: 'NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH',
+    tasks: [
+      'Tham gia phát triển và vận hành các hệ thống phần mềm quy mô tỉnh/thành.',
+      'Đảm nhiệm vai trò chính trong phát triển backend, tối ưu hiệu năng và hỗ trợ nghiệp vụ.',
+      'Tham gia các dự án lớn: Hệ thống Dịch vụ công, Văn bản điều hành, Hóa đơn điện tử, Phòng họp không giấy,...',
+      'Áp dụng các công cụ AI vào quy trình phát triển giúp rút ngắn thời gian coding 20–30%. Nâng cao chất lượng code, phát hiện lỗi tiềm ẩn và đảm bảo tuân thủ các quy tắc của dự án.'
+    ],
+    achievements: [
+      'Đạt danh hiệu "Chiến sỹ thi đua" trong nhiều năm',
+      'Người lao động tiêu biểu năm 2021'
+    ]
   }
 ];
 ---
 
 <section class="section alt">
   <header>
-    <p class="eyebrow">Hành trình</p>
-    <h2>Kinh nghiệm nổi bật</h2>
+    <h2>Kinh nghiệm</h2>
   </header>
   <div class="timeline">
     {events.map((event) => (
       <article class="item">
         <span class="year">{event.year}</span>
         <div>
+          <p class="company">{event.company}</p>
           <h3>{event.role}</h3>
-          <p>{event.detail}</p>
-          <ul>
-            {event.highlights.map((highlight) => (
-              <li>{highlight}</li>
+          <ul class="tasks">
+            {event.tasks.map((task) => (
+              <li>{task}</li>
             ))}
           </ul>
+          <div class="achievements">
+            <strong>Thành tựu:</strong>
+            <ul>
+              {event.achievements.map((achievement) => (
+                <li>{achievement}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </article>
     ))}
@@ -119,8 +120,16 @@ const events = [
     color: var(--muted);
   }
 
+  .company {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
   h3 {
-    margin: 0.2rem 0;
+    margin: 0.2rem 0 1rem;
+    font-size: 1.1rem;
   }
 
   p {
@@ -135,10 +144,31 @@ const events = [
     color: var(--muted);
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.5rem;
+  }
+
+  .tasks {
+    margin-bottom: 1.5rem;
   }
 
   li {
-    line-height: 1.5;
+    line-height: 1.6;
+  }
+
+  .achievements {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .achievements strong {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .achievements ul {
+    margin-top: 0.5rem;
   }
 </style>

@@ -1,0 +1,304 @@
+---
+// Test page với Vanilla JavaScript - Giải pháp hoàn toàn miễn phí, không phụ thuộc
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vanilla Fullpage Test - Không phụ thuộc thư viện</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow: hidden;
+      }
+
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: #333;
+        overflow: hidden;
+      }
+
+      #fullpage {
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Vertical scrolling (mặc định) */
+      #fullpage.fp-vertical {
+        height: 100vh;
+      }
+
+      /* Horizontal scrolling */
+      #fullpage.fp-horizontal {
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+        overflow-y: hidden;
+      }
+
+      .section {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        position: absolute;
+        transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: transform;
+      }
+
+      /* Vertical scrolling styles */
+      .fp-vertical .section {
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        left: 0;
+      }
+
+      .fp-vertical .section.active {
+        transform: translateY(0);
+        z-index: 1;
+      }
+
+      .fp-vertical .section.prev {
+        transform: translateY(-100%);
+      }
+
+      .fp-vertical .section.next {
+        transform: translateY(100%);
+      }
+
+      /* Horizontal scrolling styles */
+      .fp-horizontal .section {
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+      }
+
+      .fp-horizontal .section.active {
+        transform: translateX(0) !important;
+        z-index: 1;
+      }
+
+      .fp-horizontal .section.prev {
+        transform: translateX(-100vw) !important;
+      }
+
+      .fp-horizontal .section.next {
+        transform: translateX(100vw) !important;
+      }
+
+      #section-home {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        z-index: 4;
+      }
+
+      #section-about {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        z-index: 3;
+      }
+
+      #section-contact {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        z-index: 2;
+      }
+
+      #section-footer {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+        z-index: 1;
+      }
+
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        max-width: 600px;
+        line-height: 1.6;
+      }
+
+      /* Navigation dots */
+      .fp-nav {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 1000;
+        list-style: none;
+      }
+
+      .fp-nav li {
+        margin: 10px 0;
+      }
+
+      .fp-nav a {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .fp-nav a.active,
+      .fp-nav a:hover {
+        background: white;
+        transform: scale(1.2);
+      }
+
+      /* Loading indicator */
+      .loading {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fullpage">
+      <!-- Section Home -->
+      <div class="section active" id="section-home" data-anchor="home">
+        <h1>Home Section</h1>
+        <p>Đây là phần Home - Sử dụng Vanilla JavaScript (Hoàn toàn miễn phí)</p>
+        <p>Không cần thư viện bên ngoài!</p>
+      </div>
+
+      <!-- Section About Us -->
+      <div class="section next" id="section-about" data-anchor="about-us">
+        <h2>About Us Section</h2>
+        <p>Đây là phần About Us</p>
+        <p>Giải pháp tự code, không phụ thuộc!</p>
+      </div>
+
+      <!-- Section Contact -->
+      <div class="section next" id="section-contact" data-anchor="contact">
+        <h2>Contact Section</h2>
+        <p>Đây là phần Contact</p>
+        <p>Bạn có thể liên hệ với chúng tôi qua email hoặc điện thoại</p>
+      </div>
+
+      <!-- Section Footer -->
+      <div class="section next" id="section-footer" data-anchor="footer">
+        <h2>Footer Section</h2>
+        <p>Đây là phần Footer</p>
+        <p>© 2024 - All rights reserved</p>
+      </div>
+    </div>
+
+    <!-- Navigation dots -->
+    <ul class="fp-nav">
+      <li><a href="#home" data-index="0" class="active"></a></li>
+      <li><a href="#about-us" data-index="1"></a></li>
+      <li><a href="#contact" data-index="2"></a></li>
+      <li><a href="#footer" data-index="3"></a></li>
+    </ul>
+
+    <!-- Load script từ public folder -->
+    <script is:inline src="/js/vanilla-fullpage.js"></script>
+    <script is:inline>
+      // Hàm để detect mobile và chọn direction phù hợp
+      function getDirection() {
+        // Breakpoint: < 768px là mobile (có thể điều chỉnh)
+        return window.innerWidth < 768 ? 'vertical' : 'horizontal';
+      }
+
+      // Options cấu hình chung
+      const initOptions = {
+        anchors: ['home', 'about-us', 'contact', 'footer'],
+        navigation: true,
+        scrollingSpeed: 1000,
+        loopBottom: true,
+        allowVerticalScrollInHorizontal: true
+      };
+
+      // Khởi tạo VanillaFullpage khi DOM ready và script đã load
+      function initFullpage() {
+        // Kiểm tra xem class đã được load chưa
+        if (typeof VanillaFullpage === 'undefined') {
+          // Nếu chưa load, thử lại sau 100ms
+          setTimeout(initFullpage, 100);
+          return;
+        }
+
+        // Khởi tạo với direction tự động dựa trên kích thước màn hình
+        window.vanillaFullpage = new VanillaFullpage('#fullpage', {
+          ...initOptions,
+          direction: getDirection()
+        });
+
+        // Xử lý hash URL khi trang load với hash (ví dụ: #contact)
+        const hash = window.location.hash.replace('#', '');
+        if (hash) {
+          const anchors = ['home', 'about-us', 'contact', 'footer'];
+          const index = anchors.indexOf(hash);
+          if (index !== -1 && window.vanillaFullpage) {
+            // Đợi một chút để đảm bảo fullpage đã khởi tạo xong
+            setTimeout(() => {
+              window.vanillaFullpage.goToSection(index);
+            }, 100);
+          }
+        }
+      }
+
+      // Xử lý resize window để thay đổi direction nếu cần (chỉ thêm listener một lần)
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (window.vanillaFullpage) {
+            const newDirection = getDirection();
+            if (newDirection !== window.vanillaFullpage.direction) {
+              // Lưu current index để giữ vị trí khi reinit
+              const currentIndex = window.vanillaFullpage.currentIndex;
+              
+              // Tạo lại instance với direction mới
+              window.vanillaFullpage = new VanillaFullpage('#fullpage', {
+                ...initOptions,
+                direction: newDirection
+              });
+              
+              // Khôi phục vị trí section hiện tại
+              setTimeout(() => {
+                window.vanillaFullpage.goToSection(currentIndex);
+              }, 100);
+            }
+          }
+        }, 250); // Debounce 250ms để tránh reinit quá nhiều
+      });
+
+      // Khởi tạo khi DOM ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initFullpage);
+      } else {
+        // Nếu DOM đã ready, đợi script load xong
+        window.addEventListener('load', initFullpage);
+        setTimeout(initFullpage, 50);
+      }
+    </script>
+  </body>
+</html>
+
+

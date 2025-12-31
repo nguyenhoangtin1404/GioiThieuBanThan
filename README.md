@@ -28,3 +28,90 @@ npm run preview  # Chạy bản build để kiểm tra trước khi deploy
 - `src/layouts/BaseLayout.astro`: layout chung, khai báo font và CSS nền
 
 Bạn có thể chỉnh nội dung các component để khớp với hồ sơ của riêng mình rồi deploy lên bất kỳ dịch vụ static hosting nào (Netlify, Vercel, Cloudflare Pages,…).
+
+## Trang Test Full Page Scrolling
+
+Giải pháp full page scrolling:
+
+### Trang Test
+- **URL**: `http://localhost:4321/vanilla-fullpage-test`
+- **File**: `src/pages/vanilla-fullpage-test.astro`
+
+### Module VanillaFullpage
+- **Location**: `public/js/vanilla-fullpage.js`
+- **Mô tả**: Thư viện full page scrolling tự code, không phụ thuộc thư viện bên ngoài
+- **Tính năng**:
+  - ✅ Full page scrolling với smooth animation
+  - ✅ Hỗ trợ scroll dọc (vertical) và ngang (horizontal)
+  - ✅ Navigation dots (các chấm bên phải màn hình)
+  - ✅ Keyboard navigation (Arrow keys, Page Up/Down, Home, End)
+  - ✅ Mouse wheel scrolling (tự động phát hiện hướng)
+  - ✅ Touch/Swipe support cho mobile (hỗ trợ cả dọc và ngang)
+  - ✅ URL hash anchors (ví dụ: `#contact`)
+  - ✅ Loop bottom (quay về đầu từ section cuối)
+  - ✅ Hoàn toàn miễn phí, không watermark
+
+### Cách sử dụng
+
+```javascript
+// Load script
+<script src="/js/vanilla-fullpage.js"></script>
+
+// Khởi tạo với scroll dọc (mặc định)
+const fullpage = new VanillaFullpage('#fullpage', {
+  anchors: ['home', 'about-us', 'contact', 'footer'],
+  navigation: true,        // Bật navigation dots
+  scrollingSpeed: 1000,     // Tốc độ scroll (ms)
+  loopBottom: true,         // Cho phép loop từ cuối về đầu
+  direction: 'vertical'     // 'vertical' (dọc) hoặc 'horizontal' (ngang)
+});
+
+// Hoặc cho phép cả cuộn dọc và ngang
+const fullpageHorizontalBoth = new VanillaFullpage('#fullpage', {
+  anchors: ['home', 'about-us', 'contact', 'footer'],
+  navigation: true,
+  scrollingSpeed: 1000,
+  loopBottom: true,
+  direction: 'horizontal',
+  allowVerticalScrollInHorizontal: true        // Bật tính năng scroll bằng cả cuộn dọc và ngang
+});
+```
+
+### Cấu trúc HTML cần thiết
+
+```html
+<div id="fullpage">
+  <div class="section" data-anchor="home">Section 1</div>
+  <div class="section" data-anchor="about">Section 2</div>
+  <div class="section" data-anchor="contact">Section 3</div>
+</div>
+
+<!-- Navigation dots (optional) -->
+<ul class="fp-nav">
+  <li><a href="#home" data-index="0"></a></li>
+  <li><a href="#about" data-index="1"></a></li>
+  <li><a href="#contact" data-index="2"></a></li>
+</ul>
+```
+
+### Tài liệu API
+
+Xem JSDoc comments trong file `public/js/vanilla-fullpage.js` để biết chi tiết về các methods và options.
+
+### Options
+
+| Option | Type | Default | Mô tả |
+|--------|------|---------|-------|
+| `anchors` | `string[]` | `[]` | Mảng anchors cho URL hash |
+| `navigation` | `boolean` | `true` | Bật/tắt navigation dots |
+| `scrollingSpeed` | `number` | `1000` | Tốc độ scroll animation (milliseconds) |
+| `loopBottom` | `boolean` | `false` | Cho phép loop từ section cuối về đầu |
+| `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | Hướng scroll: dọc hoặc ngang |
+| `allowVerticalScrollInHorizontal` | `boolean` | `false` | Khi `direction='horizontal'`, cho phép scroll bằng cả cuộn dọc (deltaY) và cuộn ngang (deltaX). Mặc định `false` (chỉ hỗ trợ cuộn ngang). Đặt `true` để bật tính năng này |
+
+### Lưu ý
+
+- Module được expose ra `window.VanillaFullpage` sau khi script load
+- Cần đợi script load xong trước khi khởi tạo (xem ví dụ trong `vanilla-fullpage-test.astro`)
+- Trong Astro, script tags cần có `is:inline` để tránh lỗi 500
+- Khi sử dụng `direction: 'horizontal'`, CSS sẽ tự động được áp dụng để hỗ trợ scroll ngang

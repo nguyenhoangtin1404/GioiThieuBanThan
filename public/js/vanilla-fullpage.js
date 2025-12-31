@@ -63,6 +63,42 @@ class VanillaFullpage {
    * @private
    */
   init() {
+    // Horizontal mode: setup sections với position absolute (giống test file)
+    if (this.direction === 'horizontal') {
+      // Container: position relative, width 100vw (không dùng flex)
+      this.container.style.position = 'relative';
+      this.container.style.width = '100vw';
+      this.container.style.height = '100vh';
+      this.container.style.overflowX = 'hidden';
+      this.container.style.overflowY = 'hidden';
+      this.container.style.transform = '';
+      
+      // Sections: position absolute, top 0, left 0 (giống test file)
+      // Background gradients cho từng section
+      const gradients = [
+        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+      ];
+      
+      this.sections.forEach((section, index) => {
+        section.style.position = 'absolute';
+        section.style.top = '0';
+        section.style.left = '0';
+        section.style.width = '100vw';
+        section.style.height = '100vh';
+        // Set background gradient trực tiếp
+        if (gradients[index]) {
+          section.style.background = gradients[index];
+          section.style.backgroundImage = gradients[index];
+        }
+        // #region agent log
+        const sectionStyle = window.getComputedStyle(section);
+        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:95',message:'Section setup for horizontal',data:{index:index,sectionPosition:sectionStyle.position,sectionTop:sectionStyle.top,sectionLeft:sectionStyle.left,sectionWidth:sectionStyle.width,sectionHeight:sectionStyle.height,sectionBackground:sectionStyle.background},timestamp:Date.now(),sessionId:'debug-session',runId:'run6',hypothesisId:'U'})}).catch(()=>{});
+        // #endregion
+      });
+    }
     this.setupSections();
     this.setupNavigation();
     this.setupKeyboard();
@@ -78,16 +114,54 @@ class VanillaFullpage {
    * @private
    */
   setupSections() {
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:80',message:'setupSections called',data:{sectionsCount:this.sections.length,direction:this.direction},timestamp:Date.now(),sessionId:'debug-session',runId:'run5',hypothesisId:'P'})}).catch(()=>{});
+    // #endregion
+
     this.sections.forEach((section, index) => {
       // Xóa tất cả classes cũ
       section.classList.remove('active', 'next', 'prev');
       
+      // Đảm bảo transition được set cho tất cả sections
+      section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+      
+      // Set z-index tăng dần để tạo hiệu ứng đè lên nhau (section sau đè lên section trước)
+      section.style.zIndex = String(index + 1);
+      
       if (index === 0) {
         // Section đầu tiên: active
         section.classList.add('active');
+        // Apply transform trực tiếp
+        if (this.direction === 'horizontal') {
+          section.style.transform = 'translateX(0)';
+        } else {
+          section.style.transform = 'translateY(0)';
+        }
+        section.style.opacity = '1';
+        section.style.visibility = 'visible';
+        // Đảm bảo content bên trong hiển thị
+        Array.from(section.children).forEach(child => {
+          child.style.opacity = '1';
+          child.style.visibility = 'visible';
+        });
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:100',message:'Section 0 setup',data:{transform:section.style.transform,opacity:section.style.opacity,visibility:section.style.visibility,classes:section.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run5',hypothesisId:'Q'})}).catch(()=>{});
+        // #endregion
       } else {
         // Các section khác: next
         section.classList.add('next');
+        // Apply transform trực tiếp
+        if (this.direction === 'horizontal') {
+          section.style.transform = 'translateX(100vw)';
+        } else {
+          section.style.transform = 'translateY(100%)';
+        }
+        section.style.opacity = '0';
+        section.style.visibility = 'hidden';
+        // Giữ z-index để section vẫn đè lên nhau khi transition
+        // #region agent log
+        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:115',message:'Section next setup',data:{index:index,transform:section.style.transform,opacity:section.style.opacity,visibility:section.style.visibility,classes:section.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run5',hypothesisId:'R'})}).catch(()=>{});
+        // #endregion
       }
     });
   }
@@ -196,6 +270,10 @@ class VanillaFullpage {
   setupWheel() {
     let wheelTimeout;
     document.addEventListener('wheel', (e) => {
+      // #region agent log
+      fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:198',message:'Wheel event received',data:{deltaX:e.deltaX,deltaY:e.deltaY,isScrolling:this.isScrolling,direction:this.direction},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'H'})}).catch(()=>{});
+      // #endregion
+
       // Nếu đang scroll, bỏ qua
       if (this.isScrolling) return;
 
@@ -214,16 +292,30 @@ class VanillaFullpage {
             // Chỉ hỗ trợ deltaX (cuộn ngang)
             delta = e.deltaX;
           }
-          if (delta > 0) {
-            // Scroll sang phải hoặc xuống -> di chuyển đến section tiếp theo
-            this.moveDown();
-          } else if (delta < 0) {
-            // Scroll sang trái hoặc lên -> di chuyển về section trước
-            this.moveUp();
+          // #region agent log
+          fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:217',message:'Processing horizontal wheel',data:{delta:delta,deltaX:e.deltaX,deltaY:e.deltaY,currentIndex:this.currentIndex,sectionsLength:this.sections.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'I'})}).catch(()=>{});
+          // #endregion
+          if (Math.abs(delta) > 10) { // Chỉ xử lý nếu delta đủ lớn
+            if (delta > 0) {
+              // Scroll sang phải hoặc xuống -> di chuyển đến section tiếp theo
+              // #region agent log
+              fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:223',message:'Calling moveDown',data:{currentIndex:this.currentIndex},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'K'})}).catch(()=>{});
+              // #endregion
+              this.moveDown();
+            } else if (delta < 0) {
+              // Scroll sang trái hoặc lên -> di chuyển về section trước
+              // #region agent log
+              fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:228',message:'Calling moveUp',data:{currentIndex:this.currentIndex},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'L'})}).catch(()=>{});
+              // #endregion
+              this.moveUp();
+            }
           }
         } else {
           // Vertical: sử dụng deltaY (mặc định)
           const delta = e.deltaY;
+          // #region agent log
+          fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:232',message:'Processing vertical wheel',data:{delta:delta},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'J'})}).catch(()=>{});
+          // #endregion
           if (delta > 0) {
             // Scroll xuống
             this.moveDown();
@@ -327,12 +419,16 @@ class VanillaFullpage {
     if (this.isScrolling || index === this.currentIndex) return;
     if (index < 0 || index >= this.sections.length) return;
 
+    // #region agent log
+    fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:343',message:'goToSection called',data:{fromIndex:this.currentIndex,toIndex:index,direction:this.direction},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'M'})}).catch(()=>{});
+    // #endregion
+
     // Bắt đầu scroll animation
     this.isScrolling = true;
     const prevIndex = this.currentIndex;
     this.currentIndex = index;
 
-    // Cập nhật classes cho tất cả sections
+    // Cập nhật classes và transform cho tất cả sections
     this.sections.forEach((section, i) => {
       // Xóa tất cả classes cũ
       section.classList.remove('active', 'prev', 'next');
@@ -340,14 +436,82 @@ class VanillaFullpage {
       if (i === index) {
         // Section hiện tại: active (ở giữa màn hình)
         section.classList.add('active');
+        // Apply transform trực tiếp - đảm bảo transition hoạt động
+        if (this.direction === 'horizontal') {
+          // Horizontal: transform trên section (giống test file)
+          section.style.transform = 'translateX(0)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          // Z-index tăng dần để tạo hiệu ứng đè lên nhau (section sau đè lên section trước)
+          section.style.zIndex = String(i + 1);
+        } else {
+          section.style.transform = 'translateY(0)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          section.style.zIndex = String(i + 1);
+        }
+        section.style.opacity = '1';
+        section.style.visibility = 'visible';
+        // Đảm bảo content bên trong hiển thị
+        Array.from(section.children).forEach(child => {
+          if (child.tagName !== 'SCRIPT') {
+            child.style.opacity = '1';
+            child.style.visibility = 'visible';
+            // KHÔNG set display - để CSS của component tự quyết định
+            
+            // Đảm bảo tất cả children của component cũng hiển thị
+            Array.from(child.children || []).forEach(grandchild => {
+              grandchild.style.opacity = '1';
+              grandchild.style.visibility = 'visible';
+            });
+            
+            // #region agent log
+            const computedStyle = window.getComputedStyle(child);
+            const computedStyleSection = window.getComputedStyle(section);
+            fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:415',message:'Active section content setup',data:{sectionIndex:index,sectionClasses:section.className,sectionTransform:section.style.transform,sectionOpacity:section.style.opacity,sectionVisibility:section.style.visibility,sectionComputedOpacity:computedStyleSection.opacity,sectionComputedVisibility:computedStyleSection.visibility,childTag:child.tagName,childClasses:child.className,childOpacity:child.style.opacity,childVisibility:child.style.visibility,childComputedDisplay:computedStyle.display,childComputedOpacity:computedStyle.opacity,childComputedVisibility:computedStyle.visibility,childrenCount:child.children.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run5',hypothesisId:'P'})}).catch(()=>{});
+            // #endregion
+          }
+        });
       } else if (i < index) {
         // Sections trước đó: prev
         section.classList.add('prev');
+        // Apply transform trực tiếp - đảm bảo transition hoạt động
+        if (this.direction === 'horizontal') {
+          // Horizontal: transform trên section (giống test file)
+          section.style.transform = 'translateX(-100vw)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          // Giữ z-index để section vẫn đè lên nhau khi transition
+          section.style.zIndex = String(i + 1);
+        } else {
+          section.style.transform = 'translateY(-100%)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          section.style.zIndex = String(i + 1);
+        }
+        section.style.opacity = '0';
+        section.style.visibility = 'hidden';
       } else {
         // Sections sau: next
         section.classList.add('next');
+        // Apply transform trực tiếp - đảm bảo transition hoạt động
+        if (this.direction === 'horizontal') {
+          // Horizontal: transform trên section (giống test file)
+          section.style.transform = 'translateX(100vw)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          // Z-index cao hơn để section sau đè lên section trước khi transition
+          section.style.zIndex = String(i + 1);
+        } else {
+          section.style.transform = 'translateY(100%)';
+          section.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease';
+          section.style.zIndex = String(i + 1);
+        }
+        section.style.opacity = '0';
+        section.style.visibility = 'hidden';
       }
     });
+
+    // #region agent log
+    const activeSection = this.sections[index];
+    const computedStyle = activeSection ? window.getComputedStyle(activeSection) : null;
+    fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'vanilla-fullpage.js:368',message:'After goToSection classes update',data:{activeSectionTransform:computedStyle?.transform,activeSectionClasses:activeSection?.className,prevSectionClasses:this.sections[Math.max(0,index-1)]?.className,nextSectionClasses:this.sections[Math.min(this.sections.length-1,index+1)]?.className},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'N'})}).catch(()=>{});
+    // #endregion
 
     // Cập nhật navigation dots và URL
     this.updateNavigation();

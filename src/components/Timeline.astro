@@ -18,7 +18,7 @@ const events = [
 ];
 ---
 
-<section class="section alt">
+<section class="timeline-section alt">
   <header>
     <h2>Kinh nghiệm</h2>
   </header>
@@ -49,10 +49,24 @@ const events = [
 </section>
 
 <style>
-  .section {
-    margin-top: 5rem;
+  .timeline-section {
+    margin-top: 0 !important;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: visible;
+    min-height: 100vh;
+    height: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
-  .section.alt {
+  .timeline-section.alt {
     background: var(--surface-weak);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);

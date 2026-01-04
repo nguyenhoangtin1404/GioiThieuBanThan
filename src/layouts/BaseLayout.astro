@@ -111,15 +111,6 @@ const {
         height: 100vh;
       }
 
-      /* Horizontal scrolling */
-      #fullpage.fp-horizontal {
-        width: 100vw;
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: hidden;
-        position: relative;
-      }
-
       .section {
         text-align: left;
         display: flex;
@@ -152,15 +143,6 @@ const {
         background-position: center;
         background-repeat: no-repeat;
         /* KHÔNG dùng background-attachment: fixed vì nó conflict với transform */
-      }
-
-      /* Horizontal scrolling styles - giống test file */
-      #fullpage.fp-horizontal .section {
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        position: absolute;
       }
 
       /* Sections với class next hoặc prev - ẩn ngay từ đầu */
@@ -230,53 +212,6 @@ const {
         transform: translateY(100%) !important;
         z-index: 0 !important;
         opacity: 0 !important;
-        pointer-events: none !important;
-      }
-
-
-      /* Horizontal scrolling styles - giống test file với transition mượt mà */
-      #fullpage.fp-horizontal .section {
-        transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease !important;
-        /* Đảm bảo transform hoạt động */
-        transform-style: preserve-3d;
-        backface-visibility: hidden;
-      }
-
-      /* Z-index tăng dần cho hiệu ứng đè lên nhau - section sau đè lên section trước */
-      #fullpage.fp-horizontal .section:nth-child(1) {
-        z-index: 1 !important;
-      }
-
-      #fullpage.fp-horizontal .section:nth-child(2) {
-        z-index: 2 !important;
-      }
-
-      #fullpage.fp-horizontal .section:nth-child(3) {
-        z-index: 3 !important;
-      }
-
-      #fullpage.fp-horizontal .section:nth-child(4) {
-        z-index: 4 !important;
-      }
-
-      #fullpage.fp-horizontal .section.active {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        pointer-events: auto !important;
-      }
-
-      #fullpage.fp-horizontal .section.prev {
-        transform: translateX(-100vw) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-      }
-
-      #fullpage.fp-horizontal .section.next {
-        transform: translateX(100vw) !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
         pointer-events: none !important;
       }
 
@@ -377,11 +312,21 @@ const {
         position: fixed;
         right: 20px;
         top: 50%;
-        transform: translateY(-50%);
-        z-index: 1000;
+        transform: translateY(-50%) scale(0.8);
+        z-index: 9999;
         list-style: none;
         margin: 0;
         padding: 0;
+        opacity: 0.3;
+        pointer-events: auto;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        will-change: opacity, transform;
+      }
+
+      .fp-nav.fp-nav-visible {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+        pointer-events: auto;
       }
 
       .fp-nav li {

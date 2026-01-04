@@ -37,14 +37,6 @@
         height: 100vh;
       }
 
-      /* Horizontal scrolling */
-      #fullpage.fp-horizontal {
-        width: 100vw;
-        height: 100vh;
-        overflow-x: hidden;
-        overflow-y: hidden;
-      }
-
       .section {
         text-align: center;
         display: flex;
@@ -76,27 +68,6 @@
 
       .fp-vertical .section.next {
         transform: translateY(100%);
-      }
-
-      /* Horizontal scrolling styles */
-      .fp-horizontal .section {
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
-      }
-
-      .fp-horizontal .section.active {
-        transform: translateX(0) !important;
-        z-index: 1;
-      }
-
-      .fp-horizontal .section.prev {
-        transform: translateX(-100vw) !important;
-      }
-
-      .fp-horizontal .section.next {
-        transform: translateX(100vw) !important;
       }
 
       #section-home {
@@ -219,19 +190,12 @@
     <!-- Load script từ public folder -->
     <script is:inline src="/js/vanilla-fullpage.js"></script>
     <script is:inline>
-      // Hàm để detect mobile và chọn direction phù hợp
-      function getDirection() {
-        // Breakpoint: < 768px là mobile (có thể điều chỉnh)
-        return window.innerWidth < 768 ? 'vertical' : 'horizontal';
-      }
-
-      // Options cấu hình chung
+      // Options cấu hình
       const initOptions = {
         anchors: ['home', 'about-us', 'contact', 'footer'],
         navigation: true,
         scrollingSpeed: 1000,
-        loopBottom: true,
-        allowVerticalScrollInHorizontal: true
+        loopBottom: true
       };
 
       // Khởi tạo VanillaFullpage khi DOM ready và script đã load
@@ -243,11 +207,13 @@
           return;
         }
 
-        // Khởi tạo với direction tự động dựa trên kích thước màn hình
-        window.vanillaFullpage = new VanillaFullpage('#fullpage', {
-          ...initOptions,
-          direction: getDirection()
-        });
+        try {
+          // Khởi tạo VanillaFullpage
+          window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
+        } catch (error) {
+          console.error('Error initializing VanillaFullpage:', error);
+          return;
+        }
 
         // Xử lý hash URL khi trang load với hash (ví dụ: #contact)
         const hash = window.location.hash.replace('#', '');
@@ -262,32 +228,6 @@
           }
         }
       }
-
-      // Xử lý resize window để thay đổi direction nếu cần (chỉ thêm listener một lần)
-      let resizeTimeout;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          if (window.vanillaFullpage) {
-            const newDirection = getDirection();
-            if (newDirection !== window.vanillaFullpage.direction) {
-              // Lưu current index để giữ vị trí khi reinit
-              const currentIndex = window.vanillaFullpage.currentIndex;
-              
-              // Tạo lại instance với direction mới
-              window.vanillaFullpage = new VanillaFullpage('#fullpage', {
-                ...initOptions,
-                direction: newDirection
-              });
-              
-              // Khôi phục vị trí section hiện tại
-              setTimeout(() => {
-                window.vanillaFullpage.goToSection(currentIndex);
-              }, 100);
-            }
-          }
-        }, 250); // Debounce 250ms để tránh reinit quá nhiều
-      });
 
       // Khởi tạo khi DOM ready
       if (document.readyState === 'loading') {

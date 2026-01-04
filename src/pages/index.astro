@@ -43,63 +43,27 @@ import ContactCard from '@components/ContactCard.astro';
   <!-- Load script từ public folder -->
   <script is:inline src="/js/vanilla-fullpage.js"></script>
   <script is:inline>
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:45',message:'Script started',data:{readyState:document.readyState,hasVanillaFullpage:typeof VanillaFullpage !== 'undefined'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-
-    // Hàm để detect mobile và chọn direction phù hợp
-    function getDirection() {
-      // Breakpoint: < 768px là mobile (có thể điều chỉnh)
-      return window.innerWidth < 768 ? 'vertical' : 'horizontal';
-    }
-
-    // Options cấu hình chung
+    // Options cấu hình
     const initOptions = {
       anchors: ['home', 'du-an', 'kinh-nghiem', 'lien-he'],
       navigation: true,
       scrollingSpeed: 800,
-      loopBottom: true,
-      allowVerticalScrollInHorizontal: true
+      loopBottom: true
     };
 
     // Khởi tạo VanillaFullpage khi DOM ready và script đã load
     function initFullpage() {
-        // #region agent log
-        const sections = document.querySelectorAll('#fullpage > .section');
-        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:62',message:'initFullpage called',data:{hasVanillaFullpage:typeof VanillaFullpage !== 'undefined',containerExists:!!document.querySelector('#fullpage'),sectionsCount:sections.length,sectionsClasses:Array.from(sections).map(s=>s.className)},timestamp:Date.now(),sessionId:'debug-session',runId:'run2',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
-
       // Kiểm tra xem class đã được load chưa
       if (typeof VanillaFullpage === 'undefined') {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:66',message:'VanillaFullpage not defined, retrying',data:{},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
         // Nếu chưa load, thử lại sau 100ms
         setTimeout(initFullpage, 100);
         return;
       }
 
-      const container = document.querySelector('#fullpage');
-      // #region agent log
-      fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:75',message:'Before VanillaFullpage init',data:{containerExists:!!container,containerId:container?.id,sectionsCount:container?.querySelectorAll('.section').length,direction:getDirection()},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-      // #endregion
-
       try {
-        // Khởi tạo với direction tự động dựa trên kích thước màn hình
-        window.vanillaFullpage = new VanillaFullpage('#fullpage', {
-          ...initOptions,
-          direction: getDirection()
-        });
-        // #region agent log
-        const firstSection = document.querySelector('#fullpage .section.active');
-        const computedStyle = firstSection ? window.getComputedStyle(firstSection) : null;
-        const container = document.querySelector('#fullpage');
-        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:93',message:'VanillaFullpage initialized',data:{instanceExists:!!window.vanillaFullpage,direction:window.vanillaFullpage?.direction,currentIndex:window.vanillaFullpage?.currentIndex,firstSectionTransform:computedStyle?.transform,containerClass:container?.className,containerHeight:container?.offsetHeight,sectionHeight:firstSection?.offsetHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run3',hypothesisId:'E'})}).catch(()=>{});
-        // #endregion
+        // Khởi tạo VanillaFullpage
+        window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
       } catch (error) {
-        // #region agent log
-        fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:87',message:'Error initializing VanillaFullpage',data:{error:error.message,stack:error.stack},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'F'})}).catch(()=>{});
-        // #endregion
         console.error('Error initializing VanillaFullpage:', error);
         return;
       }
@@ -118,37 +82,7 @@ import ContactCard from '@components/ContactCard.astro';
       }
     }
 
-    // Xử lý resize window để thay đổi direction nếu cần (chỉ thêm listener một lần)
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        if (window.vanillaFullpage) {
-          const newDirection = getDirection();
-          if (newDirection !== window.vanillaFullpage.direction) {
-            // Lưu current index để giữ vị trí khi reinit
-            const currentIndex = window.vanillaFullpage.currentIndex;
-            
-            // Tạo lại instance với direction mới
-            window.vanillaFullpage = new VanillaFullpage('#fullpage', {
-              ...initOptions,
-              direction: newDirection
-            });
-            
-            // Khôi phục vị trí section hiện tại
-            setTimeout(() => {
-              window.vanillaFullpage.goToSection(currentIndex);
-            }, 100);
-          }
-        }
-      }, 250); // Debounce 250ms để tránh reinit quá nhiều
-    });
-
     // Khởi tạo khi DOM ready
-    // #region agent log
-    fetch('http://127.0.0.1:7244/ingest/bb3a76a3-4213-4f7d-899e-96fc425975b0',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'index.astro:143',message:'Setting up init listeners',data:{readyState:document.readyState},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'G'})}).catch(()=>{});
-    // #endregion
-
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initFullpage);
     } else {

@@ -74,7 +74,7 @@ const projects = [
 ];
 ---
 
-<section id="du-an" class="section">
+<section id="du-an" class="projects-section">
   <header>
     <h2>Dự án nổi bật</h2>
   </header>
@@ -275,8 +275,22 @@ const projects = [
 </script>
 
 <style>
-  .section {
-    margin-top: 5rem;
+  .projects-section {
+    margin-top: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: visible;
+    min-height: 100vh;
+    height: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   header .eyebrow {
@@ -333,10 +347,10 @@ const projects = [
     padding: 1.5rem;
     border-radius: 24px;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: none;
     display: grid;
     gap: 1rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
     min-height: 100%;
     flex: 0 0 100%;
     scroll-snap-align: start;
@@ -364,7 +378,7 @@ const projects = [
     height: 160px;
     object-fit: cover;
     border-radius: 18px;
-    border: 1px solid var(--border);
+    border: none;
   }
 
   .head h3 {
@@ -492,7 +506,7 @@ const projects = [
     min-width: clamp(200px, 45vw, 320px);
     border-radius: 16px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: none;
     scroll-snap-align: start;
     background: rgba(15, 23, 42, 0.6);
   }
@@ -523,7 +537,7 @@ const projects = [
     height: 48px;
     border-radius: 50%;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: none;
     color: var(--text);
     font-size: 2rem;
     font-weight: bold;
@@ -531,7 +545,7 @@ const projects = [
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
     transition: all 0.2s ease;
     line-height: 1;
   }
@@ -603,22 +617,28 @@ const projects = [
 
   @media (max-width: 640px) {
     .project {
-      padding: 1.25rem;
+      padding: 1rem;
+      border-radius: 18px;
     }
 
     .meta-row {
       flex-direction: column;
       align-items: flex-start;
+      gap: 0.5rem;
     }
 
     .head h3 {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
     }
 
     .tools li {
       font-size: 0.85rem;
       padding: 0 12px;
       min-width: 80px;
+    }
+
+    .gallery figure {
+      min-width: clamp(180px, 60vw, 260px);
     }
   }
 

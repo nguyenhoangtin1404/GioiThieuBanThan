@@ -18,7 +18,7 @@ const events = [
 ];
 ---
 
-<section class="section alt">
+<section class="timeline-section alt">
   <header>
     <h2>Kinh nghiệm</h2>
   </header>
@@ -49,12 +49,26 @@ const events = [
 </section>
 
 <style>
-  .section {
-    margin-top: 5rem;
+  .timeline-section {
+    margin-top: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: visible;
+    min-height: 100vh;
+    height: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
-  .section.alt {
+  .timeline-section.alt {
     background: var(--surface-weak);
-    border: 1px solid var(--border);
+    border: none;
     border-radius: var(--radius-lg);
     padding: 2rem;
   }
@@ -170,5 +184,22 @@ const events = [
 
   .achievements ul {
     margin-top: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .timeline-section {
+      padding: 0 1rem;
+    }
+
+    .timeline-section.alt {
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+
+    .timeline {
+      gap: 1.25rem;
+      padding-left: 1rem;
+      margin-left: 0;
+    }
   }
 </style>

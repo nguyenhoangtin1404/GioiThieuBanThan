@@ -4,15 +4,10 @@ const profile = {
   role: 'Full‑Stack Developer',
   location: 'Đắk Lắk, Việt Nam',
   focus: 'C# • Java • Python • Angular • Microservices',
-  summary: `Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.`,
+  summary:
+    'Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.',
   cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
 };
-
-const stats = [
-  { label: 'Năm kinh nghiệm', value: '8+' },
-  { label: 'Dự án tham gia', value: '12+' },
-  { label: 'Tính năng/tháng', value: '6–10' }
-];
 
 const highlights = [
   { title: 'Frontend:', content: 'Angular, Bootstrap, HTML/CSS/JS' },
@@ -28,82 +23,86 @@ const highlights = [
     <h1>{profile.name}</h1>
     <p class="subtitle">{profile.summary}</p>
     <ul class="meta">
-     <li>{profile.focus}</li>
-     <li>{profile.location}</li>
+      <li>{profile.focus}</li>
+      <li>{profile.location}</li>
     </ul>
-    <div class="stats">
-      {stats.map((stat) => (
-        <div class="stat">
-          <p class="value">{stat.value}</p>
-          <p class="label">{stat.label}</p>
-        </div>
-      ))}
-    </div>
-    <div class="actions">
-      <a class="primary" href="#du-an">Xem dự án</a>
-      <a class="primary" href="#lien-he">Liên hệ</a>
-      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV PDF</a>
-    </div>
-   
-  </div>
-  <div class="card">
-    <div class="avatar"><span class="ring"><img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" /></span></div>
-    <div class="badge">Kỹ sư lập trình</div>
     <div class="bio">
       {highlights.map((item) => (
         <p><strong>{item.title}</strong> {item.content}</p>
       ))}
     </div>
   </div>
+  <div class="card">
+    <div class="avatar">
+      <span class="ring">
+        <img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" />
+      </span>
+    </div>
+    <div class="badge">Kỹ sư lập trình</div>
+    <div class="actions">
+      <a class="primary" href="#du-an">Xem dự án</a>
+      <a class="primary" href="#lien-he">Liên hệ</a>
+      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV PDF</a>
+    </div>
+  </div>
 </section>
 
 <style>
-  .hero { display: grid; gap: 2rem; grid-template-columns: 1fr; align-items: start; grid-template-areas: 'intro' 'card'; }
+  .hero {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+    grid-template-areas: 'intro' 'card';
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    height: auto;
+  }
 
-  .intro .eyebrow { letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; font-size: 0.85rem; }
   .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; }
   .subtitle { color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem; white-space: pre-line; }
 
   .meta { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
   .meta li::before { content: ''; width: 6px; height: 6px; border-radius: 999px; background: rgba(14, 165, 233, 0.6); display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
 
-  .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+  .actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; justify-content: center; }
   .actions a { padding: 0.85rem 1.75rem; border-radius: 999px; font-weight: 600; border: 1px solid transparent; transition: transform 150ms ease, background 150ms ease; text-decoration: none; }
   .actions a:hover { transform: translateY(-2px); }
   .primary { background: linear-gradient(135deg, var(--accent), #6366f1); color: #010409; box-shadow: var(--shadow-sm); }
   .primary:hover { filter: brightness(0.97); box-shadow: var(--shadow-md); }
-  .ghost { border-color: var(--border); background: var(--surface-weak); color: var(--text); border-width: 1px; border-style: solid; }
-  .ghost:hover { background: rgba(14,165,233,.08); border-color: var(--accent); }
 
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-sm); }
+  .card { background: var(--card); border: none; border-radius: var(--radius-lg); padding: 2rem; text-align: center; backdrop-filter: blur(20px); display: flex; flex-direction: column; align-items: center; box-shadow: none; gap: 1rem; }
   .card { grid-area: card; }
   .intro { grid-area: intro; }
 
-  /* Avatar with perfect gradient ring */
-  .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: 0 10px 28px rgba(14, 165, 233, 0.28), var(--shadow-sm); transition: transform 200ms ease, box-shadow 200ms ease; margin-bottom: 1rem; box-sizing: border-box; }
+  .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: none; transition: transform 200ms ease, box-shadow 200ms ease; margin-bottom: 0.5rem; box-sizing: border-box; }
   .avatar .ring { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
   .avatar img { width: 100%; height: 100%; border-radius: 50%; display: block; border: 0; object-fit: cover; object-position: 50% 50%; box-shadow: none; margin: 0; }
-  .avatar:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(14,165,233,.35), var(--shadow-md); }
+  .avatar:hover { transform: translateY(-2px); box-shadow: none; }
 
-  .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; margin-bottom: 1rem; }
+  .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; }
 
-  .bio { text-align: left; background: var(--surface-weak); border-radius: 16px; padding: 1rem; border: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .bio { text-align: left; background: var(--surface-weak); border-radius: 16px; padding: 1rem; border: 1px solid var(--border); margin-bottom: 0; }
   .bio p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
   .bio p:last-child { margin-bottom: 0; }
 
-  .stats { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 1.5rem 0; }
-  .stat { background: var(--surface-softer); padding: 1rem; border-radius: 16px; border: 1px solid var(--border); }
-  .value { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.35rem; }
-  .label { margin: 0; color: var(--muted); font-size: 0.9rem; }
-
   @media (max-width: 600px) {
-    .stats { grid-template-columns: 1fr; }
-    .cta-links { flex-wrap: wrap; justify-content: flex-start; }
+    .actions { gap: 0.75rem; }
+    .actions a { width: 100%; text-align: center; }
+    .subtitle,
+    .meta,
+    .bio { display: none; }
   }
 
-  /* Swap positions on wider screens: card left, intro right */
   @media (min-width: 768px) {
     .hero { grid-template-columns: 1fr 1fr; grid-template-areas: 'card intro'; }
   }
-</style>
 
+  @media (max-width: 640px) {
+    .hero { padding: 0 1rem; }
+    .card { border-radius: 18px; padding: 1.5rem; }
+  }
+</style>

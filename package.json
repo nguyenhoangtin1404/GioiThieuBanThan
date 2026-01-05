@@ -11,11 +11,12 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^4.11.3"
+    "astro": "^4.11.3",
+    "fullpage.js": "^4.0.40"
   },
   "devDependencies": {
     "@astrojs/check": "^0.7.0",
-    "typescript": "^5.4.0",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.0"
   }
 }

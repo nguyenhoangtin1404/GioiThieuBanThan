@@ -25,34 +25,52 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese"
       rel="stylesheet"
     />
-    <style>
-      html { scroll-behavior: smooth; }
+    <style is:global>
+      html { 
+        scroll-behavior: smooth;
+        overflow: hidden;
+      }
       :root {
         color-scheme: light;
         font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        --bg: #ffffff;
+        --bg: #f1f1f1;
         --card: #ffffff;
         --accent: #0ea5e9; /* sky-500 */
         --muted: #475569;  /* slate-600 */
         --text: #0a0a0a;   /* near-black */
-        --border: rgba(2, 6, 23, 0.08);
+        --border: transparent;
         --surface-weak: rgba(2, 6, 23, 0.04);
         --surface-softer: rgba(2, 6, 23, 0.03);
         /* new visuals */
         --radius-lg: 24px;
         --radius-md: 16px;
-        --shadow-sm: 0 4px 14px rgba(2, 6, 23, 0.06);
-        --shadow-md: 0 8px 28px rgba(2, 6, 23, 0.09);
+        --shadow-sm: none;
+        --shadow-md: none;
       }
 
       body {
         margin: 0;
+        padding: 0;
         background: var(--bg);
         min-height: 100vh;
         color: var(--text);
         line-height: 1.6;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Khi có fullpage, body không có margin/padding và background */
+      body:has(#fullpage) {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent !important;
+      }
+
+      html:has(#fullpage) {
+        background: transparent !important;
       }
 
       main {
@@ -61,9 +79,272 @@ const {
         padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
       }
 
+      /* Khi có fullpage, main không cần padding và max-width */
+      body:has(#fullpage) main {
+        max-width: 100%;
+        padding: 0 !important;
+        margin: 0 !important;
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+
+      /* Fullpage container styles */
+      #fullpage {
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        margin: 0;
+        padding: 0;
+        /* Đảm bảo container không cao hơn viewport */
+        max-height: 100vh;
+      }
+
+      /* Vertical scrolling (mặc định) */
+      #fullpage.fp-vertical {
+        height: 100vh;
+      }
+
+      .section {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 0;
+        position: absolute;
+        transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease, visibility 0.6s ease !important;
+        will-change: transform, opacity;
+        width: 100%;
+        min-height: 100vh;
+        height: 100vh;
+        top: 0 !important;
+        left: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box;
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex-shrink: 0;
+        /* Mặc định: ẩn tất cả sections trừ active */
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        z-index: 0;
+        /* Đảm bảo background vẫn hiển thị ngay cả khi opacity = 0 */
+        background-color: transparent;
+        /* Đảm bảo background hiển thị */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        /* KHÔNG dùng background-attachment: fixed vì nó conflict với transform */
+      }
+
+      /* Sections với class next hoặc prev - ẩn ngay từ đầu */
+      .section.next,
+      .section.prev {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+
+      /* Active section luôn hiển thị */
+      .section.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+        pointer-events: auto !important;
+        z-index: 1 !important;
+      }
+
+      /* Đảm bảo content trong active section hiển thị - KHÔNG override display */
+      .section.active > * {
+        opacity: 1 !important;
+        visibility: visible !important;
+        width: 100% !important;
+        padding: 2rem clamp(1rem, 4vw, 3rem) !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        /* KHÔNG set display ở đây - để components tự quyết định */
+      }
+
+      /* Đảm bảo tất cả children của components cũng hiển thị */
+      .section.active > * > * {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+
+      /* Đảm bảo components bên trong active section hiển thị đúng */
+      .section.active .projects-section,
+      .section.active .timeline-section,
+      .section.active .card {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: flex !important;
+      }
+
+      /* Vertical scrolling styles */
+      #fullpage.fp-vertical .section {
+        width: 100%;
+        height: 100vh;
+      }
+
+      #fullpage.fp-vertical .section.active {
+        transform: translateY(0) !important;
+        z-index: 1 !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+
+      #fullpage.fp-vertical .section.prev {
+        transform: translateY(-100%) !important;
+        z-index: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      #fullpage.fp-vertical .section.next {
+        transform: translateY(100%) !important;
+        z-index: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+      /* Elegant background colors cho từng section - tạo cảm giác trượt mượt mà */
+      /* Section 1: Home */
+      #fullpage .section {
+        background: transparent !important;
+        background-image: none !important;
+      }
+
+      /* Đảm bảo components bên trong có background trong suốt để gradient hiển thị */
+      #fullpage .section[data-anchor="home"] .hero {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 2rem;
+        max-width: 100%;
+        min-height: auto !important;
+        height: auto !important;
+      }
+
+      #fullpage .section[data-anchor="du-an"] .projects-section {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 2rem;
+        max-width: 100%;
+        min-height: auto !important;
+        height: auto !important;
+      }
+
+      #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section,
+      #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section.alt {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 2rem;
+        max-width: 100%;
+        min-height: auto !important;
+        height: auto !important;
+        border: none !important;
+      }
+
+      #fullpage .section[data-anchor="lien-he"] .card {
+        background: rgba(255, 255, 255, 0.85) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        padding: 2rem;
+        max-width: 100%;
+        min-height: auto !important;
+        height: auto !important;
+      }
+
+      /* Navigation dots */
+      .fp-nav {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%) scale(0.8);
+        z-index: 9999;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        opacity: 0.3;
+        pointer-events: auto;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        will-change: opacity, transform;
+      }
+
+      .fp-nav.fp-nav-visible {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+        pointer-events: auto;
+      }
+
+      .fp-nav li {
+        margin: 10px 0;
+      }
+
+      .fp-nav a {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid rgba(14, 165, 233, 0.6);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .fp-nav a.active,
+      .fp-nav a:hover {
+        background: var(--accent);
+        transform: scale(1.2);
+        border-color: var(--accent);
+      }
+
       a {
         color: inherit;
         text-decoration: none;
+      }
+
+      /* Mobile responsive tweaks */
+      @media (max-width: 640px) {
+        .section {
+          height: 100vh;
+          min-height: 100vh;
+        }
+
+        .section.active > * {
+          padding: 1.25rem clamp(0.75rem, 4vw, 1.25rem) !important;
+        }
+
+        .fp-nav {
+          right: 10px;
+          transform: translateY(-50%) scale(0.7);
+        }
+
+        .fp-nav li {
+          margin: 8px 0;
+        }
       }
     </style>
   </head>

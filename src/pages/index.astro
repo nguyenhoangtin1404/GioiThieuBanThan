@@ -10,9 +10,86 @@ import ContactCard from '@components/ContactCard.astro';
   title="Nguyễn Hoàng Tín"
   description="Backend/Fullstack Developer"
 >
-  <Hero />
-  <Projects />
-  <Timeline />
-  <ContactCard />
+  <div id="fullpage">
+    <!-- Section 1: Hero -->
+    <div class="section active" data-anchor="home">
+      <Hero />
+    </div>
+
+    <!-- Section 2: Projects -->
+    <div class="section next" data-anchor="du-an">
+      <Projects />
+    </div>
+
+    <!-- Section 3: Timeline -->
+    <div class="section next" data-anchor="kinh-nghiem">
+      <Timeline />
+    </div>
+
+    <!-- Section 4: Contact -->
+    <div class="section next" data-anchor="lien-he">
+      <ContactCard />
+    </div>
+  </div>
+
+  <!-- Navigation dots -->
+  <ul class="fp-nav">
+    <li><a href="#home" data-index="0" class="active"></a></li>
+    <li><a href="#du-an" data-index="1"></a></li>
+    <li><a href="#kinh-nghiem" data-index="2"></a></li>
+    <li><a href="#lien-he" data-index="3"></a></li>
+  </ul>
+
+  <!-- Load script từ public folder -->
+  <script is:inline src="/js/vanilla-fullpage.js"></script>
+  <script is:inline>
+    // Options cấu hình
+    const initOptions = {
+      anchors: ['home', 'du-an', 'kinh-nghiem', 'lien-he'],
+      navigation: true,
+      scrollingSpeed: 800,
+      loopBottom: true
+    };
+
+    // Khởi tạo VanillaFullpage khi DOM ready và script đã load
+    function initFullpage() {
+      // Kiểm tra xem class đã được load chưa
+      if (typeof VanillaFullpage === 'undefined') {
+        // Nếu chưa load, thử lại sau 100ms
+        setTimeout(initFullpage, 100);
+        return;
+      }
+
+      try {
+        // Khởi tạo VanillaFullpage
+        window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
+      } catch (error) {
+        console.error('Error initializing VanillaFullpage:', error);
+        return;
+      }
+
+      // Xử lý hash URL khi trang load với hash (ví dụ: #lien-he)
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
+        const index = anchors.indexOf(hash);
+        if (index !== -1 && window.vanillaFullpage) {
+          // Đợi một chút để đảm bảo fullpage đã khởi tạo xong
+          setTimeout(() => {
+            window.vanillaFullpage.goToSection(index);
+          }, 100);
+        }
+      }
+    }
+
+    // Khởi tạo khi DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFullpage);
+    } else {
+      // Nếu DOM đã ready, đợi script load xong
+      window.addEventListener('load', initFullpage);
+      setTimeout(initFullpage, 50);
+    }
+  </script>
 </BaseLayout>
 

@@ -63,6 +63,21 @@ import ContactCard from '@components/ContactCard.astro';
       try {
         // Khởi tạo VanillaFullpage
         window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
+
+        // Gắn handler cho các anchor CTA để cuộn đúng section
+        const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
+        const anchorLinks = document.querySelectorAll('a[href^="#"]');
+        anchorLinks.forEach((link) => {
+          link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href') || '';
+            const target = href.replace('#', '');
+            const idx = anchors.indexOf(target);
+            if (idx !== -1 && window.vanillaFullpage) {
+              e.preventDefault();
+              window.vanillaFullpage.goToSection(idx);
+            }
+          });
+        });
       } catch (error) {
         console.error('Error initializing VanillaFullpage:', error);
         return;

@@ -40,11 +40,11 @@ const channels = [
     padding: 2rem;
     border-radius: 24px;
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(14, 165, 233, 0.08));
-    border: 1px solid var(--border);
+    border: none;
     width: 100%;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     min-height: 100vh;
     height: auto;
     display: flex;
@@ -78,12 +78,24 @@ const channels = [
 
   .channels { margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
 
-  a.icon { padding: 0.9rem 1rem; border-radius: 16px; border: 1px solid var(--border); background: var(--surface-weak); display: grid; grid-template-columns: 40% 60%; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text); transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease; }
-  a.icon:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--accent); }
+  a.icon { padding: 0.9rem 1rem; border-radius: 16px; border: none; background: var(--surface-weak); display: grid; grid-template-columns: 40% 60%; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text); transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease; }
+  a.icon:hover { transform: translateY(-2px); box-shadow: none; border-color: var(--accent); }
   a.icon .glyph { display: inline-flex; align-items: center; justify-content: center; }
   a.icon .glyph svg { width: 24px; height: 24px; color: var(--accent); }
   a.icon .label { font-size: 0.95rem; color: var(--muted); letter-spacing: .02em; text-align: left; }
   /* circular backdrop to ensure visual padding around strokes */
-  .glyph { width: 40px; height: 40px; padding: 6px; border-radius: 50%; background: rgba(14,165,233,.10); border: 1px solid var(--border); box-sizing: border-box; }
+  .glyph { width: 40px; height: 40px; padding: 6px; border-radius: 50%; background: rgba(14,165,233,.10); border: none; box-sizing: border-box; }
+
+  @media (max-width: 640px) {
+    .card {
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+
+    .channels {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+  }
 </style>
 

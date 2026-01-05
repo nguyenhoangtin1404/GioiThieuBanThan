@@ -25,7 +25,7 @@ const {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese"
       rel="stylesheet"
     />
-    <style>
+    <style is:global>
       html { 
         scroll-behavior: smooth;
         overflow: hidden;
@@ -35,19 +35,19 @@ const {
         font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        --bg: #ffffff;
+        --bg: #f1f1f1;
         --card: #ffffff;
         --accent: #0ea5e9; /* sky-500 */
         --muted: #475569;  /* slate-600 */
         --text: #0a0a0a;   /* near-black */
-        --border: rgba(2, 6, 23, 0.08);
+        --border: transparent;
         --surface-weak: rgba(2, 6, 23, 0.04);
         --surface-softer: rgba(2, 6, 23, 0.03);
         /* new visuals */
         --radius-lg: 24px;
         --radius-md: 16px;
-        --shadow-sm: 0 4px 14px rgba(2, 6, 23, 0.06);
-        --shadow-md: 0 8px 28px rgba(2, 6, 23, 0.09);
+        --shadow-sm: none;
+        --shadow-md: none;
       }
 
       body {
@@ -217,39 +217,9 @@ const {
 
       /* Elegant background colors cho từng section - tạo cảm giác trượt mượt mà */
       /* Section 1: Home */
-      #fullpage .section:nth-child(1),
-      #fullpage .section[data-anchor="home"],
-      #fullpage .section:nth-child(1).active,
-      #fullpage .section[data-anchor="home"].active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-      }
-
-      /* Section 2: Projects */
-      #fullpage .section:nth-child(2),
-      #fullpage .section[data-anchor="du-an"],
-      #fullpage .section:nth-child(2).active,
-      #fullpage .section[data-anchor="du-an"].active {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-      }
-
-      /* Section 3: Timeline */
-      #fullpage .section:nth-child(3),
-      #fullpage .section[data-anchor="kinh-nghiem"],
-      #fullpage .section:nth-child(3).active,
-      #fullpage .section[data-anchor="kinh-nghiem"].active {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-        background-image: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
-      }
-
-      /* Section 4: Contact */
-      #fullpage .section:nth-child(4),
-      #fullpage .section[data-anchor="lien-he"],
-      #fullpage .section:nth-child(4).active,
-      #fullpage .section[data-anchor="lien-he"].active {
-        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
-        background-image: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+      #fullpage .section {
+        background: transparent !important;
+        background-image: none !important;
       }
 
       /* Đảm bảo components bên trong có background trong suốt để gradient hiển thị */
@@ -257,11 +227,11 @@ const {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        margin: 2rem auto;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
         padding: 2rem;
-        max-width: 1200px;
+        max-width: 100%;
         min-height: auto !important;
         height: auto !important;
       }
@@ -270,11 +240,11 @@ const {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        margin: 2rem auto;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
         padding: 2rem;
-        max-width: 1200px;
+        max-width: 100%;
         min-height: auto !important;
         height: auto !important;
       }
@@ -284,11 +254,11 @@ const {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        margin: 2rem auto;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
         padding: 2rem;
-        max-width: 1200px;
+        max-width: 100%;
         min-height: auto !important;
         height: auto !important;
         border: none !important;
@@ -298,11 +268,11 @@ const {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-radius: 24px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-        margin: 2rem auto;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
         padding: 2rem;
-        max-width: 1200px;
+        max-width: 100%;
         min-height: auto !important;
         height: auto !important;
       }
@@ -354,6 +324,27 @@ const {
       a {
         color: inherit;
         text-decoration: none;
+      }
+
+      /* Mobile responsive tweaks */
+      @media (max-width: 640px) {
+        .section {
+          height: 100vh;
+          min-height: 100vh;
+        }
+
+        .section.active > * {
+          padding: 1.25rem clamp(0.75rem, 4vw, 1.25rem) !important;
+        }
+
+        .fp-nav {
+          right: 10px;
+          transform: translateY(-50%) scale(0.7);
+        }
+
+        .fp-nav li {
+          margin: 8px 0;
+        }
       }
     </style>
   </head>

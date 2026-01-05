@@ -52,9 +52,9 @@ const events = [
   .timeline-section {
     margin-top: 0 !important;
     width: 100%;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -68,7 +68,7 @@ const events = [
   }
   .timeline-section.alt {
     background: var(--surface-weak);
-    border: 1px solid var(--border);
+    border: none;
     border-radius: var(--radius-lg);
     padding: 2rem;
   }
@@ -184,5 +184,22 @@ const events = [
 
   .achievements ul {
     margin-top: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .timeline-section {
+      padding: 0 1rem;
+    }
+
+    .timeline-section.alt {
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+
+    .timeline {
+      gap: 1.25rem;
+      padding-left: 1rem;
+      margin-left: 0;
+    }
   }
 </style>

@@ -16,17 +16,27 @@ import ContactCard from '@components/ContactCard.astro';
       <Hero />
     </div>
 
-    <!-- Section 2: Projects -->
-    <div class="section next" data-anchor="du-an">
-      <Projects />
+    <!-- Section 2: Project 1 -->
+    <div class="section next" data-anchor="du-an-1">
+      <Projects projectIndex={0} sectionId="du-an-1" title="D ¯ñ A­n 1" />
     </div>
 
-    <!-- Section 3: Timeline -->
+    <!-- Section 3: Project 2 -->
+    <div class="section next" data-anchor="du-an-2">
+      <Projects projectIndex={1} sectionId="du-an-2" title="D ¯ñ A­n 2" />
+    </div>
+
+    <!-- Section 4: Project 3 -->
+    <div class="section next" data-anchor="du-an-3">
+      <Projects projectIndex={2} sectionId="du-an-3" title="D ¯ñ A­n 3" />
+    </div>
+
+    <!-- Section 5: Timeline -->
     <div class="section next" data-anchor="kinh-nghiem">
       <Timeline />
     </div>
 
-    <!-- Section 4: Contact -->
+    <!-- Section 6: Contact -->
     <div class="section next" data-anchor="lien-he">
       <ContactCard />
     </div>
@@ -35,9 +45,11 @@ import ContactCard from '@components/ContactCard.astro';
   <!-- Navigation dots -->
   <ul class="fp-nav">
     <li><a href="#home" data-index="0" class="active"></a></li>
-    <li><a href="#du-an" data-index="1"></a></li>
-    <li><a href="#kinh-nghiem" data-index="2"></a></li>
-    <li><a href="#lien-he" data-index="3"></a></li>
+    <li><a href="#du-an-1" data-index="1"></a></li>
+    <li><a href="#du-an-2" data-index="2"></a></li>
+    <li><a href="#du-an-3" data-index="3"></a></li>
+    <li><a href="#kinh-nghiem" data-index="4"></a></li>
+    <li><a href="#lien-he" data-index="5"></a></li>
   </ul>
 
   <!-- Load script từ public folder -->
@@ -45,7 +57,7 @@ import ContactCard from '@components/ContactCard.astro';
   <script is:inline>
     // Options cấu hình
     const initOptions = {
-      anchors: ['home', 'du-an', 'kinh-nghiem', 'lien-he'],
+      anchors: ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'],
       navigation: true,
       scrollingSpeed: 800,
       loopBottom: true
@@ -65,7 +77,7 @@ import ContactCard from '@components/ContactCard.astro';
         window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
 
         // Gắn handler cho các anchor CTA để cuộn đúng section
-        const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
+        const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
         const anchorLinks = document.querySelectorAll('a[href^="#"]');
         anchorLinks.forEach((link) => {
           link.addEventListener('click', (e) => {
@@ -86,7 +98,7 @@ import ContactCard from '@components/ContactCard.astro';
       // Xử lý hash URL khi trang load với hash (ví dụ: #lien-he)
       const hash = window.location.hash.replace('#', '');
       if (hash) {
-        const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
+        const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
         const index = anchors.indexOf(hash);
         if (index !== -1 && window.vanillaFullpage) {
           // Đợi một chút để đảm bảo fullpage đã khởi tạo xong

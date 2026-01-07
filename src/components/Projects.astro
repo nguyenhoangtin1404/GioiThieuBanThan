@@ -1,4 +1,16 @@
 ---
+export interface Props {
+  projectIndex?: number;
+  sectionId?: string;
+  title?: string;
+}
+
+const {
+  projectIndex = 0,
+  sectionId = 'du-an',
+  title = 'Dự án'
+} = Astro.props;
+
 const projects = [
   {
     name: 'Hệ thống Thông tin Giải quyết Thủ tục Hành chính',
@@ -53,11 +65,6 @@ const projects = [
     description:
       'Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.',
     role: 'Fullstack Developer',
-    tasks: [
-      'Xử lý 20–30 ticket/tháng theo SLA.',
-      'Phát triển REST API/services, xử lý nghiệp vụ.',
-      'Tối ưu hiệu năng và bảo mật hệ thống.'
-    ],
     impact: 'Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.',
     tools: [
       'ASP.NET',
@@ -72,68 +79,64 @@ const projects = [
     ]
   }
 ];
+
+const project = projects[projectIndex] ?? projects[0];
 ---
 
-<section id="du-an" class="projects-section">
-  <header>
-    <h2>Dự án nổi bật</h2>
-  </header>
+<section id={sectionId} class="projects-section">
   <div class="carousel-container">
-    <button class="carousel-btn prev" aria-label="Dự án trước">‹</button>
-    <div class="list" id="projects-carousel">
-      {projects.map((project) => (
+    <div class="list" id={`projects-${sectionId}`}>
+      {project && (
         <article class="project">
-        <div class="head">
-          <h3>{project.name}</h3>
-          {project.period && <p class="period">{project.period}</p>}
-          <p>{project.description}</p>
-        </div>
-        <div class="meta-row">
-          <p><strong>Vai trò:</strong> {project.role}</p>
-        </div>
-        {project.tasks && project.tasks.length > 0 && (
-          <div class="tasks">
-            <strong>Nhiệm vụ:</strong>
-            <ul class="task-list">
-              {project.tasks.map((task) => (
-                <li>{task}</li>
-              ))}
-            </ul>
+          <div class="main">
+            <div class="head">
+              <h3>{project.name}</h3>
+              {project.period && <p class="period">{project.period}</p>}
+              <p>{project.description}</p>
+            </div>
+            <div class="meta-row">
+              <p><strong>Vai trò:</strong> {project.role}</p>
+            </div>
+            <div class="tools-section">
+              <strong>Công nghệ:</strong>
+              <ul class="tools">
+                {project.tools.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            </div>
+            {project.tasks && project.tasks.length > 0 && (
+              <div class="tasks">
+                <strong>Nhiệm vụ:</strong>
+                <ul class="task-list">
+                  {project.tasks.map((task) => (
+                    <li>{task}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {project.impact && (
+              <div class="results">
+                <strong>Kết quả:</strong>
+                <p class="impact">{project.impact}</p>
+              </div>
+            )}
           </div>
-        )}
-        {project.impact && (
-          <div class="results">
-            <strong>Kết quả:</strong>
-            <p class="impact">{project.impact}</p>
+          <div class="side">
+            {project.gallery && project.gallery.length > 0 && (
+              <div class="gallery" role="region" aria-label={`Slide h?nh ?nh cho ${project.name}`}>
+                {project.gallery.map((image, index) => (
+                  <figure>
+                    <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
+                      <img src={image} alt={`Slide ${index + 1} c?a ${project.name}`} loading="lazy" />
+                    </a>
+                  </figure>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-        <div class="tools-section">
-          <strong>Công nghệ:</strong>
-          <ul class="tools">
-            {project.tools.map((tag) => (
-              <li>{tag}</li>
-            ))}
-          </ul>
-        </div>
-        {project.gallery && project.gallery.length > 0 && (
-          <div class="gallery" role="region" aria-label={`Slide hình ảnh cho ${project.name}`}>
-            {project.gallery.map((image, index) => (
-              <figure>
-                <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                  <img src={image} alt={`Slide ${index + 1} của ${project.name}`} loading="lazy" />
-                </a>
-              </figure>
-            ))}
-          </div>
-        )}
-      </article>
-      ))}
-    </div>
-    <button class="carousel-btn next" aria-label="Dự án tiếp">›</button>
-    <div class="carousel-indicators">
-      {projects.map((_, index) => (
-        <button class="indicator" aria-label={`Chuyển đến dự án ${index + 1}`} data-slide={index}></button>
-      ))}
+        </article>
+      )}
     </div>
   </div>
 </section>
@@ -162,115 +165,6 @@ const projects = [
       }
     };
     document.head.appendChild(script);
-  }
-</script>
-
-<script>
-  function initCarousel() {
-    const carousel = document.getElementById('projects-carousel');
-    const prevBtn = document.querySelector('.carousel-btn.prev');
-    const nextBtn = document.querySelector('.carousel-btn.next');
-    const indicators = document.querySelectorAll('.carousel-indicators .indicator');
-    const projects = carousel?.querySelectorAll('.project');
-    
-    if (!carousel || !projects || projects.length === 0) return;
-    
-    let currentIndex = 0;
-    const totalSlides = projects.length;
-    let isScrolling = false;
-    
-    function updateIndicators() {
-      indicators.forEach((indicator, index) => {
-        indicator.classList.toggle('active', index === currentIndex);
-      });
-      
-      if (prevBtn) prevBtn.disabled = currentIndex === 0;
-      if (nextBtn) nextBtn.disabled = currentIndex === totalSlides - 1;
-    }
-    
-    function updateCarousel() {
-      if (!carousel || !projects || isScrolling) return;
-      isScrolling = true;
-      
-      const cardWidth = carousel.clientWidth;
-      const scrollPosition = currentIndex * cardWidth;
-      
-      carousel.scrollTo({
-        left: scrollPosition,
-        behavior: 'smooth'
-      });
-      
-      updateIndicators();
-      
-      setTimeout(() => {
-        isScrolling = false;
-      }, 300);
-    }
-    
-    function getCurrentSlideIndex() {
-      if (!carousel || !projects) return 0;
-      const cardWidth = carousel.clientWidth;
-      const scrollLeft = carousel.scrollLeft;
-      const newIndex = Math.round(scrollLeft / cardWidth);
-      return Math.max(0, Math.min(newIndex, totalSlides - 1));
-    }
-    
-    function goToSlide(index) {
-      currentIndex = Math.max(0, Math.min(index, totalSlides - 1));
-      updateCarousel();
-    }
-    
-    function nextSlide() {
-      if (currentIndex < totalSlides - 1) {
-        currentIndex++;
-        updateCarousel();
-      }
-    }
-    
-    function prevSlide() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateCarousel();
-      }
-    }
-    
-    // Handle scroll to update current index
-    carousel.addEventListener('scroll', () => {
-      if (!isScrolling) {
-        const newIndex = getCurrentSlideIndex();
-        if (newIndex !== currentIndex) {
-          currentIndex = newIndex;
-          updateIndicators();
-        }
-      }
-    });
-    
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
-    indicators.forEach((indicator, index) => {
-      indicator.addEventListener('click', () => goToSlide(index));
-    });
-    
-    // Initialize
-    updateIndicators();
-    
-    // Handle resize
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        currentIndex = getCurrentSlideIndex();
-        updateIndicators();
-      }, 250);
-    });
-  }
-  
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCarousel);
-  } else {
-    initCarousel();
   }
 </script>
 
@@ -325,20 +219,8 @@ const projects = [
   }
 
   .list {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: visible;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    padding: 0.5rem 0;
+    display: block;
     width: 100%;
-  }
-
-  .list::-webkit-scrollbar {
-    display: none;
   }
 
   .project {
@@ -349,7 +231,9 @@ const projects = [
     background: var(--card);
     border: none;
     display: grid;
-    gap: 1rem;
+    gap: 1.25rem 2rem;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    align-items: start;
     box-shadow: none;
     min-height: 100%;
     flex: 0 0 100%;
@@ -359,6 +243,13 @@ const projects = [
     max-width: 100%;
     overflow: visible;
     box-sizing: border-box;
+  }
+
+  .project .main,
+  .project .side {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   @media (min-width: 640px) {
@@ -493,21 +384,18 @@ const projects = [
   }
 
   .gallery {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
-    overflow-x: auto;
-    padding-bottom: 0.5rem;
-    scroll-snap-type: x mandatory;
     margin-top: 1rem;
   }
 
   .gallery figure {
     margin: 0;
-    min-width: clamp(200px, 45vw, 320px);
+    min-width: 0;
     border-radius: 16px;
     overflow: hidden;
     border: none;
-    scroll-snap-align: start;
     background: rgba(15, 23, 42, 0.6);
   }
 
@@ -527,96 +415,14 @@ const projects = [
     object-fit: cover;
     display: block;
   }
-
-  .carousel-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--card);
-    border: none;
-    color: var(--text);
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: none;
-    transition: all 0.2s ease;
-    line-height: 1;
-  }
-
-  .carousel-btn:hover:not(:disabled) {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  .carousel-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .carousel-btn.prev {
-    left: 0;
-  }
-
-  .carousel-btn.next {
-    right: 0;
-  }
-
-  @media (min-width: 768px) {
-    .carousel-btn.prev {
-      left: -24px;
-    }
-
-    .carousel-btn.next {
-      right: -24px;
-    }
-  }
+@media (min-width: 768px) {
+}
 
   @media (max-width: 768px) {
-    .carousel-btn {
-      display: none;
-    }
-  }
-
-  .carousel-indicators {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-  }
-
-  .carousel-indicators .indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: none;
-    background: var(--border);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
-  }
-
-  .carousel-indicators .indicator:hover {
-    background: var(--muted);
-    transform: scale(1.2);
-  }
-
-  .carousel-indicators .indicator.active {
-    background: var(--accent);
-    width: 24px;
-    border-radius: 5px;
-  }
-
-  @media (max-width: 640px) {
+}
+@media (max-width: 640px) {
     .project {
+      grid-template-columns: 1fr;
       padding: 1rem;
       border-radius: 18px;
     }
@@ -637,8 +443,8 @@ const projects = [
       min-width: 80px;
     }
 
-    .gallery figure {
-      min-width: clamp(180px, 60vw, 260px);
+    .gallery {
+      grid-template-columns: 1fr;
     }
   }
 

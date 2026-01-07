@@ -2,8 +2,6 @@
 const profile = {
   name: 'Nguyễn Hoàng Tín',
   role: 'Full‑Stack Developer',
-  location: 'Đắk Lắk, Việt Nam',
-  focus: 'C# • Java • Python • Angular • Microservices',
   summary:
     'Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.',
   cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
@@ -22,10 +20,6 @@ const highlights = [
   <div class="intro">
     <h1>{profile.name}</h1>
     <p class="subtitle">{profile.summary}</p>
-    <ul class="meta">
-      <li>{profile.focus}</li>
-      <li>{profile.location}</li>
-    </ul>
     <div class="bio">
       {highlights.map((item) => (
         <p><strong>{item.title}</strong> {item.content}</p>
@@ -40,7 +34,7 @@ const highlights = [
     </div>
     <div class="badge">Kỹ sư lập trình</div>
     <div class="actions">
-      <a class="primary" href="#du-an">Xem dự án</a>
+      <a class="primary" href="#du-an-1">Xem dự án</a>
       <a class="primary" href="#lien-he">Liên hệ</a>
       <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV</a>
     </div>
@@ -62,7 +56,7 @@ const highlights = [
     height: auto;
   }
 
-  .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; }
+  .intro h1 { font-size: clamp(2.5rem, 6vw, 4rem); margin: 0 0 1rem; white-space: nowrap; }
   .subtitle { color: var(--muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 1.5rem; white-space: pre-line; }
 
   .meta { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; gap: 1.25rem; flex-wrap: wrap; color: var(--muted); font-size: 0.95rem; }
@@ -79,8 +73,8 @@ const highlights = [
   .intro { grid-area: intro; }
 
   .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: none; transition: transform 200ms ease, box-shadow 200ms ease; margin-bottom: 0.5rem; box-sizing: border-box; }
-  .avatar .ring { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; }
-  .avatar img { width: 100%; height: 100%; border-radius: 50%; display: block; border: 0; object-fit: cover; object-position: 50% 50%; box-shadow: none; margin: 0; }
+  .avatar .ring { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #dfe3f0; }
+  .avatar img { width: 100%; height: 100%; border-radius: 50%; display: block; border: 0; object-fit: contain; object-position: 50% 50%; box-shadow: none; margin: 0; background: #dfe3f0; }
   .avatar:hover { transform: translateY(-2px); box-shadow: none; }
 
   .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; }
@@ -95,6 +89,7 @@ const highlights = [
     .subtitle,
     .meta,
     .bio { display: none; }
+    .intro h1 { white-space: normal; }
   }
 
   @media (min-width: 768px) {

@@ -223,20 +223,26 @@ const {
       }
 
       /* Đảm bảo components bên trong có background trong suốt để gradient hiển thị */
+      #fullpage .section[data-anchor="home"] {
+        justify-content: center;
+        align-items: center;
+      }
+
       #fullpage .section[data-anchor="home"] .hero {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-radius: 0;
         box-shadow: none;
-        margin: 0;
+        margin: 0 auto;
         padding: 2rem;
-        max-width: 100%;
+        max-width: 1200px;
+        width: 100%;
         min-height: auto !important;
         height: auto !important;
       }
 
-      #fullpage .section[data-anchor="du-an"] .projects-section {
+      #fullpage .section[data-anchor^="du-an"] .projects-section {
         background: rgba(255, 255, 255, 0.85) !important;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);

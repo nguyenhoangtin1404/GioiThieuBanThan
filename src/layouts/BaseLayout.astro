@@ -1,4 +1,7 @@
 ---
+import LanguageSwitcher from '@components/LanguageSwitcher.astro';
+import { getLang, getTranslations } from '@i18n/utils';
+
 export interface Props {
   title?: string;
   description?: string;
@@ -8,10 +11,17 @@ const {
   title = 'Nguyễn Hoàng Tín — Full‑Stack Developer',
   description = 'Portfolio & CV online của Nguyễn Hoàng Tín'
 } = Astro.props;
+
+// Get initial language (server-side)
+const initialLang = getLang();
+
+// Load translations for embedding
+const translationsVi = await getTranslations('vi');
+const translationsEn = await getTranslations('en');
 ---
 
 <!doctype html>
-<html lang="vi">
+<html lang={initialLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -355,8 +365,136 @@ const {
     </style>
   </head>
   <body>
+    <LanguageSwitcher />
     <main>
       <slot />
     </main>
+    <script is:inline define:vars={{ translationsVi, translationsEn }}>
+      // Language switching client-side script
+      (function() {
+        const translations = {
+          vi: translationsVi,
+          en: translationsEn
+        };
+
+        // Update text content
+        function updateTextContent(element, translations, path) {
+          const keys = path.split('.');
+          let value = translations;
+          for (const key of keys) {
+            if (value && typeof value === 'object') {
+              // Handle array indices (numeric keys)
+              const numKey = parseInt(key, 10);
+              if (!isNaN(numKey) && Array.isArray(value)) {
+                value = value[numKey];
+              } else {
+                value = value[key];
+              }
+            } else {
+              return;
+            }
+          }
+          
+          if (typeof value === 'string') {
+            element.textContent = value;
+          }
+        }
+
+        // Update all translatable elements
+        function updatePageContent(lang) {
+          const langTranslations = translations[lang] || translations.vi;
+          
+          // Update HTML lang attribute
+          document.documentElement.lang = lang;
+          
+          // Update elements with data-i18n attribute
+          document.querySelectorAll('[data-i18n]').forEach(element => {
+            const path = element.getAttribute('data-i18n');
+            if (path) {
+              updateTextContent(element, langTranslations, path);
+            }
+          });
+
+          // Update elements with data-i18n-attr (for attributes like alt, title, etc.)
+          document.querySelectorAll('[data-i18n-attr]').forEach(element => {
+            const attrData = element.getAttribute('data-i18n-attr');
+            if (attrData) {
+              try {
+                const [attr, path] = attrData.split(':');
+                const keys = path.split('.');
+                let value = langTranslations;
+                for (const key of keys) {
+                  if (value && typeof value === 'object') {
+                    // Handle array indices (numeric keys)
+                    const numKey = parseInt(key, 10);
+                    if (!isNaN(numKey) && Array.isArray(value)) {
+                      value = value[numKey];
+                    } else {
+                      value = value[key];
+                    }
+                  } else {
+                    return;
+                  }
+                }
+                if (typeof value === 'string' && attr) {
+                  element.setAttribute(attr, value);
+                }
+              } catch (e) {
+                console.error('Error updating attribute:', e);
+              }
+            }
+          });
+
+          // Save to localStorage
+          localStorage.setItem('lang', lang);
+          
+          // Update URL without reload
+          const url = new URL(window.location);
+          url.searchParams.set('lang', lang);
+          window.history.replaceState({}, '', url);
+        }
+
+        // Listen for language change events
+        window.addEventListener('langchange', (e) => {
+          const newLang = e.detail?.lang;
+          if (newLang === 'vi' || newLang === 'en') {
+            // Add fade transition
+            document.body.style.transition = 'opacity 0.2s ease';
+            document.body.style.opacity = '0.7';
+            
+            updatePageContent(newLang);
+            
+            // Update language switcher active state
+            const switcher = document.getElementById('lang-switcher');
+            if (switcher) {
+              const options = switcher.querySelectorAll('.lang-option');
+              options.forEach(opt => {
+                if (opt.dataset.lang === newLang) {
+                  opt.classList.add('active');
+                } else {
+                  opt.classList.remove('active');
+                }
+              });
+            }
+            
+            // Fade back in
+            setTimeout(() => {
+              document.body.style.opacity = '1';
+            }, 50);
+          }
+        });
+
+        // Initialize on load - use server-rendered language
+        const initialLang = document.documentElement.lang || 'vi';
+        if (initialLang === 'vi' || initialLang === 'en') {
+          // Update from localStorage if different
+          const storedLang = localStorage.getItem('lang');
+          const currentLang = (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
+          if (currentLang !== initialLang) {
+            updatePageContent(currentLang);
+          }
+        }
+      })();
+    </script>
   </body>
   </html>

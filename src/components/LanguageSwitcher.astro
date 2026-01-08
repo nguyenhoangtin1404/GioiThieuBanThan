@@ -150,15 +150,34 @@
       const switcher = document.getElementById('lang-switcher');
       if (!switcher) return;
 
-      // Check if we're on the home section
+      // Check URL hash
+      const hash = window.location.hash.replace('#', '');
+      
+      // List of non-home section anchors
+      const nonHomeAnchors = ['du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
+      const isNonHomeHash = hash && nonHomeAnchors.includes(hash);
+      
+      // Check if we're on the home section by data-anchor
       const homeSection = document.querySelector('.section[data-anchor="home"]');
       const isHomeActive = homeSection && homeSection.classList.contains('active');
       
-      // Also check URL hash
-      const hash = window.location.hash.replace('#', '');
-      const isHomeHash = !hash || hash === 'home';
-
-      if (isHomeActive || isHomeHash) {
+      // Check if any non-home section is active
+      let isNonHomeActive = false;
+      nonHomeAnchors.forEach(anchor => {
+        const section = document.querySelector(`.section[data-anchor="${anchor}"]`);
+        if (section && section.classList.contains('active')) {
+          isNonHomeActive = true;
+        }
+      });
+      
+      // Show switcher if:
+      // - Hash is empty or 'home' (default/initial state)
+      // - Home section is active
+      // - No hash and no non-home section is active (default to home)
+      // Hide if we're definitely on a non-home section
+      const shouldShow = (!hash || hash === 'home' || isHomeActive) && !isNonHomeActive && !isNonHomeHash;
+      
+      if (shouldShow) {
         switcher.classList.add('visible');
         switcher.classList.remove('hidden');
       } else {
@@ -197,7 +216,17 @@
       window.addEventListener('hashchange', updateSwitcherVisibility);
 
       // Fallback: check periodically (in case MutationObserver doesn't catch everything)
-      setInterval(updateSwitcherVisibility, 200);
+      const visibilityInterval = setInterval(updateSwitcherVisibility, 200);
+
+      // Clean up interval on page unload to prevent memory leaks
+      window.addEventListener('beforeunload', () => {
+        clearInterval(visibilityInterval);
+      });
+
+      // Clean up on pagehide (more reliable than beforeunload in some browsers)
+      window.addEventListener('pagehide', () => {
+        clearInterval(visibilityInterval);
+      });
 
       // Handle click using event delegation
       setupClickHandler();
@@ -276,6 +305,7 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* Default to visible - will be hidden by JS if needed */
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;

@@ -13,7 +13,7 @@ const {
   title = 'Dự án'
 } = Astro.props;
 
-const lang = getLang();
+const lang = getLang(Astro.url);
 const t = await getTranslations(lang);
 const projects = t.projects.items;
 const project = projects[projectIndex] ?? projects[0];
@@ -61,11 +61,11 @@ const labels = t.projects.labels;
           </div>
           <div class="side">
             {project.gallery && project.gallery.length > 0 && (
-              <div class="gallery" role="region" data-i18n-attr={`aria-label:projects.galleryAlt`} aria-label={`${t.projects.galleryAlt} ${project.name}`}>
+              <div class="gallery" role="region" data-i18n-attr={`aria-label:projects.galleryAlt`} data-i18n-dynamic-path={`projects.items.${projectIndex}.name`} aria-label={`${t.projects.galleryAlt} ${project.name}`}>
                 {project.gallery.map((image, index) => (
-                  <figure>
+                  <figure key={index}>
                     <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                      <img src={image} alt={`${t.projects.galleryAlt} ${project.name} - ${index + 1}`} loading="lazy" />
+                      <img src={image} data-i18n-attr={`alt:projects.galleryAlt`} data-i18n-dynamic-path={`projects.items.${projectIndex}.name`} data-i18n-dynamic-suffix={` - ${index + 1}`} alt={`${t.projects.galleryAlt} ${project.name} - ${index + 1}`} loading="lazy" />
                     </a>
                   </figure>
                 ))}

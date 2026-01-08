@@ -1,7 +1,7 @@
 ---
 import { getTranslations, getLang } from '@i18n/utils';
 
-const lang = getLang();
+const lang = getLang(Astro.url);
 const t = await getTranslations(lang);
 const events = t.timeline.items;
 ---

@@ -13,7 +13,7 @@ const {
 } = Astro.props;
 
 // Get initial language (server-side)
-const initialLang = getLang();
+const initialLang = getLang(Astro.url);
 
 // Load translations for embedding
 const translationsVi = await getTranslations('vi');
@@ -415,32 +415,74 @@ const translationsEn = await getTranslations('en');
             }
           });
 
+          // Helper function to get translation value by path
+          function getTranslationByPath(translations, path) {
+            const keys = path.split('.');
+            let value = translations;
+            for (const key of keys) {
+              if (value && typeof value === 'object') {
+                const numKey = parseInt(key, 10);
+                if (!isNaN(numKey) && Array.isArray(value)) {
+                  value = value[numKey];
+                } else {
+                  value = value[key];
+                }
+              } else {
+                return null;
+              }
+            }
+            return typeof value === 'string' ? value : null;
+          }
+
           // Update elements with data-i18n-attr (for attributes like alt, title, etc.)
           document.querySelectorAll('[data-i18n-attr]').forEach(element => {
             const attrData = element.getAttribute('data-i18n-attr');
             if (attrData) {
               try {
                 const [attr, path] = attrData.split(':');
-                const keys = path.split('.');
-                let value = langTranslations;
-                for (const key of keys) {
-                  if (value && typeof value === 'object') {
-                    // Handle array indices (numeric keys)
-                    const numKey = parseInt(key, 10);
-                    if (!isNaN(numKey) && Array.isArray(value)) {
-                      value = value[numKey];
+                const value = getTranslationByPath(langTranslations, path);
+                
+                if (value && attr) {
+                  // Check if there's dynamic content path to fetch
+                  const dynamicPath = element.getAttribute('data-i18n-dynamic-path');
+                  const dynamicSuffix = element.getAttribute('data-i18n-dynamic-suffix') || '';
+                  
+                  if (dynamicPath) {
+                    // Get the translated dynamic content
+                    const dynamicValue = getTranslationByPath(langTranslations, dynamicPath);
+                    if (dynamicValue) {
+                      element.setAttribute(attr, `${value} ${dynamicValue}${dynamicSuffix}`);
                     } else {
-                      value = value[key];
+                      element.setAttribute(attr, value);
                     }
                   } else {
-                    return;
+                    // Check for old data-i18n-dynamic (static value) for backward compatibility
+                    const dynamicContent = element.getAttribute('data-i18n-dynamic');
+                    if (dynamicContent) {
+                      element.setAttribute(attr, `${value} ${dynamicContent}${dynamicSuffix}`);
+                    } else {
+                      element.setAttribute(attr, value + dynamicSuffix);
+                    }
                   }
-                }
-                if (typeof value === 'string' && attr) {
-                  element.setAttribute(attr, value);
                 }
               } catch (e) {
                 console.error('Error updating attribute:', e);
+              }
+            }
+          });
+
+          // Update elements with data-i18n-attr-title (for title attributes)
+          document.querySelectorAll('[data-i18n-attr-title]').forEach(element => {
+            const attrData = element.getAttribute('data-i18n-attr-title');
+            if (attrData) {
+              try {
+                const [attr, path] = attrData.split(':');
+                const value = getTranslationByPath(langTranslations, path);
+                if (value && attr) {
+                  element.setAttribute(attr, value);
+                }
+              } catch (e) {
+                console.error('Error updating title attribute:', e);
               }
             }
           });

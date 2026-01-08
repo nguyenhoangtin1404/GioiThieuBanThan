@@ -1,0 +1,135 @@
+{
+  "hero": {
+    "name": "Nguyễn Hoàng Tín",
+    "role": "Full‑Stack Developer",
+    "summary": "Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.",
+    "badge": "Kỹ sư lập trình",
+    "buttons": {
+      "viewProjects": "Dự án",
+      "contact": "Liên hệ",
+      "downloadCV": "Tải CV"
+    },
+    "highlights": {
+      "frontend": "Frontend:",
+      "frontendContent": "Angular, Bootstrap, HTML/CSS/JS",
+      "backend": "Backend:",
+      "backendContent": ".NET, Java, Spring Boot, Microservices, Oracle, MongoDB",
+      "devops": "DevOps & Tools:",
+      "devopsContent": "Git, Jira, Docker",
+      "english": "Tiếng Anh:",
+      "englishContent": "Đọc tài liệu kỹ thuật, giao tiếp công việc cơ bản",
+      "other": "Khác:",
+      "otherContent": "Thuyết trình, Giảng viên nội bộ, Scrum"
+    },
+    "avatarAlt": "Ảnh hồ sơ của Nguyễn Hoàng Tín"
+  },
+  "projects": {
+    "labels": {
+      "role": "Vai trò:",
+      "tools": "Công nghệ:",
+      "tasks": "Nhiệm vụ:",
+      "results": "Kết quả:"
+    },
+    "items": [
+      {
+        "name": "Hệ thống Thông tin Giải quyết Thủ tục Hành chính",
+        "period": "2025 – NAY",
+        "description": "Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.",
+        "role": "Fullstack Developer",
+        "tasks": [
+          "Tối ưu báo cáo và hỗ trợ vận hành hệ thống.",
+          "Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp."
+        ],
+        "impact": "Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây.",
+        "tools": [
+          "Angular",
+          "Java Spring Boot",
+          "MongoDB",
+          "Microservices"
+        ],
+        "gallery": [
+          "/igate1.jpg",
+          "/igate2.jpg",
+          "/igate3.png"
+        ]
+      },
+      {
+        "name": "VNPT eCabinet - Phòng họp không giấy tờ",
+        "period": "2021 – 2025",
+        "description": "Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.",
+        "role": "Trưởng nhóm triển khai",
+        "tasks": [
+          "Triển khai và vận hành hệ thống (phần cứng + phần mềm).",
+          "Điều phối nhóm 5 kỹ thuật viên, setup 1–2 kỳ họp/tháng.",
+          "Hỗ trợ kỹ thuật tại hiện trường, đảm bảo hệ thống hoạt động ổn định."
+        ],
+        "impact": "Đảm bảo các kỳ họp HĐND ổn định, không sự cố CNTT trong 5 năm. Duy trì hợp đồng dịch vụ dài hạn cấp tỉnh.",
+        "tools": [
+          "C#",
+          ".NET Framework",
+          "Oracle",
+          "IoT"
+        ],
+        "gallery": [
+          "/ecabinet1.jpg",
+          "/ecabinet2.jpg",
+          "/ecabinet3.jpg"
+        ]
+      },
+      {
+        "name": "VNPT iOffice - Điều hành Văn bản",
+        "period": "2017 – 2024",
+        "description": "Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.",
+        "role": "Fullstack Developer",
+        "impact": "Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.",
+        "tools": [
+          "ASP.NET",
+          "C#",
+          "DevExpress",
+          "Oracle"
+        ],
+        "gallery": [
+          "/ioffice1.jpg",
+          "/ioffice2.jpg",
+          "/ioffice3.jpg"
+        ]
+      }
+    ],
+    "galleryAlt": "Slide hình ảnh cho"
+  },
+  "timeline": {
+    "title": "Kinh nghiệm",
+    "achievements": "Thành tựu:",
+    "items": [
+      {
+        "year": "2017 – NAY",
+        "company": "VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM",
+        "role": "NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH",
+        "tasks": [
+          "Tham gia phát triển và vận hành các hệ thống phần mềm quy mô tỉnh/thành.",
+          "Đảm nhiệm vai trò chính trong phát triển backend, tối ưu hiệu năng và hỗ trợ nghiệp vụ.",
+          "Tham gia các dự án lớn: Hệ thống Dịch vụ công, Văn bản điều hành, Hóa đơn điện tử, Phòng họp không giấy,...",
+          "Áp dụng các công cụ AI vào quy trình phát triển giúp rút ngắn thời gian coding 20–30%. Nâng cao chất lượng code, phát hiện lỗi tiềm ẩn và đảm bảo tuân thủ các quy tắc của dự án."
+        ],
+        "achievements": [
+          "Đạt danh hiệu \"Chiến sỹ thi đua\" trong nhiều năm",
+          "Người lao động tiêu biểu năm 2021"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "Hợp tác",
+    "description": "Chuyên phát triển hệ thống doanh nghiệp, chính quyền và WordPress. Sẵn sàng hợp tác cho dự án của bạn. Hãy liên hệ để trao đổi!",
+    "channels": {
+      "phone": "SĐT",
+      "zalo": "Zalo",
+      "telegram": "Telegram",
+      "email": "Email"
+    }
+  },
+  "layout": {
+    "title": "Nguyễn Hoàng Tín — Full‑Stack Developer",
+    "description": "Portfolio & CV online của Nguyễn Hoàng Tín"
+  }
+}

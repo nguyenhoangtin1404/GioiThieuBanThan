@@ -1,0 +1,135 @@
+{
+  "hero": {
+    "name": "Tin NGUYEN HOANG",
+    "role": "Full‑Stack Developer",
+    "summary": "Backend/Fullstack Developer specializing in large-scale systems, proficient in .NET, Java/Spring Boot, Microservices, SQL/NoSQL, focused on complex projects and professional environments.",
+    "badge": "Software Engineer",
+    "buttons": {
+      "viewProjects": "Projects",
+      "contact": "Contact",
+      "downloadCV": "Download CV"
+    },
+    "highlights": {
+      "frontend": "Frontend:",
+      "frontendContent": "Angular, Bootstrap, HTML/CSS/JS",
+      "backend": "Backend:",
+      "backendContent": ".NET, Java, Spring Boot, Microservices, Oracle, MongoDB",
+      "devops": "DevOps & Tools:",
+      "devopsContent": "Git, Jira, Docker",
+      "english": "English:",
+      "englishContent": "Technical documentation reading, basic work communication",
+      "other": "Other:",
+      "otherContent": "Presentation, Internal Trainer, Scrum"
+    },
+    "avatarAlt": "Profile photo of Nguyễn Hoàng Tín"
+  },
+  "projects": {
+    "labels": {
+      "role": "Role:",
+      "tools": "Technologies:",
+      "tasks": "Tasks:",
+      "results": "Results:"
+    },
+    "items": [
+      {
+        "name": "Administrative Procedure Resolution Information System",
+        "period": "2025 – PRESENT",
+        "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
+        "role": "Fullstack Developer",
+        "tasks": [
+          "Optimize reports and support system operations.",
+          "Guide staff, handle incidents during the transition to 2-level government model."
+        ],
+        "impact": "Optimized report data retrieval time from 3 minutes to 60 seconds.",
+        "tools": [
+          "Angular",
+          "Java Spring Boot",
+          "MongoDB",
+          "Microservices"
+        ],
+        "gallery": [
+          "/igate1.jpg",
+          "/igate2.jpg",
+          "/igate3.png"
+        ]
+      },
+      {
+        "name": "VNPT eCabinet - Paperless Meeting Room",
+        "period": "2021 – 2025",
+        "description": "Provincial-level paperless meeting solution, integrating IoT hardware with management software.",
+        "role": "Deployment Team Lead",
+        "tasks": [
+          "Deploy and operate the system (hardware + software).",
+          "Coordinate a team of 5 technicians, setup 1–2 meetings/month.",
+          "Provide on-site technical support, ensure stable system operation."
+        ],
+        "impact": "Ensured stable People's Council meetings, no IT incidents for 5 years. Maintained long-term provincial service contracts.",
+        "tools": [
+          "C#",
+          ".NET Framework",
+          "Oracle",
+          "IoT"
+        ],
+        "gallery": [
+          "/ecabinet1.jpg",
+          "/ecabinet2.jpg",
+          "/ecabinet3.jpg"
+        ]
+      },
+      {
+        "name": "VNPT iOffice - Document Management",
+        "period": "2017 – 2024",
+        "description": "Large-scale document management and execution system, integrated with internal management and collaboration.",
+        "role": "Fullstack Developer",
+        "impact": "Increased management efficiency for 10,000+ staff. Developed and upgraded core features.",
+        "tools": [
+          "ASP.NET",
+          "C#",
+          "DevExpress",
+          "Oracle"
+        ],
+        "gallery": [
+          "/ioffice1.jpg",
+          "/ioffice2.jpg",
+          "/ioffice3.jpg"
+        ]
+      }
+    ],
+    "galleryAlt": "Image slide for"
+  },
+  "timeline": {
+    "title": "Experience",
+    "achievements": "Achievements:",
+    "items": [
+      {
+        "year": "2017 – PRESENT",
+        "company": "VNPT PHÚ YÊN - VIETNAM POSTS AND TELECOMMUNICATIONS GROUP",
+        "role": "IT SOLUTION STAFF / SOFTWARE ENGINEER",
+        "tasks": [
+          "Participate in development and operation of provincial/city-scale software systems.",
+          "Take main role in backend development, performance optimization and business support.",
+          "Participate in major projects: Public Service System, Document Management, E-Invoice, Paperless Meeting,...",
+          "Apply AI tools to development process, reducing coding time by 20–30%. Improve code quality, detect potential errors and ensure project rule compliance."
+        ],
+        "achievements": [
+          "Achieved \"Emulation Fighter\" title for multiple years",
+          "Outstanding Employee of 2021"
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "Collaboration",
+    "description": "Specializing in enterprise systems, government systems and WordPress. Ready to collaborate on your project. Contact me to discuss!",
+    "channels": {
+      "phone": "Phone",
+      "zalo": "Zalo",
+      "telegram": "Telegram",
+      "email": "Email"
+    }
+  },
+  "layout": {
+    "title": "Nguyễn Hoàng Tín — Full‑Stack Developer",
+    "description": "Portfolio & CV online of Nguyễn Hoàng Tín"
+  }
+}

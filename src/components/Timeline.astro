@@ -1,44 +1,32 @@
 ---
-const events = [
-  {
-    year: '2017 – NAY',
-    company: 'VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM',
-    role: 'NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH',
-    tasks: [
-      'Tham gia phát triển và vận hành các hệ thống phần mềm quy mô tỉnh/thành.',
-      'Đảm nhiệm vai trò chính trong phát triển backend, tối ưu hiệu năng và hỗ trợ nghiệp vụ.',
-      'Tham gia các dự án lớn: Hệ thống Dịch vụ công, Văn bản điều hành, Hóa đơn điện tử, Phòng họp không giấy,...',
-      'Áp dụng các công cụ AI vào quy trình phát triển giúp rút ngắn thời gian coding 20–30%. Nâng cao chất lượng code, phát hiện lỗi tiềm ẩn và đảm bảo tuân thủ các quy tắc của dự án.'
-    ],
-    achievements: [
-      'Đạt danh hiệu "Chiến sỹ thi đua" trong nhiều năm',
-      'Người lao động tiêu biểu năm 2021'
-    ]
-  }
-];
+import { getTranslations, getLang } from '@i18n/utils';
+
+const lang = getLang();
+const t = await getTranslations(lang);
+const events = t.timeline.items;
 ---
 
 <section class="timeline-section alt">
   <header>
-    <h2>Kinh nghiệm</h2>
+    <h2 data-i18n="timeline.title">{t.timeline.title}</h2>
   </header>
   <div class="timeline">
-    {events.map((event) => (
+    {events.map((event, eventIndex) => (
       <article class="item">
-        <span class="year">{event.year}</span>
+        <span class="year" data-i18n={`timeline.items.${eventIndex}.year`}>{event.year}</span>
         <div>
-          <p class="company">{event.company}</p>
-          <h3>{event.role}</h3>
+          <p class="company" data-i18n={`timeline.items.${eventIndex}.company`}>{event.company}</p>
+          <h3 data-i18n={`timeline.items.${eventIndex}.role`}>{event.role}</h3>
           <ul class="tasks">
-            {event.tasks.map((task) => (
-              <li>{task}</li>
+            {event.tasks.map((task, taskIndex) => (
+              <li key={taskIndex} data-i18n={`timeline.items.${eventIndex}.tasks.${taskIndex}`}>{task}</li>
             ))}
           </ul>
           <div class="achievements">
-            <strong>Thành tựu:</strong>
+            <strong data-i18n="timeline.achievements">{t.timeline.achievements}</strong>
             <ul>
-              {event.achievements.map((achievement) => (
-                <li>{achievement}</li>
+              {event.achievements.map((achievement, achIndex) => (
+                <li key={achIndex} data-i18n={`timeline.items.${eventIndex}.achievements.${achIndex}`}>{achievement}</li>
               ))}
             </ul>
           </div>

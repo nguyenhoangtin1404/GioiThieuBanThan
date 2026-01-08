@@ -1,42 +1,47 @@
 ---
+import { getTranslations, getLang } from '@i18n/utils';
+
+const lang = getLang();
+const t = await getTranslations(lang);
 const profile = {
-  name: 'Nguyễn Hoàng Tín',
-  role: 'Full‑Stack Developer',
-  summary:
-    'Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.',
+  name: t.hero.name,
+  role: t.hero.role,
+  summary: t.hero.summary,
   cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
 };
 
 const highlights = [
-  { title: 'Frontend:', content: 'Angular, Bootstrap, HTML/CSS/JS' },
-  { title: 'Backend:', content: '.NET, Java, Spring Boot, Microservices, Oracle, MongoDB' },
-  { title: 'DevOps & Tools:', content: 'Git, Jira, Docker' },
-  { title: 'Tiếng Anh:', content: 'Đọc tài liệu kỹ thuật, giao tiếp công việc cơ bản' },
-  { title: 'Khác:', content: 'Thuyết trình, Giảng viên nội bộ, Scrum' }
+  { title: t.hero.highlights.frontend, content: t.hero.highlights.frontendContent },
+  { title: t.hero.highlights.backend, content: t.hero.highlights.backendContent },
+  { title: t.hero.highlights.devops, content: t.hero.highlights.devopsContent },
+  { title: t.hero.highlights.english, content: t.hero.highlights.englishContent },
+  { title: t.hero.highlights.other, content: t.hero.highlights.otherContent }
 ];
 ---
 
 <section class="hero" id="gioi-thieu">
   <div class="intro">
-    <h1>{profile.name}</h1>
-    <p class="subtitle">{profile.summary}</p>
+    <h1 data-i18n="hero.name">{profile.name}</h1>
+    <p class="subtitle" data-i18n="hero.summary">{profile.summary}</p>
     <div class="bio">
-      {highlights.map((item) => (
-        <p><strong>{item.title}</strong> {item.content}</p>
-      ))}
+      <p><strong data-i18n="hero.highlights.frontend">{highlights[0].title}</strong> <span data-i18n="hero.highlights.frontendContent">{highlights[0].content}</span></p>
+      <p><strong data-i18n="hero.highlights.backend">{highlights[1].title}</strong> <span data-i18n="hero.highlights.backendContent">{highlights[1].content}</span></p>
+      <p><strong data-i18n="hero.highlights.devops">{highlights[2].title}</strong> <span data-i18n="hero.highlights.devopsContent">{highlights[2].content}</span></p>
+      <p><strong data-i18n="hero.highlights.english">{highlights[3].title}</strong> <span data-i18n="hero.highlights.englishContent">{highlights[3].content}</span></p>
+      <p><strong data-i18n="hero.highlights.other">{highlights[4].title}</strong> <span data-i18n="hero.highlights.otherContent">{highlights[4].content}</span></p>
     </div>
   </div>
   <div class="card">
     <div class="avatar">
       <span class="ring">
-        <img src="/avatar.png" width="260" height="260" alt={`Ảnh hồ sơ của ${profile.name}`} loading="lazy" />
+        <img src="/avatar.png" width="260" height="260" data-i18n-attr="alt:hero.avatarAlt" alt={t.hero.avatarAlt} loading="lazy" />
       </span>
     </div>
-    <div class="badge">Kỹ sư lập trình</div>
+    <div class="badge" data-i18n="hero.badge">{t.hero.badge}</div>
     <div class="actions">
-      <a class="primary" href="#du-an-1">Xem dự án</a>
-      <a class="primary" href="#lien-he">Liên hệ</a>
-      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer">Tải CV</a>
+      <a class="primary" href="#du-an-1" data-i18n="hero.buttons.viewProjects">{t.hero.buttons.viewProjects}</a>
+      <a class="primary" href="#lien-he" data-i18n="hero.buttons.contact">{t.hero.buttons.contact}</a>
+      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer" data-i18n="hero.buttons.downloadCV">{t.hero.buttons.downloadCV}</a>
     </div>
   </div>
 </section>

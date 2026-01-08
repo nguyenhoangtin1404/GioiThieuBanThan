@@ -1,4 +1,6 @@
 ---
+import { getTranslations, getLang } from '@i18n/utils';
+
 export interface Props {
   projectIndex?: number;
   sectionId?: string;
@@ -11,76 +13,11 @@ const {
   title = 'Dự án'
 } = Astro.props;
 
-const projects = [
-  {
-    name: 'Hệ thống Thông tin Giải quyết Thủ tục Hành chính',
-    period: '2025 – NAY',
-    description:
-      'Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.',
-    role: 'Fullstack Developer',
-    tasks: [
-      'Tối ưu báo cáo và hỗ trợ vận hành hệ thống.',
-      'Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp.'
-    ],
-    impact: 'Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây.',
-    tools: [
-      'Angular',
-      'Java Spring Boot',
-      'MongoDB',
-      'Microservices'
-    ],
-    gallery: [
-      '/igate1.jpg',
-      '/igate2.jpg',
-      '/igate3.png'
-    ]
-  },
-  {
-    name: 'VNPT eCabinet - Phòng họp không giấy tờ',
-    period: '2021 – 2025',
-    description:
-      'Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.',
-    role: 'Trưởng nhóm triển khai',
-    tasks: [
-      'Triển khai và vận hành hệ thống (phần cứng + phần mềm).',
-      'Điều phối nhóm 5 kỹ thuật viên, setup 1–2 kỳ họp/tháng.',
-      'Hỗ trợ kỹ thuật tại hiện trường, đảm bảo hệ thống hoạt động ổn định.'
-    ],
-    impact: 'Đảm bảo các kỳ họp HĐND ổn định, không sự cố CNTT trong 5 năm. Duy trì hợp đồng dịch vụ dài hạn cấp tỉnh.',
-    tools: [
-      'C#',
-      '.NET Framework',
-      'Oracle',
-      'IoT'
-    ],
-    gallery: [
-      '/ecabinet1.jpg',
-      '/ecabinet2.jpg',
-      '/ecabinet3.jpg'
-    ]
-  },
-  {
-    name: 'VNPT iOffice - Điều hành Văn bản',
-    period: '2017 – 2024',
-    description:
-      'Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.',
-    role: 'Fullstack Developer',
-    impact: 'Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.',
-    tools: [
-      'ASP.NET',
-      'C#',
-      'DevExpress',
-      'Oracle'
-    ],
-    gallery: [
-      '/ioffice1.jpg',
-      '/ioffice2.jpg',
-      '/ioffice3.jpg'
-    ]
-  }
-];
-
+const lang = getLang();
+const t = await getTranslations(lang);
+const projects = t.projects.items;
 const project = projects[projectIndex] ?? projects[0];
+const labels = t.projects.labels;
 ---
 
 <section id={sectionId} class="projects-section">
@@ -90,45 +27,45 @@ const project = projects[projectIndex] ?? projects[0];
         <article class="project">
           <div class="main">
             <div class="head">
-              <h3>{project.name}</h3>
-              {project.period && <p class="period">{project.period}</p>}
-              <p>{project.description}</p>
+              <h3 data-i18n={`projects.items.${projectIndex}.name`}>{project.name}</h3>
+              {project.period && <p class="period" data-i18n={`projects.items.${projectIndex}.period`}>{project.period}</p>}
+              <p data-i18n={`projects.items.${projectIndex}.description`}>{project.description}</p>
             </div>
             <div class="meta-row">
-              <p><strong>Vai trò:</strong> {project.role}</p>
+              <p><strong data-i18n="projects.labels.role">{labels.role}</strong> <span data-i18n={`projects.items.${projectIndex}.role`}>{project.role}</span></p>
             </div>
             <div class="tools-section">
-              <strong>Công nghệ:</strong>
+              <strong data-i18n="projects.labels.tools">{labels.tools}</strong>
               <ul class="tools">
-                {project.tools.map((tag) => (
-                  <li>{tag}</li>
+                {project.tools && project.tools.map((tag, idx) => (
+                  <li key={idx}>{tag}</li>
                 ))}
               </ul>
             </div>
             {project.tasks && project.tasks.length > 0 && (
               <div class="tasks">
-                <strong>Nhiệm vụ:</strong>
+                <strong data-i18n="projects.labels.tasks">{labels.tasks}</strong>
                 <ul class="task-list">
-                  {project.tasks.map((task) => (
-                    <li>{task}</li>
+                  {project.tasks.map((task, idx) => (
+                    <li key={idx} data-i18n={`projects.items.${projectIndex}.tasks.${idx}`}>{task}</li>
                   ))}
                 </ul>
               </div>
             )}
             {project.impact && (
               <div class="results">
-                <strong>Kết quả:</strong>
-                <p class="impact">{project.impact}</p>
+                <strong data-i18n="projects.labels.results">{labels.results}</strong>
+                <p class="impact" data-i18n={`projects.items.${projectIndex}.impact`}>{project.impact}</p>
               </div>
             )}
           </div>
           <div class="side">
             {project.gallery && project.gallery.length > 0 && (
-              <div class="gallery" role="region" aria-label={`Slide h?nh ?nh cho ${project.name}`}>
+              <div class="gallery" role="region" data-i18n-attr={`aria-label:projects.galleryAlt`} aria-label={`${t.projects.galleryAlt} ${project.name}`}>
                 {project.gallery.map((image, index) => (
                   <figure>
                     <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
-                      <img src={image} alt={`Slide ${index + 1} c?a ${project.name}`} loading="lazy" />
+                      <img src={image} alt={`${t.projects.galleryAlt} ${project.name} - ${index + 1}`} loading="lazy" />
                     </a>
                   </figure>
                 ))}

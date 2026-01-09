@@ -506,17 +506,51 @@ const translationsEn = await getTranslations('en');
             
             updatePageContent(newLang);
             
-            // Update language switcher active state
+            // Update language switcher active state with smooth sliding animation
             const switcher = document.getElementById('lang-switcher');
             if (switcher) {
               const options = switcher.querySelectorAll('.lang-option');
+              const slider = switcher.querySelector('.lang-slider');
+              
+              // Find the active option
+              let activeOption = null;
               options.forEach(opt => {
                 if (opt.dataset.lang === newLang) {
                   opt.classList.add('active');
+                  activeOption = opt;
                 } else {
                   opt.classList.remove('active');
                 }
               });
+              
+              // Move slider to active option position
+              if (slider && activeOption) {
+                // Use double requestAnimationFrame to ensure layout is ready
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    const switcherRect = switcher.getBoundingClientRect();
+                    const optionRect = activeOption.getBoundingClientRect();
+                    
+                    // Add 20% extra width (20% left, 0% right)
+                    const baseWidth = optionRect.width;
+                    const leftPadding = baseWidth * 0.2; // 20% on left (giữ nguyên)
+                    const rightPadding = 0; // 0% on right (không mở rộng bên phải)
+                    const extraWidth = leftPadding + rightPadding; // 20% total
+                    
+                    // Calculate position relative to switcher (extend left by 20%)
+                    const left = optionRect.left - switcherRect.left - leftPadding;
+                    // Calculate width (add 20% total: 20% left + 0% right)
+                    const width = baseWidth + extraWidth;
+                    
+                    // Set slider position and size with smooth transition
+                    if (width > 0) {
+                      slider.style.width = width + 'px';
+                      slider.style.transform = `translateX(${left}px)`;
+                      slider.classList.add('initialized');
+                    }
+                  });
+                });
+              }
             }
             
             // Fade back in

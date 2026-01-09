@@ -9,6 +9,7 @@
   aria-label="Switch language"
   title="Switch language"
 >
+  <span class="lang-slider"></span>
   <span class="lang-option" data-lang="vi">
     <span class="flag flag-vn" title="Tiếng Việt">
       <svg viewBox="0 0 3 2" width="20" height="14" xmlns="http://www.w3.org/2000/svg">
@@ -130,19 +131,53 @@
       return (stored === 'vi' || stored === 'en') ? stored : 'vi';
     }
 
-    // Set active state
+    // Set active state with smooth sliding animation
     function setActiveLang(lang) {
       const switcher = document.getElementById('lang-switcher');
       if (!switcher) return;
       
       const options = switcher.querySelectorAll('.lang-option');
+      const slider = switcher.querySelector('.lang-slider');
+      
+      // Find the active option
+      let activeOption = null;
       options.forEach(opt => {
         if (opt.dataset.lang === lang) {
           opt.classList.add('active');
+          activeOption = opt;
         } else {
           opt.classList.remove('active');
         }
       });
+      
+      // Move slider to active option position
+      if (slider && activeOption) {
+        // Use double requestAnimationFrame to ensure layout is ready
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const switcherRect = switcher.getBoundingClientRect();
+            const optionRect = activeOption.getBoundingClientRect();
+            
+            // Add 20% extra width (20% left, 0% right)
+            const baseWidth = optionRect.width;
+            const leftPadding = baseWidth * 0.2; // 20% on left (giữ nguyên)
+            const rightPadding = 0; // 0% on right (không mở rộng bên phải)
+            const extraWidth = leftPadding + rightPadding; // 20% total
+            
+            // Calculate position relative to switcher (extend left by 20%)
+            const left = optionRect.left - switcherRect.left - leftPadding;
+            // Calculate width (add 20% total: 20% left + 0% right)
+            const width = baseWidth + extraWidth;
+            
+            // Set slider position and size with smooth transition
+            if (width > 0) {
+              slider.style.width = width + 'px';
+              slider.style.transform = `translateX(${left}px)`;
+              slider.classList.add('initialized');
+            }
+          });
+        });
+      }
     }
 
     // Show/hide switcher based on current section
@@ -188,7 +223,14 @@
 
     // Initialize on load
     function init() {
-      setActiveLang(getCurrentLang());
+      const currentLang = getCurrentLang();
+      setActiveLang(currentLang);
+      
+      // Ensure slider is positioned correctly after layout
+      setTimeout(() => {
+        setActiveLang(currentLang);
+      }, 100);
+      
       updateSwitcherVisibility();
 
       // Use MutationObserver to watch for section changes
@@ -334,10 +376,29 @@
     transform: translateY(0);
   }
 
+  .lang-slider {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    height: calc(100% - 1rem);
+    background: rgba(14, 165, 233, 0.2);
+    border-radius: 6px;
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 0;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+    width: 0;
+    opacity: 0;
+  }
+  
+  .lang-slider.initialized {
+    opacity: 1;
+  }
+
   .lang-option {
     padding: 0.25rem 0.5rem;
     color: var(--muted, #475569);
-    transition: all 0.2s ease;
+    transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
     border-radius: 6px;
     display: flex;
@@ -345,6 +406,8 @@
     gap: 0.3rem;
     cursor: pointer;
     pointer-events: auto;
+    position: relative;
+    z-index: 1;
   }
 
   .lang-option * {
@@ -380,7 +443,6 @@
 
   .lang-option.active {
     color: var(--accent, #0ea5e9);
-    background: rgba(14, 165, 233, 0.1);
     font-weight: 700;
   }
 

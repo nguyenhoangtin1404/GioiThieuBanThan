@@ -342,7 +342,117 @@ const translationsEn = await getTranslations('en');
         text-decoration: none;
       }
 
-      /* Mobile responsive tweaks */
+      /* Mobile layout - disable fullpagejs, normal scroll */
+      @media (max-width: 767px) {
+        html {
+          overflow: auto !important;
+          scroll-behavior: smooth;
+        }
+
+        body {
+          overflow: auto !important;
+          background: var(--bg) !important;
+        }
+
+        body:has(#fullpage) {
+          overflow: auto !important;
+          background: var(--bg) !important;
+        }
+
+        html:has(#fullpage) {
+          background: var(--bg) !important;
+        }
+
+        body:has(#fullpage) main {
+          max-width: 1200px !important;
+          padding: 2rem clamp(1rem, 4vw, 3rem) 4rem !important;
+          margin: 0 auto !important;
+          height: auto !important;
+          overflow: visible !important;
+          position: static !important;
+        }
+
+        #fullpage {
+          position: static !important;
+          height: auto !important;
+          overflow: visible !important;
+          max-height: none !important;
+        }
+
+        #fullpage.fp-vertical {
+          height: auto !important;
+        }
+
+        .section {
+          position: static !important;
+          height: auto !important;
+          min-height: auto !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          display: flex !important;
+          pointer-events: auto !important;
+          transform: none !important;
+          overflow: visible !important;
+          overflow-y: visible !important;
+          top: auto !important;
+          left: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+
+        .section.active,
+        .section.next,
+        .section.prev {
+          opacity: 1 !important;
+          visibility: visible !important;
+          display: flex !important;
+          pointer-events: auto !important;
+          transform: none !important;
+          z-index: auto !important;
+        }
+
+        .section.active > * {
+          padding: 2rem clamp(1rem, 4vw, 3rem) !important;
+        }
+
+        .section.active > * > * {
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+
+        .section.active .projects-section,
+        .section.active .timeline-section,
+        .section.active .card {
+          opacity: 1 !important;
+          visibility: visible !important;
+          display: flex !important;
+        }
+
+        /* Hide navigation dots on mobile */
+        .fp-nav {
+          display: none !important;
+        }
+
+        /* Section content styles for mobile */
+        #fullpage .section[data-anchor="home"] .hero {
+          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+        }
+
+        #fullpage .section[data-anchor^="du-an"] .projects-section {
+          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+        }
+
+        #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section,
+        #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section.alt {
+          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+        }
+
+        #fullpage .section[data-anchor="lien-he"] .card {
+          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+        }
+      }
+
+      /* Mobile responsive tweaks (old, keep for backwards compatibility) */
       @media (max-width: 640px) {
         .section {
           height: 100vh;
@@ -354,12 +464,7 @@ const translationsEn = await getTranslations('en');
         }
 
         .fp-nav {
-          right: 10px;
-          transform: translateY(-50%) scale(0.7);
-        }
-
-        .fp-nav li {
-          margin: 8px 0;
+          display: none !important;
         }
       }
     </style>

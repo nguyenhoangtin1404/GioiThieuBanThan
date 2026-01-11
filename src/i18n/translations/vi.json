@@ -24,6 +24,7 @@
     "avatarAlt": "Ảnh hồ sơ của Nguyễn Hoàng Tín"
   },
   "projects": {
+    "title": "Dự án",
     "labels": {
       "role": "Vai trò:",
       "tools": "Công nghệ:",

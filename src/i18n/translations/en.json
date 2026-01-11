@@ -24,6 +24,7 @@
     "avatarAlt": "Profile photo of Nguyễn Hoàng Tín"
   },
   "projects": {
+    "title": "Projects",
     "labels": {
       "role": "Role:",
       "tools": "Technologies:",

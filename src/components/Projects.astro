@@ -21,6 +21,11 @@ const labels = t.projects.labels;
 ---
 
 <section id={sectionId} class="projects-section">
+  {projectIndex === 0 && (
+    <header>
+      <h2 data-i18n="projects.title">{t.projects.title}</h2>
+    </header>
+  )}
   <div class="carousel-container">
     <div class="list" id={`projects-${sectionId}`}>
       {project && (

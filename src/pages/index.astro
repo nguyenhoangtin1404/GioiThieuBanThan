@@ -12,32 +12,32 @@ import ContactCard from '@components/ContactCard.astro';
 >
   <div id="fullpage">
     <!-- Section 1: Hero -->
-    <div class="section active" data-anchor="home">
+    <div id="home" class="section active" data-anchor="home">
       <Hero />
     </div>
 
     <!-- Section 2: Project 1 -->
-    <div class="section next" data-anchor="du-an-1">
+    <div id="du-an-1" class="section next" data-anchor="du-an-1">
       <Projects projectIndex={0} sectionId="du-an-1" title="D ¯ñ A­n 1" />
     </div>
 
     <!-- Section 3: Project 2 -->
-    <div class="section next" data-anchor="du-an-2">
+    <div id="du-an-2" class="section next" data-anchor="du-an-2">
       <Projects projectIndex={1} sectionId="du-an-2" title="D ¯ñ A­n 2" />
     </div>
 
     <!-- Section 4: Project 3 -->
-    <div class="section next" data-anchor="du-an-3">
+    <div id="du-an-3" class="section next" data-anchor="du-an-3">
       <Projects projectIndex={2} sectionId="du-an-3" title="D ¯ñ A­n 3" />
     </div>
 
     <!-- Section 5: Timeline -->
-    <div class="section next" data-anchor="kinh-nghiem">
+    <div id="kinh-nghiem" class="section next" data-anchor="kinh-nghiem">
       <Timeline />
     </div>
 
     <!-- Section 6: Contact -->
-    <div class="section next" data-anchor="lien-he">
+    <div id="lien-he" class="section next" data-anchor="lien-he">
       <ContactCard />
     </div>
   </div>
@@ -63,8 +63,81 @@ import ContactCard from '@components/ContactCard.astro';
       loopBottom: true
     };
 
+    const MOBILE_BREAKPOINT = 768;
+    const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
+
+    // Check if mobile
+    function isMobile() {
+      return window.innerWidth < MOBILE_BREAKPOINT;
+    }
+
+    // Setup mobile layout (normal scroll)
+    function setupMobileLayout() {
+      const fullpage = document.getElementById('fullpage');
+      if (!fullpage) return;
+
+      // Add mobile class to body for CSS
+      document.body.classList.add('mobile-layout');
+
+      // Show all sections
+      const sections = fullpage.querySelectorAll('.section');
+      sections.forEach((section) => {
+        section.style.opacity = '1';
+        section.style.visibility = 'visible';
+        section.style.position = 'relative';
+        section.style.height = 'auto';
+        section.style.minHeight = 'auto';
+        section.style.transform = 'none';
+        section.style.pointerEvents = 'auto';
+      });
+
+      // Setup native smooth scroll for hash links
+      const anchorLinks = document.querySelectorAll('a[href^="#"]');
+      anchorLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href') || '';
+          const target = href.replace('#', '');
+          if (anchors.includes(target)) {
+            const targetElement = document.getElementById(target);
+            if (targetElement) {
+              e.preventDefault();
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              // Update URL hash
+              window.history.pushState(null, '', href);
+            }
+          }
+        });
+      });
+
+      // Handle hash on page load
+      const hash = window.location.hash.replace('#', '');
+      if (hash && anchors.includes(hash)) {
+        setTimeout(() => {
+          const targetElement = document.getElementById(hash);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 100);
+      }
+    }
+
+    // Destroy mobile layout (cleanup)
+    function destroyMobileLayout() {
+      document.body.classList.remove('mobile-layout');
+      const sections = document.querySelectorAll('.section');
+      sections.forEach((section) => {
+        section.style.cssText = '';
+      });
+    }
+
     // Khởi tạo VanillaFullpage khi DOM ready và script đã load
     function initFullpage() {
+      // Check if mobile - don't initialize fullpagejs on mobile
+      if (isMobile()) {
+        setupMobileLayout();
+        return;
+      }
+
       // Kiểm tra xem class đã được load chưa
       if (typeof VanillaFullpage === 'undefined') {
         // Nếu chưa load, thử lại sau 100ms
@@ -77,7 +150,6 @@ import ContactCard from '@components/ContactCard.astro';
         window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
 
         // Gắn handler cho các anchor CTA để cuộn đúng section
-        const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
         const anchorLinks = document.querySelectorAll('a[href^="#"]');
         anchorLinks.forEach((link) => {
           link.addEventListener('click', (e) => {
@@ -98,7 +170,6 @@ import ContactCard from '@components/ContactCard.astro';
       // Xử lý hash URL khi trang load với hash (ví dụ: #lien-he)
       const hash = window.location.hash.replace('#', '');
       if (hash) {
-        const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
         const index = anchors.indexOf(hash);
         if (index !== -1 && window.vanillaFullpage) {
           // Đợi một chút để đảm bảo fullpage đã khởi tạo xong
@@ -109,13 +180,46 @@ import ContactCard from '@components/ContactCard.astro';
       }
     }
 
+    // Handle window resize
+    let resizeTimeout;
+    function handleResize() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const wasMobile = document.body.classList.contains('mobile-layout');
+        const nowMobile = isMobile();
+
+        if (wasMobile && !nowMobile) {
+          // Resized from mobile to desktop
+          destroyMobileLayout();
+          if (typeof VanillaFullpage !== 'undefined' && !window.vanillaFullpage) {
+            initFullpage();
+          }
+        } else if (!wasMobile && nowMobile) {
+          // Resized from desktop to mobile
+          if (window.vanillaFullpage) {
+            // Destroy fullpagejs instance if possible
+            if (window.vanillaFullpage.destroy) {
+              window.vanillaFullpage.destroy();
+            }
+            window.vanillaFullpage = null;
+          }
+          setupMobileLayout();
+        }
+      }, 150);
+    }
+
     // Khởi tạo khi DOM ready
+    function init() {
+      initFullpage();
+      window.addEventListener('resize', handleResize);
+    }
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initFullpage);
+      document.addEventListener('DOMContentLoaded', init);
     } else {
       // Nếu DOM đã ready, đợi script load xong
-      window.addEventListener('load', initFullpage);
-      setTimeout(initFullpage, 50);
+      window.addEventListener('load', init);
+      setTimeout(init, 50);
     }
   </script>
 </BaseLayout>

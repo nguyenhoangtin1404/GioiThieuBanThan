@@ -1,5 +1,4 @@
 ---
-import LanguageSwitcher from '@components/LanguageSwitcher.astro';
 import { getLang, getTranslations } from '@i18n/utils';
 
 export interface Props {
@@ -293,48 +292,464 @@ const translationsEn = await getTranslations('en');
         height: auto !important;
       }
 
-      /* Navigation dots */
-      .fp-nav {
+      /* Sidebar Navigation */
+      .sidebar-nav {
         position: fixed;
         right: 20px;
+        top: 20px;
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(14, 165, 233, 0.2);
+        border-radius: 999px;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (min-width: 641px) {
+        .sidebar-nav {
+          display: flex;
+          right: 20px; /* Now contains both lang-switcher and navigation */
+        }
+
+        /* Hide mobile sidebar-nav on desktop */
+        .sidebar-nav-mobile {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 767px) {
+        /* Hide fixed sidebar-nav on mobile */
+        .sidebar-nav {
+          display: none !important;
+        }
+
+        /* Modern Bottom Navigation Bar */
+        .sidebar-nav-mobile {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          gap: 0.5rem;
+          padding: 0.75rem 1rem;
+          padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+          background: rgba(255, 255, 255, 0.95);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(14, 165, 233, 0.2);
+          border-radius: 24px 24px 0 0;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
+          box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+          z-index: 10000;
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        .sidebar-nav-mobile .sidebar-list {
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          gap: 0.25rem;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          flex: 1;
+        }
+
+        .sidebar-nav-mobile .sidebar-list li {
+          margin: 0;
+          padding: 0;
+          flex: 1;
+          display: flex;
+          justify-content: center;
+        }
+
+        .sidebar-nav-mobile .sidebar-list button {
+          background: transparent;
+          border: none;
+          padding: 0.5rem;
+          min-width: 44px;
+          min-height: 44px;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+          color: var(--muted, #475569) !important;
+          opacity: 1 !important;
+          transform: none !important;
+          filter: none !important;
+          -webkit-filter: none !important;
+          font-weight: 500;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          gap: 0.25rem;
+        }
+
+        .sidebar-nav-mobile .sidebar-list button:active {
+          transform: scale(0.95);
+        }
+
+        .sidebar-nav-mobile .sidebar-list li.active button {
+          color: var(--accent, #0ea5e9) !important;
+          background: rgba(14, 165, 233, 0.12);
+        }
+
+        .sidebar-nav-mobile .sidebar-list li.active button::before {
+          content: '';
+          position: absolute;
+          top: 0.25rem;
+          width: 4px;
+          height: 4px;
+          border-radius: 50%;
+          background: var(--accent, #0ea5e9);
+        }
+
+        .sidebar-nav-mobile .sidebar-icon {
+          width: 1.25rem !important;
+          height: 1.25rem !important;
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-nav-mobile .sidebar-list li.active .sidebar-icon {
+          transform: scale(1.1);
+        }
+
+        /* Lang-switcher at right corner */
+        .sidebar-nav-mobile .lang-switcher {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+          padding: 0.5rem 0.75rem;
+          background: transparent;
+          border: none;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          min-width: 44px;
+          min-height: 44px;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          margin-left: 0.5rem;
+        }
+
+        .sidebar-nav-mobile .lang-switcher::before {
+          content: '';
+          position: absolute;
+          left: -0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 1px;
+          height: 1.5rem;
+          background: rgba(14, 165, 233, 0.2);
+        }
+
+        .sidebar-nav-mobile .lang-switcher:active {
+          transform: scale(0.95);
+        }
+
+        .sidebar-nav-mobile .lang-option {
+          padding: 0.15rem 0.35rem;
+          color: var(--muted, #475569);
+          transition: all 0.2s ease;
+          user-select: none;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+        }
+
+        .sidebar-nav-mobile .lang-option.active {
+          color: var(--accent, #0ea5e9);
+          background: rgba(14, 165, 233, 0.12);
+          font-weight: 700;
+        }
+
+        .sidebar-nav-mobile .lang-option:active {
+          transform: scale(0.95);
+        }
+
+        .sidebar-nav-mobile .globe-icon {
+          display: none;
+        }
+
+        .sidebar-nav-mobile .globe-icon .globe-svg {
+          width: 12px;
+          height: 12px;
+        }
+
+        /* Add bottom padding to content to avoid overlap */
+        body.mobile-layout #fullpage,
+        body.mobile-layout .section {
+          padding-bottom: calc(72px + env(safe-area-inset-bottom));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .sidebar-nav {
+          top: 15px;
+          right: 15px;
+          padding: 0.4rem 0.8rem;
+          gap: 0.4rem;
+        }
+
+        .sidebar-icon {
+          width: 0.9rem;
+          height: 0.9rem;
+        }
+
+        .sidebar-list button {
+          padding: 0.2rem 0.4rem;
+        }
+      }
+
+      .sidebar-nav:hover {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(14, 165, 233, 0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Language Switcher inside sidebar-nav */
+      .sidebar-nav .lang-switcher {
+        position: static;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: none;
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+
+      .sidebar-nav .lang-switcher:hover {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        transform: none;
+      }
+
+
+      .sidebar-nav .lang-option {
+        padding: 0.25rem 0.5rem;
+        color: var(--muted, #475569);
+        transition: all 0.2s ease;
+        user-select: none;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        pointer-events: auto;
+      }
+
+      .sidebar-nav .lang-option * {
+        pointer-events: none;
+      }
+
+      .sidebar-nav .lang-option .text {
+        font-size: 0.9rem;
+      }
+
+      .sidebar-nav .lang-option.active {
+        color: var(--accent, #0ea5e9);
+        background: rgba(14, 165, 233, 0.1);
+        font-weight: 700;
+      }
+
+      .sidebar-nav .lang-option:hover:not(.active) {
+        color: var(--text, #0a0a0a);
+        background: rgba(14, 165, 233, 0.05);
+      }
+
+      .sidebar-nav .lang-separator {
+        color: rgba(14, 165, 233, 0.3);
+        user-select: none;
+        pointer-events: none;
+      }
+
+      .sidebar-nav .globe-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0;
+        color: var(--muted, #475569);
+        flex-shrink: 0;
+      }
+
+      .sidebar-nav .globe-icon .globe-svg {
+        width: 16px;
+        height: 16px;
+        display: block;
+        fill: currentColor;
+      }
+
+      /* Divider between sidebar-list and lang-switcher */
+      .sidebar-nav .lang-switcher {
+        position: relative;
+        padding-left: 0.75rem;
+        margin-left: 0.25rem;
+      }
+
+      .sidebar-nav .lang-switcher::before {
+        content: '';
+        position: absolute;
+        left: 0;
         top: 50%;
-        transform: translateY(-50%) scale(0.8);
-        z-index: 9999;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 1.5rem;
+        background: rgba(14, 165, 233, 0.2);
+      }
+
+      @media (max-width: 640px) {
+        .sidebar-nav .lang-switcher {
+          font-size: 0.85rem;
+          gap: 0.4rem;
+        }
+
+        .sidebar-nav .lang-option {
+          padding: 0.2rem 0.4rem;
+        }
+
+        .sidebar-nav .lang-option .text {
+          font-size: 0.8rem;
+        }
+
+        .sidebar-nav .globe-icon .globe-svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+
+      .sidebar-list {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
         list-style: none;
         margin: 0;
         padding: 0;
-        opacity: 0.3;
-        pointer-events: auto;
-        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        will-change: opacity, transform;
       }
 
-      .fp-nav.fp-nav-visible {
-        opacity: 1;
-        transform: translateY(-50%) scale(1);
-        pointer-events: auto;
+      .sidebar-list li {
+        margin: 0;
+        padding: 0;
       }
 
-      .fp-nav li {
-        margin: 10px 0;
-      }
-
-      .fp-nav a {
-        display: block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.5);
-        border: 2px solid rgba(14, 165, 233, 0.6);
-        transition: all 0.3s;
+      .sidebar-list button {
+        background: transparent;
+        border: none;
+        padding: 0.25rem 0.5rem;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        color: #0a0a0a !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        font-weight: 600;
       }
 
-      .fp-nav a.active,
-      .fp-nav a:hover {
-        background: var(--accent);
-        transform: scale(1.2);
-        border-color: var(--accent);
+      .sidebar-list button:hover {
+        background: rgba(14, 165, 233, 0.1);
+        color: var(--accent) !important;
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+
+      .sidebar-list li.active button {
+        color: var(--accent) !important;
+        background: rgba(14, 165, 233, 0.15);
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+      }
+
+      .sidebar-icon {
+        width: 1rem !important;
+        height: 1rem !important;
+        min-width: 1rem !important;
+        min-height: 1rem !important;
+        max-width: 1rem !important;
+        max-height: 1rem !important;
+        display: block;
+        opacity: 1 !important;
+        transform: none !important;
+        transform-origin: center !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      .sidebar-list li .sidebar-icon {
+        width: 1rem !important;
+        height: 1rem !important;
+        min-width: 1rem !important;
+        min-height: 1rem !important;
+        max-width: 1rem !important;
+        max-height: 1rem !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transform-origin: center !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        scale: 1 !important;
+      }
+
+      .sidebar-list li button {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+      }
+
+      .sidebar-list li svg {
+        width: 1rem !important;
+        height: 1rem !important;
+        min-width: 1rem !important;
+        min-height: 1rem !important;
+        max-width: 1rem !important;
+        max-height: 1rem !important;
+        opacity: 1 !important;
+        transform: none !important;
+        transform-origin: center !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        scale: 1 !important;
+      }
+
+      .sidebar-list li svg path {
+        opacity: 1 !important;
+        filter: none !important;
+        -webkit-filter: none !important;
+        fill: currentColor !important;
       }
 
       a {
@@ -347,23 +762,35 @@ const translationsEn = await getTranslations('en');
         html {
           overflow: auto !important;
           scroll-behavior: smooth;
+          height: auto !important;
+          position: relative !important;
         }
 
         body {
           overflow: auto !important;
           background: var(--bg) !important;
+          height: auto !important;
+          position: relative !important;
+          touch-action: pan-y !important;
         }
 
-        body:has(#fullpage) {
+        body:has(#fullpage),
+        body.mobile-layout {
           overflow: auto !important;
           background: var(--bg) !important;
+          height: auto !important;
+          position: relative !important;
         }
 
-        html:has(#fullpage) {
+        html:has(#fullpage),
+        html.mobile-layout {
           background: var(--bg) !important;
+          height: auto !important;
+          overflow: auto !important;
         }
 
-        body:has(#fullpage) main {
+        body:has(#fullpage) main,
+        body.mobile-layout main {
           max-width: 1200px !important;
           padding: 2rem clamp(1rem, 4vw, 3rem) 4rem !important;
           margin: 0 auto !important;
@@ -377,10 +804,17 @@ const translationsEn = await getTranslations('en');
           height: auto !important;
           overflow: visible !important;
           max-height: none !important;
+          transform: none !important;
+          transition: none !important;
+          touch-action: pan-y !important;
         }
 
-        #fullpage.fp-vertical {
+        #fullpage.fp-vertical,
+        #fullpage.fp-enabled,
+        #fullpage.fp-responsive {
           height: auto !important;
+          position: static !important;
+          transform: none !important;
         }
 
         .section {
@@ -392,23 +826,29 @@ const translationsEn = await getTranslations('en');
           display: flex !important;
           pointer-events: auto !important;
           transform: none !important;
+          transition: none !important;
           overflow: visible !important;
           overflow-y: visible !important;
           top: auto !important;
           left: auto !important;
           margin: 0 !important;
           padding: 0 !important;
+          touch-action: pan-y !important;
         }
 
         .section.active,
         .section.next,
-        .section.prev {
+        .section.prev,
+        .section.fp-completely {
           opacity: 1 !important;
           visibility: visible !important;
           display: flex !important;
           pointer-events: auto !important;
           transform: none !important;
+          transition: none !important;
           z-index: auto !important;
+          position: static !important;
+          height: auto !important;
         }
 
         .section.active > * {
@@ -452,11 +892,11 @@ const translationsEn = await getTranslations('en');
         }
       }
 
-      /* Mobile responsive tweaks (old, keep for backwards compatibility) */
+      /* Mobile responsive tweaks */
       @media (max-width: 640px) {
         .section {
-          height: 100vh;
-          min-height: 100vh;
+          height: auto !important;
+          min-height: auto !important;
         }
 
         .section.active > * {
@@ -470,11 +910,152 @@ const translationsEn = await getTranslations('en');
     </style>
   </head>
   <body>
-    <LanguageSwitcher />
+    <!-- Sidebar Navigation with Language Switcher -->
+    <div class="sidebar-nav">
+      <!-- Navigation Icons -->
+      <ul id="sidebar" class="sidebar-list">
+        <li data-menuanchor="home" class="active">
+          <button aria-label="Home">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="house" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+              <path fill="currentColor" d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"></path>
+            </svg>
+          </button>
+        </li>
+        <li data-menuanchor="du-an">
+          <button aria-label="Projects">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+              <path fill="currentColor" d="M88.7 223.8L0 375.8 0 96C0 60.7 28.7 32 64 32l117.5 0c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7L416 96c35.3 0 64 28.7 64 64l0 32-336 0c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224l400 0c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480L32 480c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"></path>
+            </svg>
+          </button>
+        </li>
+        <li data-menuanchor="kinh-nghiem">
+          <button aria-label="Experience">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"></path>
+            </svg>
+          </button>
+        </li>
+        <li data-menuanchor="lien-he">
+          <button aria-label="Contact">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path>
+            </svg>
+          </button>
+        </li>
+      </ul>
+      <!-- Language Switcher -->
+      <button
+        id="lang-switcher"
+        class="lang-switcher"
+        aria-label="Switch language"
+        title="Switch language"
+      >
+        <span class="globe-icon">
+          <svg height="16" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16" class="globe-svg">
+            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z"></path>
+          </svg>
+        </span>
+        <span class="lang-option" data-lang="vi">
+          <span class="text">VI</span>
+        </span>
+        <span class="lang-separator">|</span>
+        <span class="lang-option" data-lang="en">
+          <span class="text">EN</span>
+        </span>
+      </button>
+    </div>
     <main>
       <slot />
     </main>
+    <!-- Mobile Bottom Navigation (fixed at bottom) -->
+    <div class="sidebar-nav-mobile"></div>
     <script is:inline define:vars={{ translationsVi, translationsEn }}>
+      // Language Switcher Script
+      (function() {
+        // Get current language
+        function getCurrentLang() {
+          if (typeof window === 'undefined') return 'vi';
+          const urlParams = new URLSearchParams(window.location.search);
+          const langParam = urlParams.get('lang');
+          if (langParam === 'vi' || langParam === 'en') return langParam;
+          const stored = localStorage.getItem('lang');
+          return (stored === 'vi' || stored === 'en') ? stored : 'vi';
+        }
+
+        // Set active state
+        function setActiveLang(lang) {
+          const switcher = document.getElementById('lang-switcher');
+          if (!switcher) return;
+          
+          const options = switcher.querySelectorAll('.lang-option');
+          options.forEach(opt => {
+            if (opt.dataset.lang === lang) {
+              opt.classList.add('active');
+            } else {
+              opt.classList.remove('active');
+            }
+          });
+        }
+
+        // Initialize on load
+        function init() {
+          setActiveLang(getCurrentLang());
+
+          // Handle click using event delegation
+          setupClickHandler();
+        }
+
+        function setupClickHandler() {
+          const switcher = document.getElementById('lang-switcher');
+          if (!switcher) {
+            // Retry if not ready yet
+            setTimeout(setupClickHandler, 100);
+            return;
+          }
+          
+          // Use event delegation - attach to button, handle clicks on children
+          switcher.addEventListener('click', function(e) {
+            // Find the clicked lang-option
+            let target = e.target;
+            
+            // Traverse up to find lang-option
+            while (target && target !== switcher) {
+              if (target.classList && target.classList.contains('lang-option')) {
+                const lang = target.dataset.lang;
+                if (lang === 'vi' || lang === 'en') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  
+                  console.log('Language switcher clicked, switching to:', lang);
+                  
+                  // Save to localStorage
+                  localStorage.setItem('lang', lang);
+                  
+                  // Dispatch event with bubbles and cancelable
+                  const event = new CustomEvent('langchange', { 
+                    detail: { lang: lang },
+                    bubbles: true,
+                    cancelable: true
+                  });
+                  
+                  const dispatched = window.dispatchEvent(event);
+                  console.log('Event dispatched:', dispatched, 'Event detail:', event.detail);
+                  
+                  return;
+                }
+              }
+              target = target.parentElement;
+            }
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+
       // Language switching client-side script
       (function() {
         // @ts-ignore - translationsVi and translationsEn are injected via define:vars

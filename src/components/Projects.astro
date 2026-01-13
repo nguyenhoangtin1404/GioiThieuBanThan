@@ -9,8 +9,7 @@ export interface Props {
 
 const {
   projectIndex = 0,
-  sectionId = 'du-an',
-  title = 'Dự án'
+  sectionId = 'du-an'
 } = Astro.props;
 
 const lang = getLang(Astro.url);
@@ -42,8 +41,8 @@ const labels = t.projects.labels;
             <div class="tools-section">
               <strong data-i18n="projects.labels.tools">{labels.tools}</strong>
               <ul class="tools">
-                {project.tools && project.tools.map((tag, idx) => (
-                  <li key={idx}>{tag}</li>
+                {project.tools && project.tools.map((tag: string) => (
+                  <li>{tag}</li>
                 ))}
               </ul>
             </div>
@@ -51,8 +50,8 @@ const labels = t.projects.labels;
               <div class="tasks">
                 <strong data-i18n="projects.labels.tasks">{labels.tasks}</strong>
                 <ul class="task-list">
-                  {project.tasks.map((task, idx) => (
-                    <li key={idx} data-i18n={`projects.items.${projectIndex}.tasks.${idx}`}>{task}</li>
+                  {project.tasks.map((task: string, idx: number) => (
+                    <li data-i18n={`projects.items.${projectIndex}.tasks.${idx}`}>{task}</li>
                   ))}
                 </ul>
               </div>
@@ -67,8 +66,8 @@ const labels = t.projects.labels;
           <div class="side">
             {project.gallery && project.gallery.length > 0 && (
               <div class="gallery" role="region" data-i18n-attr={`aria-label:projects.galleryAlt`} data-i18n-dynamic-path={`projects.items.${projectIndex}.name`} aria-label={`${t.projects.galleryAlt} ${project.name}`}>
-                {project.gallery.map((image, index) => (
-                  <figure key={index}>
+                {project.gallery.map((image: string, index: number) => (
+                  <figure>
                     <a href={image} class="glightbox" data-gallery={`gallery-${project.name.replace(/\s+/g, '-').toLowerCase()}`}>
                       <img src={image} data-i18n-attr={`alt:projects.galleryAlt`} data-i18n-dynamic-path={`projects.items.${projectIndex}.name`} data-i18n-dynamic-suffix={` - ${index + 1}`} alt={`${t.projects.galleryAlt} ${project.name} - ${index + 1}`} loading="lazy" />
                     </a>
@@ -97,8 +96,10 @@ const labels = t.projects.labels;
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
     script.onload = function() {
+      // @ts-ignore - GLightbox is loaded dynamically
       if (typeof GLightbox !== 'undefined') {
-        const lightbox = GLightbox({
+        // @ts-ignore - GLightbox is loaded dynamically
+        GLightbox({
           selector: '.glightbox',
           touchNavigation: true,
           loop: true,

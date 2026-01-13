@@ -29,6 +29,46 @@ npm run preview  # Chạy bản build để kiểm tra trước khi deploy
 
 Bạn có thể chỉnh nội dung các component để khớp với hồ sơ của riêng mình rồi deploy lên bất kỳ dịch vụ static hosting nào (Netlify, Vercel, Cloudflare Pages,…).
 
+## CI/CD với GitHub Actions và FTP
+
+Dự án đã được cấu hình để tự động build và deploy lên hosting qua FTP mỗi khi push code lên nhánh `main`.
+
+### Cách hoạt động
+
+1. **Build trên GitHub Actions**: Khi bạn push code lên nhánh `main`, GitHub Actions sẽ tự động:
+   - Checkout source code
+   - Cài đặt Node.js và dependencies
+   - Build dự án Astro (`npm run build`)
+   - Upload files đã build từ thư mục `dist/` lên FTP server
+
+2. **Hosting chỉ nhận static files**: Hosting của bạn chỉ cần phục vụ static files (HTML, CSS, JS đã được build sẵn), không cần Node.js.
+
+### Cấu hình GitHub Secrets
+
+Để sử dụng CI/CD, bạn cần cấu hình các secrets sau trong GitHub repository:
+
+1. Vào repository trên GitHub
+2. **Settings** → **Secrets and variables** → **Actions**
+3. Click **New repository secret** và thêm các secrets sau:
+
+   - `FTP_HOST`: Địa chỉ FTP server (ví dụ: `ftp.example.com` hoặc `123.456.789.0`)
+   - `FTP_USER`: Tên đăng nhập FTP
+   - `FTP_PASS`: Mật khẩu FTP
+
+### Kiểm tra deployment
+
+Sau khi push code lên nhánh `main`:
+
+1. Vào tab **Actions** trên GitHub để xem workflow đang chạy
+2. Click vào workflow run để xem chi tiết logs
+3. Kiểm tra website của bạn để verify files đã được upload thành công
+
+### Lưu ý
+
+- Đảm bảo FTP server cho phép kết nối từ GitHub Actions IPs (hầu hết các hosting đều cho phép)
+- Nếu deployment thất bại, kiểm tra logs trong tab Actions để xem lỗi cụ thể
+- Workflow file nằm tại `.github/workflows/deploy-ftp.yml` nếu bạn cần chỉnh sửa
+
 ## Trang Test Full Page Scrolling
 
 Giải pháp full page scrolling:

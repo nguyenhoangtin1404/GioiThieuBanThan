@@ -1,0 +1,121 @@
+name: Auto Deploy to CPanel Hosting
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Cho phép chạy thủ công từ GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro project
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
+            echo "Error: dist folder is empty or does not exist!"
+            exit 1
+          fi
+          echo "Build output verified successfully"
+
+      - name: Debug FTP connection
+        run: |
+          echo "=== Debugging FTP Connection ==="
+          echo "Checking if FTP_HOST secret is set..."
+          if [ -z "$FTP_HOST" ]; then
+            echo "❌ ERROR: FTP_HOST secret is empty or not set!"
+            echo "Please check your GitHub Secrets configuration."
+            exit 1
+          else
+            FTP_HOST_LEN=${#FTP_HOST}
+            echo "✅ FTP_HOST is set (length: ${FTP_HOST_LEN} characters)"
+            echo "FTP_HOST value: $FTP_HOST"
+          fi
+          
+          echo ""
+          echo "Checking if FTP_USER secret is set..."
+          if [ -z "$FTP_USER" ]; then
+            echo "❌ ERROR: FTP_USER secret is empty or not set!"
+            exit 1
+          else
+            FTP_USER_LEN=${#FTP_USER}
+            echo "✅ FTP_USER is set (length: ${FTP_USER_LEN} characters)"
+          fi
+          
+          echo ""
+          echo "Checking if FTP_PASS secret is set..."
+          if [ -z "$FTP_PASS" ]; then
+            echo "❌ ERROR: FTP_PASS secret is empty or not set!"
+            exit 1
+          else
+            FTP_PASS_LEN=${#FTP_PASS}
+            echo "✅ FTP_PASS is set (length: ${FTP_PASS_LEN} characters)"
+          fi
+          
+          echo ""
+          echo "Testing DNS resolution for: $FTP_HOST"
+          if nslookup "$FTP_HOST" 2>&1 | grep -q "can't find\|NXDOMAIN"; then
+            echo "❌ DNS lookup failed! Hostname cannot be resolved."
+            echo "Possible solutions:"
+            echo "  1. Check if the hostname is correct: $FTP_HOST"
+            echo "  2. Try using IP address instead of hostname"
+            echo "  3. Contact your hosting provider"
+            exit 1
+          else
+            echo "✅ DNS lookup successful"
+            nslookup "$FTP_HOST" | head -10
+          fi
+          
+          echo ""
+          echo "Testing connection to port 21..."
+          if timeout 5 bash -c "echo > /dev/tcp/$FTP_HOST/21" 2>/dev/null; then
+            echo "✅ Port 21 is reachable"
+          else
+            echo "⚠️  Warning: Cannot connect to port 21"
+            echo "This might be normal if firewall blocks the connection"
+          fi
+          
+          echo ""
+          echo "=== Debug complete ==="
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+
+      - name: Deploy to cPanel using FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./dist/
+          # FTP user is already rooted at public_html, so use relative path
+          # to avoid duplicating the path (it was uploading into /public_html/public_html).
+          server-dir: ./                        # phải kết thúc bằng dấu /
+          exclude: |
+            .github/
+            .gitignore
+            README.md
+            **/.git*
+            **/node_modules*
+            **/.DS_Store
+            **/.env*
+            **/*.log
+          dangerous-clean-slate: false
+          dry-run: false

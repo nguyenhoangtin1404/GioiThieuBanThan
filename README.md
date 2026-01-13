@@ -51,10 +51,9 @@ Dự án đã được cấu hình để tự động build và deploy lên host
 2. **Settings** → **Secrets and variables** → **Actions**
 3. Click **New repository secret** và thêm các secrets sau:
 
-   - `FTP_SERVER`: Địa chỉ FTP server (ví dụ: `ftp.example.com` hoặc `123.456.789.0`)
-   - `FTP_USERNAME`: Tên đăng nhập FTP
-   - `FTP_PASSWORD`: Mật khẩu FTP
-   - `FTP_REMOTE_PATH`: Đường dẫn trên server (ví dụ: `/public_html` hoặc `/htdocs` hoặc `/www`)
+   - `FTP_HOST`: Địa chỉ FTP server (ví dụ: `ftp.example.com` hoặc `123.456.789.0`)
+   - `FTP_USER`: Tên đăng nhập FTP
+   - `FTP_PASS`: Mật khẩu FTP
 
 ### Kiểm tra deployment
 

@@ -4,7 +4,7 @@
 
 1. **Vào repository trên GitHub**
 2. Click tab **Actions** ở trên cùng
-3. Chọn workflow **"Deploy to FTP"** ở sidebar bên trái
+3. Chọn workflow **"Auto Deploy to CPanel Hosting"** ở sidebar bên trái
 4. Click nút **"Run workflow"** (góc trên bên phải)
 5. Chọn nhánh (thường là `main`)
 6. Click **"Run workflow"** để bắt đầu
@@ -45,7 +45,7 @@ Nếu build local thành công, CI/CD trên GitHub cũng sẽ thành công.
 - Tất cả các bước (steps) có dấu ✓ màu xanh
 - Bước "Build Astro project" hoàn thành
 - Bước "Verify build output" hiển thị "Build output verified successfully"
-- Bước "Deploy to FTP" hoàn thành (nếu có cấu hình FTP secrets)
+- Bước "Deploy to cPanel using FTP" hoàn thành (nếu có cấu hình FTP secrets)
 
 ### ❌ Workflow thất bại nếu:
 - Có bước nào có dấu ✗ màu đỏ

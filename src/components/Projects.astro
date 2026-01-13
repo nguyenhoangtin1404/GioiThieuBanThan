@@ -105,7 +105,7 @@ function escapeCssUrl(url: string): string {
   }
 
   // Modal functionality
-  document.addEventListener('DOMContentLoaded', function() {
+  function initModal() {
     const modal = document.getElementById('project-modal');
     const modalBody = document.getElementById('modal-body');
     const closeBtn = modal?.querySelector('.modal-close');
@@ -254,7 +254,15 @@ function escapeCssUrl(url: string): string {
         closeModal();
       }
     });
-  });
+  }
+
+  // Initialize modal - check if DOM is already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initModal);
+  } else {
+    // DOM is already loaded, run immediately
+    initModal();
+  }
 </script>
 
 <style>

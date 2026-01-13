@@ -7,7 +7,7 @@ import ContactCard from '@components/ContactCard.astro';
 ---
 
 <BaseLayout
-  title="Nguyễn Hoàng Tín"
+  title="Nguyễn Hoàng Tín | Portfolio"
   description="Backend/Fullstack Developer"
 >
   <div id="fullpage">
@@ -16,60 +16,43 @@ import ContactCard from '@components/ContactCard.astro';
       <Hero />
     </div>
 
-    <!-- Section 2: Project 1 -->
-    <div id="du-an-1" class="section next" data-anchor="du-an-1">
-      <Projects projectIndex={0} sectionId="du-an-1" title="D ¯ñ A­n 1" />
+    <!-- Section 2: Projects -->
+    <div id="du-an" class="section next" data-anchor="du-an">
+      <Projects />
     </div>
 
-    <!-- Section 3: Project 2 -->
-    <div id="du-an-2" class="section next" data-anchor="du-an-2">
-      <Projects projectIndex={1} sectionId="du-an-2" title="D ¯ñ A­n 2" />
-    </div>
-
-    <!-- Section 4: Project 3 -->
-    <div id="du-an-3" class="section next" data-anchor="du-an-3">
-      <Projects projectIndex={2} sectionId="du-an-3" title="D ¯ñ A­n 3" />
-    </div>
-
-    <!-- Section 5: Timeline -->
+    <!-- Section 3: Timeline -->
     <div id="kinh-nghiem" class="section next" data-anchor="kinh-nghiem">
       <Timeline />
     </div>
 
-    <!-- Section 6: Contact -->
+    <!-- Section 4: Contact -->
     <div id="lien-he" class="section next" data-anchor="lien-he">
       <ContactCard />
     </div>
   </div>
 
-  <!-- Navigation dots -->
-  <ul class="fp-nav">
-    <li><a href="#home" data-index="0" class="active"></a></li>
-    <li><a href="#du-an-1" data-index="1"></a></li>
-    <li><a href="#du-an-2" data-index="2"></a></li>
-    <li><a href="#du-an-3" data-index="3"></a></li>
-    <li><a href="#kinh-nghiem" data-index="4"></a></li>
-    <li><a href="#lien-he" data-index="5"></a></li>
-  </ul>
-
-  <!-- Load script từ public folder -->
-  <script is:inline src="/js/vanilla-fullpage.js"></script>
+  <!-- Load script từ public folder - chỉ load trên desktop -->
   <script is:inline>
+    const MOBILE_BREAKPOINT = 768;
+    
+    // Check if mobile
+    function isMobile() {
+      return window.innerWidth < MOBILE_BREAKPOINT;
+    }
+
     // Options cấu hình
     const initOptions = {
-      anchors: ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'],
+      anchors: ['home', 'du-an', 'kinh-nghiem', 'lien-he'],
       navigation: true,
       scrollingSpeed: 800,
       loopBottom: true
     };
 
-    const MOBILE_BREAKPOINT = 768;
-    const anchors = ['home', 'du-an-1', 'du-an-2', 'du-an-3', 'kinh-nghiem', 'lien-he'];
+    const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
 
-    // Check if mobile
-    function isMobile() {
-      return window.innerWidth < MOBILE_BREAKPOINT;
-    }
+    // Store scroll handler reference to prevent accumulation
+    let mobileScrollHandler = null;
 
     // Setup mobile layout (normal scroll)
     function setupMobileLayout() {
@@ -78,36 +61,212 @@ import ContactCard from '@components/ContactCard.astro';
 
       // Add mobile class to body for CSS
       document.body.classList.add('mobile-layout');
+      document.documentElement.classList.add('mobile-layout');
+
+
+      // Disable any fullpage.js event listeners
+      if (window.vanillaFullpage) {
+        try {
+          if (window.vanillaFullpage.destroy) {
+            window.vanillaFullpage.destroy();
+          }
+        } catch (e) {
+          console.warn('Error destroying fullpage:', e);
+        }
+        window.vanillaFullpage = null;
+      }
+
+      // Remove fullpage classes that might interfere
+      fullpage.classList.remove('fp-enabled', 'fp-vertical', 'fp-responsive');
+      
+      // Reset fullpage container styles
+      fullpage.style.cssText = 'position: static !important; height: auto !important; overflow: visible !important; transform: none !important;';
 
       // Show all sections
       const sections = fullpage.querySelectorAll('.section');
       sections.forEach((section) => {
-        section.style.opacity = '1';
-        section.style.visibility = 'visible';
-        section.style.position = 'relative';
-        section.style.height = 'auto';
-        section.style.minHeight = 'auto';
-        section.style.transform = 'none';
-        section.style.pointerEvents = 'auto';
+        section.style.cssText = 'position: relative !important; height: auto !important; min-height: auto !important; opacity: 1 !important; visibility: visible !important; display: flex !important; pointer-events: auto !important; transform: none !important; transition: none !important; overflow: visible !important; top: auto !important; left: auto !important; margin: 0 !important; padding: 0 !important;';
+        section.classList.remove('active', 'next', 'prev', 'fp-completely');
       });
 
-      // Setup native smooth scroll for hash links
-      const anchorLinks = document.querySelectorAll('a[href^="#"]');
-      anchorLinks.forEach((link) => {
-        link.addEventListener('click', (e) => {
-          const href = link.getAttribute('href') || '';
-          const target = href.replace('#', '');
-          if (anchors.includes(target)) {
-            const targetElement = document.getElementById(target);
-            if (targetElement) {
-              e.preventDefault();
-              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              // Update URL hash
-              window.history.pushState(null, '', href);
+      // Setup native smooth scroll for hash links (only if not already set up)
+      if (!document.body.hasAttribute('data-mobile-links-setup')) {
+        const anchorLinks = document.querySelectorAll('a[href^="#"]');
+        anchorLinks.forEach((link) => {
+          // Skip if listener already attached
+          if (link.hasAttribute('data-mobile-link-handled')) return;
+          link.setAttribute('data-mobile-link-handled', 'true');
+          link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href') || '';
+            const target = href.replace('#', '');
+            if (anchors.includes(target)) {
+              const targetElement = document.getElementById(target);
+              if (targetElement) {
+                e.preventDefault();
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Update URL hash
+                window.history.pushState(null, '', href);
+                // Update sidebar active state
+                updateSidebarActive(target);
+              }
             }
+          });
+        });
+        document.body.setAttribute('data-mobile-links-setup', 'true');
+      }
+
+      // Setup sidebar navigation for mobile (only if not already set up)
+      const sidebarItems = document.querySelectorAll('.sidebar-list li');
+      sidebarItems.forEach((item) => {
+        const button = item.querySelector('button');
+        const anchor = item.getAttribute('data-menuanchor');
+        if (button && anchor) {
+          // Skip if listener already attached
+          if (button.hasAttribute('data-mobile-sidebar-handled')) return;
+          button.setAttribute('data-mobile-sidebar-handled', 'true');
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetElement = document.getElementById(anchor);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              window.history.pushState(null, '', `#${anchor}`);
+              updateSidebarActive(anchor);
+            }
+          });
+        }
+      });
+
+
+      // Clone sidebar-nav to sidebar-nav-mobile
+      const sidebarNav = document.querySelector('.sidebar-nav');
+      const sidebarNavMobile = document.querySelector('.sidebar-nav-mobile');
+      if (sidebarNav && sidebarNavMobile && sidebarNavMobile.children.length === 0) {
+        sidebarNavMobile.innerHTML = sidebarNav.innerHTML;
+        
+        // Fix duplicate ID issues - change mobile element IDs
+        const clonedLangSwitcher = sidebarNavMobile.querySelector('#lang-switcher');
+        if (clonedLangSwitcher) {
+          clonedLangSwitcher.id = 'lang-switcher-mobile';
+        }
+        
+        const clonedSidebar = sidebarNavMobile.querySelector('#sidebar');
+        if (clonedSidebar) {
+          clonedSidebar.id = 'sidebar-mobile';
+        }
+        
+        // Re-attach event listeners for cloned sidebar items (only once)
+        const clonedSidebarItems = sidebarNavMobile.querySelectorAll('.sidebar-list li');
+        clonedSidebarItems.forEach((item) => {
+          const button = item.querySelector('button');
+          const anchor = item.getAttribute('data-menuanchor');
+          if (button && anchor) {
+            // Skip if listener already attached
+            if (button.hasAttribute('data-mobile-cloned-handled')) return;
+            button.setAttribute('data-mobile-cloned-handled', 'true');
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const targetElement = document.getElementById(anchor);
+              if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                window.history.pushState(null, '', `#${anchor}`);
+                updateSidebarActive(anchor);
+              }
+            });
           }
         });
-      });
+
+        // Re-attach lang-switcher click handler for mobile
+        // Re-query using the new ID to ensure we have a fresh, valid reference
+        const mobileLangSwitcher = sidebarNavMobile.querySelector('#lang-switcher-mobile');
+        if (mobileLangSwitcher && !mobileLangSwitcher.hasAttribute('data-mobile-lang-handled')) {
+          mobileLangSwitcher.setAttribute('data-mobile-lang-handled', 'true');
+          mobileLangSwitcher.addEventListener('click', function(e) {
+            let target = e.target;
+            while (target && target !== mobileLangSwitcher) {
+              if (target.classList && target.classList.contains('lang-option')) {
+                const lang = target.dataset.lang;
+                if (lang === 'vi' || lang === 'en') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  localStorage.setItem('lang', lang);
+                  const event = new CustomEvent('langchange', { 
+                    detail: { lang: lang },
+                    bubbles: true,
+                    cancelable: true
+                  });
+                  window.dispatchEvent(event);
+                  return;
+                }
+              }
+              target = target.parentElement;
+            }
+          });
+        }
+
+        // Sync active state after cloning
+        const hash = window.location.hash.replace('#', '');
+        const currentAnchor = hash && anchors.includes(hash) ? hash : 'home';
+        updateSidebarActive(currentAnchor);
+      }
+
+      // Update active state on scroll (for mobile)
+      // Remove existing scroll listener if it exists to prevent accumulation
+      if (mobileScrollHandler) {
+        window.removeEventListener('scroll', mobileScrollHandler, { passive: true });
+        mobileScrollHandler = null;
+      }
+
+      let scrollTimeout;
+      mobileScrollHandler = function handleScroll() {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const sections = document.querySelectorAll('.section');
+          let currentSection = '';
+          let minDistance = Infinity;
+          
+          // Find the section that is most visible in viewport
+          sections.forEach((section) => {
+            const rect = section.getBoundingClientRect();
+            const sectionId = section.id;
+            
+            if (anchors.includes(sectionId)) {
+              // Calculate how much of the section is visible
+              const visibleTop = Math.max(0, rect.top);
+              const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+              const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+              
+              // Prefer section that is closer to top of viewport and has significant visibility
+              if (visibleHeight > window.innerHeight * 0.3) {
+                const distanceFromTop = Math.abs(rect.top);
+                if (distanceFromTop < minDistance) {
+                  minDistance = distanceFromTop;
+                  currentSection = sectionId;
+                }
+              }
+            }
+          });
+          
+          // Fallback: if no section is significantly visible, use the one closest to top
+          if (!currentSection) {
+            sections.forEach((section) => {
+              const rect = section.getBoundingClientRect();
+              const sectionId = section.id;
+              if (anchors.includes(sectionId) && rect.top >= 0 && rect.top < window.innerHeight) {
+                const distance = rect.top;
+                if (distance < minDistance) {
+                  minDistance = distance;
+                  currentSection = sectionId;
+                }
+              }
+            });
+          }
+          
+          if (currentSection && anchors.includes(currentSection)) {
+            updateSidebarActive(currentSection);
+          }
+        }, 150);
+      };
+      window.addEventListener('scroll', mobileScrollHandler, { passive: true });
 
       // Handle hash on page load
       const hash = window.location.hash.replace('#', '');
@@ -124,10 +283,20 @@ import ContactCard from '@components/ContactCard.astro';
     // Destroy mobile layout (cleanup)
     function destroyMobileLayout() {
       document.body.classList.remove('mobile-layout');
+      document.documentElement.classList.remove('mobile-layout');
       const sections = document.querySelectorAll('.section');
       sections.forEach((section) => {
         section.style.cssText = '';
       });
+      
+      // Remove scroll listener to prevent memory leaks
+      if (mobileScrollHandler) {
+        window.removeEventListener('scroll', mobileScrollHandler, { passive: true });
+        mobileScrollHandler = null;
+      }
+      
+      // Note: We keep data attributes to prevent re-attaching listeners if switching back to mobile
+      // The listeners will still work, and the attributes prevent accumulation
     }
 
     // Khởi tạo VanillaFullpage khi DOM ready và script đã load
@@ -159,9 +328,66 @@ import ContactCard from '@components/ContactCard.astro';
             if (idx !== -1 && window.vanillaFullpage) {
               e.preventDefault();
               window.vanillaFullpage.goToSection(idx);
+              // Update active state
+              updateSidebarActive(target);
             }
           });
         });
+
+        // Handle sidebar navigation clicks
+        const sidebarItems = document.querySelectorAll('.sidebar-list li');
+        sidebarItems.forEach((item) => {
+          const button = item.querySelector('button');
+          const anchor = item.getAttribute('data-menuanchor');
+          if (button && anchor) {
+            button.addEventListener('click', (e) => {
+              e.preventDefault();
+              const idx = anchors.indexOf(anchor);
+              if (idx !== -1 && window.vanillaFullpage) {
+                window.vanillaFullpage.goToSection(idx);
+                // Update active state immediately
+                updateSidebarActive(anchor);
+              }
+            });
+          }
+        });
+
+        // Function to check and update active section
+        function checkActiveSection() {
+          const sections = document.querySelectorAll('.section');
+          sections.forEach((section, index) => {
+            if (section.classList.contains('active')) {
+              const anchor = anchors[index];
+              if (anchor) {
+                updateSidebarActive(anchor);
+              }
+            }
+          });
+        }
+
+        // Update active state on section change using MutationObserver
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              checkActiveSection();
+            }
+          });
+        });
+
+        // Observe all sections for class changes
+        const sections = document.querySelectorAll('.section');
+        sections.forEach((section) => {
+          observer.observe(section, {
+            attributes: true,
+            attributeFilter: ['class']
+          });
+        });
+
+        // Also check periodically as fallback
+        setInterval(checkActiveSection, 500);
+
+        // Initial check
+        setTimeout(checkActiveSection, 200);
       } catch (error) {
         console.error('Error initializing VanillaFullpage:', error);
         return;
@@ -175,9 +401,33 @@ import ContactCard from '@components/ContactCard.astro';
           // Đợi một chút để đảm bảo fullpage đã khởi tạo xong
           setTimeout(() => {
             window.vanillaFullpage.goToSection(index);
+            updateSidebarActive(hash);
           }, 100);
         }
+      } else {
+        // Set home as active by default
+        updateSidebarActive('home');
       }
+    }
+
+    // Function to update sidebar active state (both fixed and mobile)
+    function updateSidebarActive(activeAnchor) {
+      if (!activeAnchor || !anchors.includes(activeAnchor)) {
+        return;
+      }
+      
+      // Update both desktop (.sidebar-nav) and mobile (.sidebar-nav-mobile) sidebars
+      const allSidebarLists = document.querySelectorAll('.sidebar-list');
+      
+      allSidebarLists.forEach((sidebarList) => {
+        const sidebarItems = sidebarList.querySelectorAll('li');
+        sidebarItems.forEach((item) => {
+          item.classList.remove('active');
+          if (item.getAttribute('data-menuanchor') === activeAnchor) {
+            item.classList.add('active');
+          }
+        });
+      });
     }
 
     // Handle window resize
@@ -210,17 +460,28 @@ import ContactCard from '@components/ContactCard.astro';
 
     // Khởi tạo khi DOM ready
     function init() {
-      initFullpage();
+      // Check mobile first and setup immediately
+      if (isMobile()) {
+        setupMobileLayout();
+      } else {
+        // Chỉ load fullpage.js script trên desktop
+        const script = document.createElement('script');
+        script.src = '/js/vanilla-fullpage.js';
+        script.async = true;
+        script.onload = function() {
+          // Wait a bit for script to fully initialize
+          setTimeout(initFullpage, 100);
+        };
+        document.head.appendChild(script);
+      }
       window.addEventListener('resize', handleResize);
     }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {
-      // Nếu DOM đã ready, đợi script load xong
-      window.addEventListener('load', init);
+      // Nếu DOM đã ready, chạy ngay
       setTimeout(init, 50);
     }
   </script>
 </BaseLayout>
-

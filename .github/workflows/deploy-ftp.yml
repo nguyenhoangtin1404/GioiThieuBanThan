@@ -1,4 +1,4 @@
-name: Deploy to FTP
+name: Auto Deploy to CPanel Hosting
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
   workflow_dispatch:  # Cho phép chạy thủ công từ GitHub UI
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -34,22 +34,24 @@ jobs:
           fi
           echo "Build output verified successfully"
 
-      - name: Deploy to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Deploy to cPanel using FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
           local-dir: ./dist/
-          server-dir: ${{ secrets.FTP_REMOTE_PATH }}
+          # FTP user is already rooted at public_html, so use relative path
+          # to avoid duplicating the path (it was uploading into /public_html/public_html).
+          server-dir: ./                        # phải kết thúc bằng dấu /
           exclude: |
+            .github/
+            .gitignore
+            README.md
             **/.git*
-            **/.git*/**
-            **/node_modules/**
+            **/node_modules*
             **/.DS_Store
             **/.env*
             **/*.log
-            **/.vscode/**
-            **/.idea/**
           dangerous-clean-slate: false
           dry-run: false

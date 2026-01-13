@@ -11,22 +11,22 @@ const events = t.timeline.items;
     <h2 data-i18n="timeline.title">{t.timeline.title}</h2>
   </header>
   <div class="timeline">
-    {events.map((event, eventIndex) => (
+    {events.map((event: any, eventIndex: number) => (
       <article class="item">
         <span class="year" data-i18n={`timeline.items.${eventIndex}.year`}>{event.year}</span>
         <div>
           <p class="company" data-i18n={`timeline.items.${eventIndex}.company`}>{event.company}</p>
           <h3 data-i18n={`timeline.items.${eventIndex}.role`}>{event.role}</h3>
           <ul class="tasks">
-            {event.tasks.map((task, taskIndex) => (
-              <li key={taskIndex} data-i18n={`timeline.items.${eventIndex}.tasks.${taskIndex}`}>{task}</li>
+            {event.tasks.map((task: string, taskIndex: number) => (
+              <li data-i18n={`timeline.items.${eventIndex}.tasks.${taskIndex}`}>{task}</li>
             ))}
           </ul>
           <div class="achievements">
             <strong data-i18n="timeline.achievements">{t.timeline.achievements}</strong>
             <ul>
-              {event.achievements.map((achievement, achIndex) => (
-                <li key={achIndex} data-i18n={`timeline.items.${eventIndex}.achievements.${achIndex}`}>{achievement}</li>
+              {event.achievements.map((achievement: string, achIndex: number) => (
+                <li data-i18n={`timeline.items.${eventIndex}.achievements.${achIndex}`}>{achievement}</li>
               ))}
             </ul>
           </div>

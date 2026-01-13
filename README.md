@@ -52,6 +52,8 @@ Dự án đã được cấu hình để tự động build và deploy lên host
 3. Click **New repository secret** và thêm các secrets sau:
 
    - `FTP_HOST`: Địa chỉ FTP server (ví dụ: `ftp.example.com` hoặc `123.456.789.0`)
+     - **Lưu ý**: Nếu hostname không resolve được (lỗi DNS), hãy dùng IP address thay vì hostname
+     - Bạn có thể tìm IP trong cPanel → FTP Accounts → Configure FTP Client
    - `FTP_USER`: Tên đăng nhập FTP
    - `FTP_PASS`: Mật khẩu FTP
 
@@ -68,6 +70,15 @@ Sau khi push code lên nhánh `main`:
 - Đảm bảo FTP server cho phép kết nối từ GitHub Actions IPs (hầu hết các hosting đều cho phép)
 - Nếu deployment thất bại, kiểm tra logs trong tab Actions để xem lỗi cụ thể
 - Workflow file nằm tại `.github/workflows/deploy-ftp.yml` nếu bạn cần chỉnh sửa
+
+### Troubleshooting
+
+**Lỗi "ENOTFOUND" hoặc "DNS lookup failed":**
+- Hostname không tồn tại trong DNS hoặc không accessible từ GitHub Actions
+- **Giải pháp**: Dùng IP address thay vì hostname
+  1. Vào cPanel → FTP Accounts → Configure FTP Client để xem IP address
+  2. Hoặc liên hệ hosting provider để lấy IP address của FTP server
+  3. Cập nhật secret `FTP_HOST` với IP address (ví dụ: `123.456.789.0`)
 
 ## Trang Test Full Page Scrolling
 

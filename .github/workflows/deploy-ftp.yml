@@ -7,7 +7,28 @@ on:
   workflow_dispatch:  # Cho phép chạy thủ công từ GitHub UI
 
 jobs:
+  # CI: Continuous Integration - Kiểm tra code trước khi deploy
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check with Astro
+        run: npx astro check
+
+  # CD: Continuous Deployment - Deploy lên hosting
   deploy:
+    needs: ci  # Chỉ deploy nếu CI pass
     runs-on: ubuntu-latest
 
     steps:
@@ -34,9 +55,9 @@ jobs:
           fi
           echo "Build output verified successfully"
 
-      - name: Debug FTP connection
+      - name: Validate FTP configuration
         run: |
-          echo "=== Debugging FTP Connection ==="
+          echo "=== Validating FTP Configuration ==="
           echo "Checking if FTP_HOST secret is set..."
           if [ -z "$FTP_HOST" ]; then
             echo "❌ ERROR: FTP_HOST secret is empty or not set!"
@@ -45,7 +66,6 @@ jobs:
           else
             FTP_HOST_LEN=${#FTP_HOST}
             echo "✅ FTP_HOST is set (length: ${FTP_HOST_LEN} characters)"
-            echo "FTP_HOST value: $FTP_HOST"
           fi
           
           echo ""
@@ -69,30 +89,37 @@ jobs:
           fi
           
           echo ""
+          echo "=== Validation complete ==="
+          echo "All required FTP secrets are configured."
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+
+      - name: Debug FTP connection
+        continue-on-error: true
+        run: |
+          echo "=== Debugging FTP Connection ==="
           echo "Testing DNS resolution for: $FTP_HOST"
           if nslookup "$FTP_HOST" 2>&1 | grep -q "can't find\|NXDOMAIN"; then
-            echo "❌ DNS lookup failed! Hostname cannot be resolved."
-            echo "Possible solutions:"
-            echo "  1. Check if the hostname is correct: $FTP_HOST"
-            echo "  2. Try using IP address instead of hostname"
-            echo "  3. Contact your hosting provider"
-            exit 1
+            echo "⚠️  WARNING: DNS lookup failed! Hostname cannot be resolved."
+            echo "This might cause FTP connection to fail."
+            echo ""
+            echo "💡 SOLUTION: Use IP address instead of hostname"
+            echo "  1. Find the IP address of your FTP server"
+            echo "  2. Update FTP_HOST secret with the IP address (e.g., 123.456.789.0)"
+            echo "  3. The IP can usually be found in your hosting control panel or by running:"
+            echo "     ping $FTP_HOST"
+            echo "     or"
+            echo "     nslookup $FTP_HOST"
           else
             echo "✅ DNS lookup successful"
             nslookup "$FTP_HOST" | head -10
           fi
           
           echo ""
-          echo "Testing connection to port 21..."
-          if timeout 5 bash -c "echo > /dev/tcp/$FTP_HOST/21" 2>/dev/null; then
-            echo "✅ Port 21 is reachable"
-          else
-            echo "⚠️  Warning: Cannot connect to port 21"
-            echo "This might be normal if firewall blocks the connection"
-          fi
-          
-          echo ""
           echo "=== Debug complete ==="
+          echo "Note: FTP deployment will still be attempted even if DNS lookup failed."
         env:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}

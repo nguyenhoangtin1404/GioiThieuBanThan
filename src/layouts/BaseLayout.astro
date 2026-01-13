@@ -550,17 +550,6 @@ const translationsEn = await getTranslations('en');
         transform: none;
       }
 
-      .sidebar-nav .lang-switcher.hidden {
-        opacity: 0;
-        transform: translateY(-10px);
-        pointer-events: none;
-      }
-
-      .sidebar-nav .lang-switcher.visible {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-      }
 
 
       .sidebar-nav .lang-option {
@@ -1009,109 +998,13 @@ const translationsEn = await getTranslations('en');
           });
         }
 
-        // Show/hide switcher based on current section
-        function updateSwitcherVisibility() {
-          const switcher = document.getElementById('lang-switcher');
-          if (!switcher) return;
-
-          // Check URL hash
-          const hash = window.location.hash.replace('#', '');
-          
-          // List of non-home section anchors
-          const nonHomeAnchors = ['du-an', 'kinh-nghiem', 'lien-he'];
-          const isNonHomeHash = hash && nonHomeAnchors.includes(hash);
-          
-          // Check if we're on the home section by data-anchor
-          const homeSection = document.querySelector('.section[data-anchor="home"]');
-          const isHomeActive = homeSection && homeSection.classList.contains('active');
-          
-          // Check if any non-home section is active
-          let isNonHomeActive = false;
-          nonHomeAnchors.forEach(anchor => {
-            const section = document.querySelector(`.section[data-anchor="${anchor}"]`);
-            if (section && section.classList.contains('active')) {
-              isNonHomeActive = true;
-            }
-          });
-          
-          // Show switcher if:
-          // - Hash is empty or 'home' (default/initial state)
-          // - Home section is active
-          // - No hash and no non-home section is active (default to home)
-          // Hide if we're definitely on a non-home section
-          const shouldShow = (!hash || hash === 'home' || isHomeActive) && !isNonHomeActive && !isNonHomeHash;
-          
-          if (shouldShow) {
-            switcher.classList.add('visible');
-            switcher.classList.remove('hidden');
-          } else {
-            switcher.classList.add('hidden');
-            switcher.classList.remove('visible');
-          }
-        }
-
-        // Store references for cleanup
-        let visibilityObserver = null;
-        let visibilityInterval = null;
-        let hashChangeHandler = null;
-
-        // Cleanup function
-        function cleanupVisibilityListeners() {
-          if (visibilityObserver) {
-            visibilityObserver.disconnect();
-            visibilityObserver = null;
-          }
-          if (hashChangeHandler) {
-            window.removeEventListener('hashchange', hashChangeHandler);
-            hashChangeHandler = null;
-          }
-          if (visibilityInterval) {
-            clearInterval(visibilityInterval);
-            visibilityInterval = null;
-          }
-        }
 
         // Initialize on load
         function init() {
           setActiveLang(getCurrentLang());
-          updateSwitcherVisibility();
 
           // Handle click using event delegation
           setupClickHandler();
-
-          // Use MutationObserver to watch for section changes
-          visibilityObserver = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                const target = mutation.target;
-                if (target.classList.contains('section')) {
-                  updateSwitcherVisibility();
-                }
-              }
-            });
-          });
-
-          // Observe all sections for class changes
-          const sections = document.querySelectorAll('.section');
-          sections.forEach((section) => {
-            visibilityObserver.observe(section, {
-              attributes: true,
-              attributeFilter: ['class']
-            });
-          });
-
-          // Also listen for hash changes
-          hashChangeHandler = updateSwitcherVisibility;
-          window.addEventListener('hashchange', hashChangeHandler);
-
-          // Fallback: check periodically (in case MutationObserver doesn't catch everything)
-          visibilityInterval = setInterval(updateSwitcherVisibility, 200);
-
-          // Clean up on page unload to prevent memory leaks
-          window.addEventListener('beforeunload', cleanupVisibilityListeners);
-
-          // Clean up on pagehide (more reliable than beforeunload in some browsers)
-          window.addEventListener('pagehide', cleanupVisibilityListeners);
         }
 
         function setupClickHandler() {

@@ -53,6 +53,9 @@ import ContactCard from '@components/ContactCard.astro';
 
     // Store scroll handler reference to prevent accumulation
     let mobileScrollHandler = null;
+    
+    // Store animation observer references for cleanup
+    let animationObservers = [];
 
     // Setup mobile layout (normal scroll)
     function setupMobileLayout() {
@@ -285,10 +288,25 @@ import ContactCard from '@components/ContactCard.astro';
         }, 100);
       }
 
+      // Cleanup existing animation observers before setting up new ones
+      cleanupAnimationObservers();
+      
       // Initialize fade-in animations for mobile
       setTimeout(() => {
         initSlideInAnimations();
       }, 300);
+    }
+
+    // Cleanup animation observers
+    function cleanupAnimationObservers() {
+      animationObservers.forEach(observer => {
+        try {
+          observer.disconnect();
+        } catch (e) {
+          console.warn('Error disconnecting observer:', e);
+        }
+      });
+      animationObservers = [];
     }
 
     // Destroy mobile layout (cleanup)
@@ -305,6 +323,9 @@ import ContactCard from '@components/ContactCard.astro';
         window.removeEventListener('scroll', mobileScrollHandler, { passive: true });
         mobileScrollHandler = null;
       }
+      
+      // Cleanup animation observers
+      cleanupAnimationObservers();
       
       // Note: We keep data attributes to prevent re-attaching listeners if switching back to mobile
       // The listeners will still work, and the attributes prevent accumulation
@@ -423,21 +444,31 @@ import ContactCard from '@components/ContactCard.astro';
           }
         }
 
-        // Initialize animations - but don't trigger for initial section
+        // Cleanup existing animation observers before setting up new ones
+        cleanupAnimationObservers();
+        
+        // Initialize animations
         initSlideInAnimations();
 
-        // Track if this is the first time (initial load)
+        // Trigger animation for initial active section after a short delay
+        // This ensures animations work on first page load
+        setTimeout(() => {
+          triggerActiveSectionAnimation();
+        }, 300);
+
+        // Track if this is the first time (initial load) - but we still want to trigger initial section
         let isInitialLoad = true;
 
-        // Trigger animation only when section changes (not on initial load)
+        // Trigger animation when section changes
         const sectionObserver = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-              // Skip triggering on initial load
+              // Skip triggering on initial load (we already triggered it above)
               if (isInitialLoad) {
                 isInitialLoad = false;
                 return;
               }
+              // Trigger animation when section becomes active
               triggerActiveSectionAnimation();
             }
           });
@@ -463,6 +494,10 @@ import ContactCard from '@components/ContactCard.astro';
           setTimeout(() => {
             window.vanillaFullpage.goToSection(index);
             updateSidebarActive(hash);
+            // Trigger animation after navigating to section
+            setTimeout(() => {
+              triggerActiveSectionAnimation();
+            }, 200);
           }, 100);
         }
       } else {
@@ -505,98 +540,196 @@ import ContactCard from '@components/ContactCard.astro';
         return;
       }
 
-      // Animate sections with data-slide-in - only when they enter viewport
+      // Check if we're on mobile or desktop
+      const isMobileLayout = document.body.classList.contains('mobile-layout');
+      
+      // Helper function to calculate intersection ratio manually (more reliable on mobile)
+      function calculateIntersectionRatio(element) {
+        const rect = element.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        
+        // Calculate visible area
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(viewportHeight, rect.bottom);
+        const visibleLeft = Math.max(0, rect.left);
+        const visibleRight = Math.min(viewportWidth, rect.right);
+        
+        const visibleWidth = Math.max(0, visibleRight - visibleLeft);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const visibleArea = visibleWidth * visibleHeight;
+        
+        const elementArea = rect.width * rect.height;
+        
+        if (elementArea === 0) return 0;
+        return visibleArea / elementArea;
+      }
+
+      // Helper function to check if element is in active section (for desktop)
+      function isInActiveSection(element) {
+        if (isMobileLayout) return false; // Mobile doesn't use active sections
+        const section = element.closest('.section');
+        return section && section.classList.contains('active');
+      }
+
+      // Animate sections with data-slide-in
       const slideElements = document.querySelectorAll('[data-slide-in]');
       
       if (slideElements.length > 0) {
-        // Track which elements have been seen to avoid triggering on initial load
-        const seenElements = new Set();
-        
-        const sectionObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-              // Only trigger if element wasn't visible on initial load
-              if (!seenElements.has(entry.target)) {
-                seenElements.add(entry.target);
-                // Small delay to ensure it's a real scroll/view action
-                setTimeout(() => {
-                  if (entry.isIntersecting) {
-                    entry.target.classList.add('slide-in-visible');
-                  }
-                }, 50);
-                sectionObserver.unobserve(entry.target);
+        if (isMobileLayout) {
+          // MOBILE: Use IntersectionObserver for scroll-based detection
+          const seenElements = new Set();
+          
+          // Use improved IntersectionObserver settings for better mobile detection
+          const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
+                // Only trigger if element wasn't visible on initial load
+                if (!seenElements.has(entry.target)) {
+                  seenElements.add(entry.target);
+                  // Small delay to ensure it's a real scroll/view action
+                  setTimeout(() => {
+                    if (entry.isIntersecting) {
+                      entry.target.classList.add('slide-in-visible');
+                    }
+                  }, 50);
+                  sectionObserver.unobserve(entry.target);
+                }
               }
+            });
+          }, {
+            threshold: [0.1, 0.2, 0.3], // Multiple thresholds for better detection
+            rootMargin: '50px 0px' // Trigger 50px before element enters viewport
+          });
+          
+          // Store observer reference for cleanup
+          animationObservers.push(sectionObserver);
+          
+          // Mark elements that are already visible on initial load (using intersection ratio)
+          // Only skip if element is more than 50% visible
+          slideElements.forEach(el => {
+            const intersectionRatio = calculateIntersectionRatio(el);
+            if (intersectionRatio > 0.5) {
+              seenElements.add(el);
+              // Still add visible class for elements that are already visible
+              el.classList.add('slide-in-visible');
             }
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px'
-        });
-        
-        // Mark elements that are already visible on initial load
-        slideElements.forEach(el => {
-          const rect = el.getBoundingClientRect();
-          const isInitiallyVisible = rect.top >= 0 && rect.top < window.innerHeight;
-          if (isInitiallyVisible) {
-            seenElements.add(el);
+          
+          // Observe all sections - animation will trigger when they enter viewport
+          slideElements.forEach(el => {
+            if (!el.classList.contains('slide-in-visible')) {
+              sectionObserver.observe(el);
+            }
+          });
+          
+          // Fallback: Check again after a short delay for elements that might have been missed
+          setTimeout(() => {
+            slideElements.forEach(el => {
+              if (!el.classList.contains('slide-in-visible')) {
+                const intersectionRatio = calculateIntersectionRatio(el);
+                if (intersectionRatio > 0.2) {
+                  el.classList.add('slide-in-visible');
+                  sectionObserver.unobserve(el);
+                }
+              }
+            });
+          }, 500);
+        } else {
+          // DESKTOP: Don't setup IntersectionObserver for slide-in elements
+          // Desktop uses MutationObserver in initFullpage() to trigger animations
+          // when sections become active. We just need to ensure initial section is handled.
+          const activeSection = document.querySelector('.section.active');
+          if (activeSection) {
+            const slideElement = activeSection.querySelector('[data-slide-in]');
+            if (slideElement) {
+              // Don't add visible class immediately - let MutationObserver handle it
+              // This ensures animation triggers when user first navigates to section
+            }
           }
-        });
-        
-        // Observe all sections - animation will trigger when they enter viewport
-        slideElements.forEach(el => {
-          if (!el.classList.contains('slide-in-visible')) {
-            sectionObserver.observe(el);
-          }
-        });
+        }
       }
 
       // Animate project cards and other fade-in items with stagger
-      // Only trigger when scrolling to the section (not on initial load)
       const fadeItems = document.querySelectorAll('.fade-in-item');
       
       if (fadeItems.length > 0) {
-        // Track items that were visible on initial load (to skip them)
-        const initiallyVisibleItems = new Set();
-        
-        // Check which items are already visible on page load
-        fadeItems.forEach(item => {
-          const rect = item.getBoundingClientRect();
-          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-          if (isVisible) {
-            initiallyVisibleItems.add(item);
-          }
-        });
-        
-        const itemObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-              const item = entry.target;
-              
-              // Skip items that were visible on initial load
-              if (initiallyVisibleItems.has(item)) {
-                itemObserver.unobserve(item);
-                return;
-              }
-              
-              // Only trigger when item enters viewport (scrolled to)
-              const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
-              setTimeout(() => {
-                item.classList.add('fade-in-visible');
-              }, delay);
-              itemObserver.unobserve(item);
+        if (isMobileLayout) {
+          // MOBILE: Use IntersectionObserver for scroll-based detection
+          // Track items that were visible on initial load (to skip them)
+          // Only skip if more than 50% visible
+          const initiallyVisibleItems = new Set();
+          
+          // Check which items are already visible on page load using intersection ratio
+          fadeItems.forEach(item => {
+            const intersectionRatio = calculateIntersectionRatio(item);
+            if (intersectionRatio > 0.5) {
+              initiallyVisibleItems.add(item);
+              // Still add visible class for items that are already visible
+              item.classList.add('fade-in-visible');
             }
           });
-        }, {
-          threshold: 0.1,
-          rootMargin: '0px'
-        });
-        
-        // Observe all items - will only trigger when they enter viewport
-        fadeItems.forEach(el => {
-          if (!el.classList.contains('fade-in-visible')) {
-            itemObserver.observe(el);
+          
+          const itemObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
+                const item = entry.target;
+                
+                // Skip items that were visible on initial load
+                if (initiallyVisibleItems.has(item)) {
+                  itemObserver.unobserve(item);
+                  return;
+                }
+                
+                // Only trigger when item enters viewport (scrolled to)
+                const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+                setTimeout(() => {
+                  item.classList.add('fade-in-visible');
+                }, delay);
+                itemObserver.unobserve(item);
+              }
+            });
+          }, {
+            threshold: [0.1, 0.2, 0.3], // Multiple thresholds for better detection
+            rootMargin: '50px 0px' // Trigger 50px before element enters viewport
+          });
+          
+          // Store observer reference for cleanup
+          animationObservers.push(itemObserver);
+          
+          // Observe all items - will only trigger when they enter viewport
+          fadeItems.forEach(el => {
+            if (!el.classList.contains('fade-in-visible')) {
+              itemObserver.observe(el);
+            }
+          });
+          
+          // Fallback: Check again after a short delay for items that might have been missed
+          setTimeout(() => {
+            fadeItems.forEach(item => {
+              if (!item.classList.contains('fade-in-visible') && !initiallyVisibleItems.has(item)) {
+                const intersectionRatio = calculateIntersectionRatio(item);
+                if (intersectionRatio > 0.2) {
+                  const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+                  setTimeout(() => {
+                    item.classList.add('fade-in-visible');
+                  }, delay);
+                  itemObserver.unobserve(item);
+                }
+              }
+            });
+          }, 500);
+        } else {
+          // DESKTOP: Don't setup IntersectionObserver for fade-in items
+          // Desktop uses triggerActiveSectionAnimation() in initFullpage() to trigger
+          // animations when sections become active. Fade-in items will be handled there.
+          // We just need to ensure items in the initial active section are handled.
+          const activeSection = document.querySelector('.section.active');
+          if (activeSection) {
+            // Items in active section will be triggered by triggerActiveSectionAnimation()
+            // when user navigates to section, so we don't need to do anything here
           }
-        });
+        }
       }
     }
 

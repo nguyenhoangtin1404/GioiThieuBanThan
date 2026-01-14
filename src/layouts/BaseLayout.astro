@@ -1056,20 +1056,31 @@ const translationsEn = await getTranslations('en');
           return (stored === 'vi' || stored === 'en') ? stored : 'vi';
         }
 
+        // Expose getCurrentLang globally so it can be called from other scripts
+        window.getCurrentLang = getCurrentLang;
+
         // Set active state
         function setActiveLang(lang) {
-          const switcher = document.getElementById('lang-switcher');
-          if (!switcher) return;
+          // Update both desktop and mobile switchers
+          const switchers = [
+            document.getElementById('lang-switcher'),
+            document.getElementById('lang-switcher-mobile')
+          ].filter(Boolean); // Remove null values
           
-          const options = switcher.querySelectorAll('.lang-option');
-          options.forEach(opt => {
-            if (opt.dataset.lang === lang) {
-              opt.classList.add('active');
-            } else {
-              opt.classList.remove('active');
-            }
+          switchers.forEach(switcher => {
+            const options = switcher.querySelectorAll('.lang-option');
+            options.forEach(opt => {
+              if (opt.dataset.lang === lang) {
+                opt.classList.add('active');
+              } else {
+                opt.classList.remove('active');
+              }
+            });
           });
         }
+
+        // Expose setActiveLang globally so it can be called from other scripts
+        window.setActiveLang = setActiveLang;
 
 
         // Initialize on load
@@ -1271,18 +1282,8 @@ const translationsEn = await getTranslations('en');
             
             updatePageContent(newLang);
             
-            // Update language switcher active state
-            const switcher = document.getElementById('lang-switcher');
-            if (switcher) {
-              const options = switcher.querySelectorAll('.lang-option');
-              options.forEach(opt => {
-                if (opt.dataset.lang === newLang) {
-                  opt.classList.add('active');
-                } else {
-                  opt.classList.remove('active');
-                }
-              });
-            }
+            // Update language switcher active state for both desktop and mobile
+            setActiveLang(newLang);
             
             // Fade back in
             setTimeout(() => {

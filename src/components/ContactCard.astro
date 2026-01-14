@@ -104,6 +104,12 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
   /* circular backdrop to ensure visual padding around strokes */
   .glyph { width: 40px; height: 40px; padding: 6px; border-radius: 50%; background: rgba(14,165,233,.10); border: none; box-sizing: border-box; }
 
+  @media (max-width: 767px) {
+    .card {
+      background: var(--bg);
+    }
+  }
+
   @media (max-width: 640px) {
     .card {
       padding: 1.25rem;

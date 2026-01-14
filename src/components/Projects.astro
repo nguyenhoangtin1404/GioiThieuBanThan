@@ -596,6 +596,12 @@ function escapeCssUrl(url: string): string {
     display: block;
   }
 
+  @media (max-width: 767px) {
+    .project-card {
+      background: var(--bg);
+    }
+  }
+
   @media (max-width: 640px) {
     .projects-section {
       padding: 1.5rem 1rem;

@@ -10,17 +10,31 @@ const channels = [
   { label: t.contact.channels.telegram, value: '@tinnh94', link: 'https://t.me/tinnh94', key: 'telegram' },
   { label: t.contact.channels.email, value: 'tinnh.pyn@gmail.com', link: 'mailto:tinnh.pyn@gmail.com', key: 'email' }
 ];
+
+// Animation delay configuration
+const ANIMATION_BASE_DELAY = 0; // Base delay in milliseconds
+const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
 ---
 
-<section id="lien-he" class="card">
-  <h2 data-i18n="contact.title">{t.contact.title}</h2>
+<section id="lien-he" class="card" data-slide-in="right">
+  <h2 class="fade-in-item" data-i18n="contact.title" data-fade-delay="0">{t.contact.title}</h2>
   <p data-i18n="contact.description">
     {t.contact.description}
   </p>
 
   <div class="channels">
-    {channels.map((c) => (
-      <a class="icon" href={c.link} target={c.link.startsWith('tel:') ? undefined : '_blank'} rel={c.link.startsWith('tel:') ? undefined : 'noreferrer'} data-i18n-attr={`aria-label:contact.channels.${c.key}`} data-i18n-attr-title={`title:contact.channels.${c.key}`} aria-label={c.label} title={c.label}>
+    {channels.map((c, index) => (
+      <a 
+        class="icon fade-in-item" 
+        href={c.link} 
+        target={c.link.startsWith('tel:') ? undefined : '_blank'} 
+        rel={c.link.startsWith('tel:') ? undefined : 'noreferrer'} 
+        data-i18n-attr={`aria-label:contact.channels.${c.key}`} 
+        data-i18n-attr-title={`title:contact.channels.${c.key}`} 
+        aria-label={c.label} 
+        title={c.label}
+        data-fade-delay={ANIMATION_BASE_DELAY + index * ANIMATION_STAGGER_DELAY}
+      >
         {c.link.startsWith('tel:') && (
           <span class="glyph"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.25 4.5c0 9.112 8.138 17.25 17.25 17.25 1.243 0 2.25-1.007 2.25-2.25v-2.1c0-.77-.578-1.416-1.344-1.495l-3.313-.331a1.5 1.5 0 0 0-1.05.3l-1.2.9a12.06 12.06 0 0 1-5.4-5.4l.9-1.2c.27-.36.4-.81.35-1.26l-.33-3.3A1.5 1.5 0 0 0 8.1 3.594h-2.1A2.25 2.25 0 0 0 3.75 5.844v.406"/></svg></span>
         )}
@@ -56,7 +70,6 @@ const channels = [
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    opacity: 1 !important;
     visibility: visible !important;
   }
 

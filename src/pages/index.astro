@@ -278,6 +278,11 @@ import ContactCard from '@components/ContactCard.astro';
           }
         }, 100);
       }
+
+      // Initialize fade-in animations for mobile
+      setTimeout(() => {
+        initSlideInAnimations();
+      }, 300);
     }
 
     // Destroy mobile layout (cleanup)
@@ -388,6 +393,56 @@ import ContactCard from '@components/ContactCard.astro';
 
         // Initial check
         setTimeout(checkActiveSection, 200);
+
+        // Initialize fade-in animations for desktop
+        // Trigger animations when section becomes active (user scrolls to it)
+        function triggerActiveSectionAnimation() {
+          const activeSection = document.querySelector('.section.active');
+          if (activeSection) {
+            const slideElement = activeSection.querySelector('[data-slide-in]');
+            if (slideElement && !slideElement.classList.contains('slide-in-visible')) {
+              slideElement.classList.add('slide-in-visible');
+            }
+            
+            // Trigger fade-in items in active section (only when section becomes active, not on initial load)
+            const fadeItems = activeSection.querySelectorAll('.fade-in-item');
+            fadeItems.forEach((item) => {
+              if (!item.classList.contains('fade-in-visible')) {
+                const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+                setTimeout(() => {
+                  item.classList.add('fade-in-visible');
+                }, delay + 200);
+              }
+            });
+          }
+        }
+
+        // Initialize animations - but don't trigger for initial section
+        initSlideInAnimations();
+
+        // Track if this is the first time (initial load)
+        let isInitialLoad = true;
+
+        // Trigger animation only when section changes (not on initial load)
+        const sectionObserver = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              // Skip triggering on initial load
+              if (isInitialLoad) {
+                isInitialLoad = false;
+                return;
+              }
+              triggerActiveSectionAnimation();
+            }
+          });
+        });
+
+        sections.forEach((section) => {
+          sectionObserver.observe(section, {
+            attributes: true,
+            attributeFilter: ['class']
+          });
+        });
       } catch (error) {
         console.error('Error initializing VanillaFullpage:', error);
         return;
@@ -428,6 +483,115 @@ import ContactCard from '@components/ContactCard.astro';
           }
         });
       });
+    }
+
+    // Initialize fade-in animations using Intersection Observer
+    function initSlideInAnimations() {
+      // Check if user prefers reduced motion
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (prefersReducedMotion) {
+        // Skip animations for users who prefer reduced motion
+        const slideElements = document.querySelectorAll('[data-slide-in]');
+        const fadeItems = document.querySelectorAll('.fade-in-item');
+        slideElements.forEach(el => el.classList.add('slide-in-visible'));
+        fadeItems.forEach(el => el.classList.add('fade-in-visible'));
+        return;
+      }
+
+      // Animate sections with data-slide-in - only when they enter viewport
+      const slideElements = document.querySelectorAll('[data-slide-in]');
+      
+      if (slideElements.length > 0) {
+        // Track which elements have been seen to avoid triggering on initial load
+        const seenElements = new Set();
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+              // Only trigger if element wasn't visible on initial load
+              if (!seenElements.has(entry.target)) {
+                seenElements.add(entry.target);
+                // Small delay to ensure it's a real scroll/view action
+                setTimeout(() => {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add('slide-in-visible');
+                  }
+                }, 50);
+                sectionObserver.unobserve(entry.target);
+              }
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px'
+        });
+        
+        // Mark elements that are already visible on initial load
+        slideElements.forEach(el => {
+          const rect = el.getBoundingClientRect();
+          const isInitiallyVisible = rect.top >= 0 && rect.top < window.innerHeight;
+          if (isInitiallyVisible) {
+            seenElements.add(el);
+          }
+        });
+        
+        // Observe all sections - animation will trigger when they enter viewport
+        slideElements.forEach(el => {
+          if (!el.classList.contains('slide-in-visible')) {
+            sectionObserver.observe(el);
+          }
+        });
+      }
+
+      // Animate project cards and other fade-in items with stagger
+      // Only trigger when scrolling to the section (not on initial load)
+      const fadeItems = document.querySelectorAll('.fade-in-item');
+      
+      if (fadeItems.length > 0) {
+        // Track items that were visible on initial load (to skip them)
+        const initiallyVisibleItems = new Set();
+        
+        // Check which items are already visible on page load
+        fadeItems.forEach(item => {
+          const rect = item.getBoundingClientRect();
+          const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+          if (isVisible) {
+            initiallyVisibleItems.add(item);
+          }
+        });
+        
+        const itemObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+              const item = entry.target;
+              
+              // Skip items that were visible on initial load
+              if (initiallyVisibleItems.has(item)) {
+                itemObserver.unobserve(item);
+                return;
+              }
+              
+              // Only trigger when item enters viewport (scrolled to)
+              const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+              setTimeout(() => {
+                item.classList.add('fade-in-visible');
+              }, delay);
+              itemObserver.unobserve(item);
+            }
+          });
+        }, {
+          threshold: 0.1,
+          rootMargin: '0px'
+        });
+        
+        // Observe all items - will only trigger when they enter viewport
+        fadeItems.forEach(el => {
+          if (!el.classList.contains('fade-in-visible')) {
+            itemObserver.observe(el);
+          }
+        });
+      }
     }
 
     // Handle window resize

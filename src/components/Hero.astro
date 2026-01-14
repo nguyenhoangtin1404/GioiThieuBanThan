@@ -19,8 +19,8 @@ const highlights = [
 ];
 ---
 
-<section class="hero" id="gioi-thieu" data-slide-in="left">
-  <div class="intro">
+<section class="hero" id="gioi-thieu">
+  <div class="intro" data-slide-in="right">
     <h1 data-i18n="hero.name">{profile.name}</h1>
     <p class="subtitle" data-i18n="hero.summary">{profile.summary}</p>
     <div class="bio">
@@ -31,7 +31,7 @@ const highlights = [
       <p><strong data-i18n="hero.highlights.other">{highlights[4].title}</strong> <span data-i18n="hero.highlights.otherContent">{highlights[4].content}</span></p>
     </div>
   </div>
-  <div class="card">
+  <div class="card" data-slide-in="left">
     <div class="avatar">
       <span class="ring">
         <img src="/avatar.png" width="260" height="260" data-i18n-attr="alt:hero.avatarAlt" alt={t.hero.avatarAlt} loading="lazy" />

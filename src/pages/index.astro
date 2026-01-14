@@ -421,26 +421,87 @@ import ContactCard from '@components/ContactCard.astro';
         // Initial check
         setTimeout(checkActiveSection, 200);
 
+        // Check if mobile layout
+        function isMobileLayout() {
+          return document.body.classList.contains('mobile-layout');
+        }
+
+        // Reset animations for a section (remove visible classes)
+        // Only for desktop - mobile keeps animations as is
+        function resetSectionAnimation(section) {
+          // Only reset on desktop
+          if (isMobileLayout()) return;
+          
+          if (section) {
+            const slideElements = section.querySelectorAll('[data-slide-in]');
+            slideElements.forEach(slideElement => {
+              slideElement.classList.remove('slide-in-visible');
+            });
+            
+            const fadeItems = section.querySelectorAll('.fade-in-item');
+            fadeItems.forEach((item) => {
+              item.classList.remove('fade-in-visible');
+            });
+          }
+        }
+
         // Initialize fade-in animations for desktop
         // Trigger animations when section becomes active (user scrolls to it)
         function triggerActiveSectionAnimation() {
           const activeSection = document.querySelector('.section.active');
           if (activeSection) {
-            const slideElement = activeSection.querySelector('[data-slide-in]');
-            if (slideElement && !slideElement.classList.contains('slide-in-visible')) {
-              slideElement.classList.add('slide-in-visible');
-            }
-            
-            // Trigger fade-in items in active section (only when section becomes active, not on initial load)
+            const slideElements = activeSection.querySelectorAll('[data-slide-in]');
             const fadeItems = activeSection.querySelectorAll('.fade-in-item');
-            fadeItems.forEach((item) => {
-              if (!item.classList.contains('fade-in-visible')) {
-                const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
-                setTimeout(() => {
-                  item.classList.add('fade-in-visible');
-                }, delay + 200);
-              }
-            });
+            
+            // Only reset and replay on desktop
+            if (!isMobileLayout()) {
+              // First reset animation to allow it to play again (desktop only)
+              slideElements.forEach(slideElement => {
+                slideElement.classList.remove('slide-in-visible');
+              });
+              
+              fadeItems.forEach((item) => {
+                item.classList.remove('fade-in-visible');
+              });
+              
+              // Then trigger animation after a small delay to ensure reset is complete
+              // Apply stagger delay similar to other sections (200ms between items)
+              setTimeout(() => {
+                slideElements.forEach((slideElement, index) => {
+                  const delay = index * 200; // Stagger delay: 0ms, 200ms, 400ms...
+                  setTimeout(() => {
+                    slideElement.classList.add('slide-in-visible');
+                  }, delay);
+                });
+                
+                fadeItems.forEach((item) => {
+                  const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+                  setTimeout(() => {
+                    item.classList.add('fade-in-visible');
+                  }, delay + 200);
+                });
+              }, 50);
+            } else {
+              // Mobile: only add if not already visible (one-time animation)
+              // Apply stagger delay similar to other sections (200ms between items)
+              slideElements.forEach((slideElement, index) => {
+                if (!slideElement.classList.contains('slide-in-visible')) {
+                  const delay = index * 200; // Stagger delay: 0ms, 200ms, 400ms...
+                  setTimeout(() => {
+                    slideElement.classList.add('slide-in-visible');
+                  }, delay);
+                }
+              });
+              
+              fadeItems.forEach((item) => {
+                if (!item.classList.contains('fade-in-visible')) {
+                  const delay = parseInt(item.getAttribute('data-fade-delay') || '0');
+                  setTimeout(() => {
+                    item.classList.add('fade-in-visible');
+                  }, delay + 200);
+                }
+              });
+            }
           }
         }
 
@@ -463,13 +524,28 @@ import ContactCard from '@components/ContactCard.astro';
         const sectionObserver = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+              const target = mutation.target;
+              const wasActive = mutation.oldValue && mutation.oldValue.includes('active');
+              const isActive = target.classList.contains('active');
+              
               // Skip triggering on initial load (we already triggered it above)
               if (isInitialLoad) {
                 isInitialLoad = false;
                 return;
               }
-              // Trigger animation when section becomes active
-              triggerActiveSectionAnimation();
+              
+              // Only reset on desktop (mobile keeps animations as is)
+              if (!isMobileLayout()) {
+                // If section lost active class, reset its animations (desktop only)
+                if (wasActive && !isActive) {
+                  resetSectionAnimation(target);
+                }
+              }
+              
+              // If section became active, trigger animation
+              if (!wasActive && isActive) {
+                triggerActiveSectionAnimation();
+              }
             }
           });
         });
@@ -477,7 +553,8 @@ import ContactCard from '@components/ContactCard.astro';
         sections.forEach((section) => {
           sectionObserver.observe(section, {
             attributes: true,
-            attributeFilter: ['class']
+            attributeFilter: ['class'],
+            attributeOldValue: true
           });
         });
       } catch (error) {
@@ -641,11 +718,9 @@ import ContactCard from '@components/ContactCard.astro';
           // when sections become active. We just need to ensure initial section is handled.
           const activeSection = document.querySelector('.section.active');
           if (activeSection) {
-            const slideElement = activeSection.querySelector('[data-slide-in]');
-            if (slideElement) {
-              // Don't add visible class immediately - let MutationObserver handle it
-              // This ensures animation triggers when user first navigates to section
-            }
+            const slideElements = activeSection.querySelectorAll('[data-slide-in]');
+            // Don't add visible class immediately - let MutationObserver handle it
+            // This ensures animation triggers when user first navigates to section
           }
         }
       }

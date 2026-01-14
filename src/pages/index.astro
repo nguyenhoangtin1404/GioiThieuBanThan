@@ -207,6 +207,12 @@ import ContactCard from '@components/ContactCard.astro';
         const hash = window.location.hash.replace('#', '');
         const currentAnchor = hash && anchors.includes(hash) ? hash : 'home';
         updateSidebarActive(currentAnchor);
+        
+        // Set initial active state for mobile language switcher
+        if (typeof window.getCurrentLang === 'function' && typeof window.setActiveLang === 'function') {
+          const currentLang = window.getCurrentLang();
+          window.setActiveLang(currentLang);
+        }
       }
 
       // Update active state on scroll (for mobile)

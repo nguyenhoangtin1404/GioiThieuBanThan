@@ -6,6 +6,10 @@ const t = await getTranslations(lang);
 const projects = t.projects.items;
 const labels = t.projects.labels;
 
+// Animation delay configuration
+const ANIMATION_BASE_DELAY = 0; // Base delay in milliseconds
+const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each card
+
 // Helper function to truncate text
 function truncate(text: string, maxLength: number): string {
   if (!text || text.length <= maxLength) return text;
@@ -20,15 +24,16 @@ function escapeCssUrl(url: string): string {
 }
 ---
 
-<section id="du-an" class="projects-section">
+<section id="du-an" class="projects-section" data-slide-in="right">
   <header>
-    <h2 data-i18n="projects.title">{t.projects.title}</h2>
+    <h2 class="fade-in-item" data-i18n="projects.title" data-fade-delay="0">{t.projects.title}</h2>
   </header>
   <div class="projects-grid">
     {projects.map((project: any, index: number) => (
       <article 
-        class="project-card" 
+        class="project-card fade-in-item" 
         data-project-index={index}
+        data-fade-delay={ANIMATION_BASE_DELAY + index * ANIMATION_STAGGER_DELAY}
         data-i18n-name={`projects.items.${index}.name`}
         data-i18n-description={`projects.items.${index}.description`}
         data-i18n-period={`projects.items.${index}.period`}
@@ -273,7 +278,6 @@ function escapeCssUrl(url: string): string {
     overflow-y: visible;
     min-height: 100vh;
     height: auto;
-    opacity: 1 !important;
     visibility: visible !important;
   }
 

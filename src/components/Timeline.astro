@@ -4,15 +4,23 @@ import { getTranslations, getLang } from '@i18n/utils';
 const lang = getLang(Astro.url);
 const t = await getTranslations(lang);
 const events = t.timeline.items;
+
+// Animation delay configuration
+const ANIMATION_BASE_DELAY = 0; // Base delay in milliseconds
+const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
 ---
 
-<section class="timeline-section alt">
+<section class="timeline-section alt" data-slide-in="left">
   <header>
-    <h2 data-i18n="timeline.title">{t.timeline.title}</h2>
+    <h2 class="fade-in-item" data-i18n="timeline.title" data-fade-delay="0">{t.timeline.title}</h2>
   </header>
-  <div class="timeline">
+  <div class="timeline" id="timeline-container">
     {events.map((event: any, eventIndex: number) => (
-      <article class="item">
+      <article 
+        class="item timeline-item fade-in-item" 
+        data-fade-delay={ANIMATION_BASE_DELAY + eventIndex * ANIMATION_STAGGER_DELAY}
+        data-timeline-index={eventIndex}
+      >
         <span class="year" data-i18n={`timeline.items.${eventIndex}.year`}>{event.year}</span>
         <div>
           <p class="company" data-i18n={`timeline.items.${eventIndex}.company`}>{event.company}</p>
@@ -36,6 +44,72 @@ const events = t.timeline.items;
   </div>
 </section>
 
+<script is:inline>
+  // Trigger timeline line animation when section becomes active or visible
+  function initTimelineAnimation() {
+    const timelineSection = document.querySelector('.timeline-section');
+    const timeline = document.querySelector('.timeline');
+    
+    if (!timelineSection || !timeline) return;
+
+    // Function to trigger animation
+    function triggerLineAnimation() {
+      // Reset animation by removing and re-adding class
+      timeline.classList.remove('animate-line');
+      // Force reflow
+      void timeline.offsetWidth;
+      // Add class to trigger animation
+      timeline.classList.add('animate-line');
+    }
+
+    // Check if section is already active
+    const parentSection = timelineSection.closest('.section');
+    if (parentSection && parentSection.classList.contains('active')) {
+      setTimeout(triggerLineAnimation, 100);
+    }
+
+    // Watch for section becoming active (for desktop fullpage)
+    if (parentSection) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            if (parentSection.classList.contains('active')) {
+              triggerLineAnimation();
+            }
+          }
+        });
+      });
+
+      observer.observe(parentSection, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+
+    // Also trigger on scroll for mobile (using Intersection Observer)
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+          triggerLineAnimation();
+          sectionObserver.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.3,
+      rootMargin: '0px'
+    });
+
+    sectionObserver.observe(timelineSection);
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTimelineAnimation);
+  } else {
+    setTimeout(initTimelineAnimation, 100);
+  }
+</script>
+
 <style>
   .timeline-section {
     margin-top: 0 !important;
@@ -51,7 +125,6 @@ const events = t.timeline.items;
     overflow-y: visible;
     min-height: 100vh;
     height: auto;
-    opacity: 1 !important;
     visibility: visible !important;
   }
   .timeline-section.alt {
@@ -92,27 +165,94 @@ const events = t.timeline.items;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    border-left: var(--tl-line) solid rgba(56, 189, 248, 0.4);
+    border-left: var(--tl-line) solid rgba(56, 189, 248, 0.2);
     padding-left: var(--tl-pl);
     margin-left: 0.5rem;
+    position: relative;
+  }
+
+  /* Timeline line drawing animation */
+  .timeline::after {
+    content: '';
+    position: absolute;
+    left: calc(-1 * var(--tl-line));
+    top: 0;
+    width: var(--tl-line);
+    height: 0;
+    background: var(--accent);
+    z-index: 1;
+    animation: none;
+  }
+
+  /* Trigger animation when section is active or timeline section is visible */
+  .section.active .timeline::after,
+  .timeline.animate-line::after {
+    animation: drawLine 1.5s ease-out forwards;
+  }
+
+  @keyframes drawLine {
+    from {
+      height: 0;
+    }
+    to {
+      height: 100%;
+    }
   }
 
   .item {
     position: relative;
   }
 
+  /* Initial state - will be overridden by .fade-in-item from BaseLayout */
+  .item.fade-in-item {
+    opacity: 0 !important;
+    transform: translateX(100px) !important;
+    transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: opacity, transform;
+  }
+
+  .item.fade-in-item.fade-in-visible {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+
   .item::before {
     content: '';
     position: absolute;
-    /* center of dot aligns to center of border-left */
-    left: calc(-1 * var(--tl-pl) + var(--tl-line) / 2 - (var(--tl-dot) / 2 + var(--tl-dot-border)));
-    transform: none;
+    /* Triangle marker - point at timeline line, pointing right */
+    left: calc(-1 * var(--tl-pl));
+    transform: scale(0);
     top: 0.65rem;
-    width: var(--tl-dot);
-    height: var(--tl-dot);
-    border-radius: 999px;
-    border: 2px solid var(--accent);
-    background: var(--bg);
+    width: 14px;
+    height: 14px;
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    background: var(--accent);
+    z-index: 2;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.6s ease-out;
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+  }
+
+  /* Marker pulse animation when item becomes visible */
+  .item.fade-in-visible::before {
+    transform: scale(1);
+    animation: markerPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes markerPulse {
+    0% {
+      transform: scale(0);
+      box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7);
+    }
+    50% {
+      transform: scale(1.2);
+      box-shadow: 0 0 0 8px rgba(14, 165, 233, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+    }
   }
 
   .year {

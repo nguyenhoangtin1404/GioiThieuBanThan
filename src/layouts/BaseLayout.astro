@@ -908,6 +908,79 @@ const translationsEn = await getTranslations('en');
           display: none !important;
         }
       }
+
+      /* Slide-in animations for components */
+      [data-slide-in] {
+        opacity: 0;
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: opacity, transform;
+        pointer-events: none;
+      }
+
+      /* Slide from left */
+      [data-slide-in="left"] {
+        transform: translateX(-50px);
+      }
+
+      [data-slide-in="left"].slide-in-visible {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        pointer-events: auto;
+      }
+
+      /* Slide from right */
+      [data-slide-in="right"] {
+        transform: translateX(50px);
+      }
+
+      [data-slide-in="right"].slide-in-visible {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        pointer-events: auto;
+      }
+
+      /* Fade-in animation for project cards and other items */
+      /* All items slide from right to left (except home section) */
+      .fade-in-item {
+        opacity: 0 !important;
+        transform: translateX(100px) !important;
+        transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        will-change: opacity, transform;
+        pointer-events: none;
+      }
+
+      .fade-in-item.fade-in-visible {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        pointer-events: auto;
+      }
+
+      /* Title animation - slide from left to right */
+      h2.fade-in-item {
+        transform: translateX(-100px) !important;
+      }
+
+      h2.fade-in-item.fade-in-visible {
+        transform: translateX(0) !important;
+      }
+
+      /* Reduce animation duration on small screens for better performance */
+      @media (max-width: 640px) {
+        [data-slide-in] {
+          transition-duration: 0.5s !important;
+        }
+      }
+
+      /* Disable animations for users who prefer reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        [data-slide-in] {
+          opacity: 1 !important;
+          transform: translateX(0) !important;
+          transition: none !important;
+        }
+      }
     </style>
   </head>
   <body>

@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="vi"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG."><title>Hệ thống Thông tin Giải quyết Thủ tục Hành chính | Dự án</title><link rel="icon" href="/avatar.png" type="image/png"><link rel="apple-touch-icon" href="/avatar.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet"><link rel="stylesheet" href="/_astro/index.Bl2E8C7I.css">
+<style>.project-detail-page[data-astro-cid-xh7mzcst]{max-width:1100px;margin:0 auto;padding:2rem clamp(1rem,4vw,3rem) 4rem}.back-link[data-astro-cid-xh7mzcst]{display:inline-flex;align-items:center;gap:.5rem;color:var(--muted);text-decoration:none;font-weight:600;margin-bottom:1.25rem}.back-link[data-astro-cid-xh7mzcst]:hover{color:var(--text)}.not-found[data-astro-cid-xh7mzcst]{max-width:700px;margin:0 auto;padding:3rem 0;text-align:center}@media (max-width: 767px){.project-detail-page[data-astro-cid-xh7mzcst]{padding:1.5rem 1rem 3rem}}
+</style></head> <body> <!-- Sidebar Navigation with Language Switcher --> <div class="sidebar-nav"> <!-- Navigation Icons --> <ul id="sidebar" class="sidebar-list"> <li data-menuanchor="home" class="active"> <button aria-label="Home"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="house" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"> <path fill="currentColor" d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"></path> </svg> </button> </li> <li data-menuanchor="du-an"> <button aria-label="Projects"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"> <path fill="currentColor" d="M88.7 223.8L0 375.8 0 96C0 60.7 28.7 32 64 32l117.5 0c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7L416 96c35.3 0 64 28.7 64 64l0 32-336 0c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224l400 0c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480L32 480c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"></path> </svg> </button> </li> <li data-menuanchor="kinh-nghiem"> <button aria-label="Experience"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"> <path fill="currentColor" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"></path> </svg> </button> </li> <li data-menuanchor="lien-he"> <button aria-label="Contact"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path> </svg> </button> </li> </ul> <!-- Language Switcher --> <button id="lang-switcher" class="lang-switcher" aria-label="Switch language" title="Switch language"> <span class="globe-icon"> <svg height="16" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="16" class="globe-svg"> <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z"></path> </svg> </span> <span class="lang-option" data-lang="vi"> <span class="text">VI</span> </span> <span class="lang-separator">|</span> <span class="lang-option" data-lang="en"> <span class="text">EN</span> </span> </button> </div> <main>  <main class="project-detail-page" data-astro-cid-xh7mzcst> <a class="back-link" href="/?lang=vi#du-an" data-astro-cid-xh7mzcst>
+← Quay lại dự án </a> <article class="project-detail project-detail--page"> <header class="pd-header"> <h1 class="pd-title" data-pd-title> Hệ thống Thông tin Giải quyết Thủ tục Hành chính </h1> <div class="pd-meta" data-pd-meta> <span class="pd-pill" data-pd-period>2025 – NAY</span><span class="pd-pill" data-pd-role>Fullstack Developer</span> </div> </header> <section class="pd-impact" data-pd-impact> <div class="pd-impact-title">Kết quả:</div> <div class="pd-impact-body" data-pd-impact-body> Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây. </div> </section> <section class="pd-section" data-pd-overview> <h2 class="pd-section-title">Tổng quan</h2> <p class="pd-section-body" data-pd-description> Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG. </p> </section> <section class="pd-section" data-pd-tasks> <h2 class="pd-section-title">Nhiệm vụ:</h2> <ul class="pd-list" data-pd-tasks-list> <li>Tối ưu báo cáo và hỗ trợ vận hành hệ thống.</li><li>Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp.</li> </ul> </section> <section class="pd-section" data-pd-tools> <h2 class="pd-section-title">Công nghệ:</h2> <div class="pd-chips" data-pd-tools-chips> <span class="pd-chip">Angular</span><span class="pd-chip">Java Spring Boot</span><span class="pd-chip">MongoDB</span><span class="pd-chip">Microservices</span> </div> </section> <section class="pd-section" data-pd-gallery> <h2 class="pd-section-title">Hình ảnh</h2> <div class="pd-carousel" data-pd-carousel> <button class="pd-carousel-btn pd-carousel-btn--prev" type="button" aria-label="Previous image" data-pd-carousel-prev>
+‹
+</button> <div class="pd-carousel-viewport" data-pd-gallery-grid role="region" aria-roledescription="carousel"> <a class="pd-slide glightbox" href="/igate1.jpg" data-gallery="gallery-igate"> <img src="/igate1.jpg" alt="Slide hình ảnh cho Hệ thống Thông tin Giải quyết Thủ tục Hành chính - 1" loading="lazy"> </a><a class="pd-slide glightbox" href="/igate2.jpg" data-gallery="gallery-igate"> <img src="/igate2.jpg" alt="Slide hình ảnh cho Hệ thống Thông tin Giải quyết Thủ tục Hành chính - 2" loading="lazy"> </a><a class="pd-slide glightbox" href="/igate3.png" data-gallery="gallery-igate"> <img src="/igate3.png" alt="Slide hình ảnh cho Hệ thống Thông tin Giải quyết Thủ tục Hành chính - 3" loading="lazy"> </a> </div> <button class="pd-carousel-btn pd-carousel-btn--next" type="button" aria-label="Next image" data-pd-carousel-next>
+›
+</button> </div> </section>  </article>  </main> <script>
+    // Carousel controls (ProjectDetail gallery)
+    (function() {
+      const viewport = document.querySelector('.pd-carousel-viewport');
+      const prev = document.querySelector('[data-pd-carousel-prev]');
+      const next = document.querySelector('[data-pd-carousel-next]');
+      if (!viewport || !prev || !next) return;
+
+      function jump(direction) {
+        const page = viewport.clientWidth || 1;
+        const current = Math.round(viewport.scrollLeft / page);
+        const slides = viewport.querySelectorAll('.pd-slide').length;
+        const nextIndex = Math.max(0, Math.min(slides - 1, current + direction));
+        viewport.scrollTo({ left: nextIndex * page, behavior: 'auto' });
+      }
+
+      prev.addEventListener('click', () => jump(-1));
+      next.addEventListener('click', () => jump(1));
+    })();
+
+    // Load GLightbox assets on demand (for project detail gallery)
+    if (!document.querySelector('link[href*="glightbox"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css';
+      document.head.appendChild(link);
+    }
+
+    if (!document.querySelector('script[src*="glightbox"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
+      script.onload = function() {
+        // @ts-ignore
+        if (typeof GLightbox !== 'undefined') {
+          // @ts-ignore
+          GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+        }
+      };
+      document.head.appendChild(script);
+    } else {
+      // @ts-ignore
+      if (typeof GLightbox !== 'undefined') {
+        // @ts-ignore
+        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+      }
+    }
+  </script>   </main> <!-- Mobile Bottom Navigation (fixed at bottom) --> <div class="sidebar-nav-mobile"></div> <script>(function(){const translationsVi = {"hero":{"name":"Nguyễn Hoàng Tín","role":"Full‑Stack Developer","summary":"Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.","badge":"Kỹ sư lập trình","buttons":{"viewProjects":"Dự án","contact":"Liên hệ","downloadCV":"Tải CV"},"highlights":{"frontend":"Frontend:","frontendContent":"Angular, Bootstrap, HTML/CSS/JS","backend":"Backend:","backendContent":".NET, Java, Spring Boot, Microservices, Oracle, MongoDB","devops":"DevOps & Tools:","devopsContent":"Git, Jira, Docker","english":"Tiếng Anh:","englishContent":"Đọc tài liệu kỹ thuật, giao tiếp công việc cơ bản","other":"Khác:","otherContent":"Thuyết trình, Giảng viên nội bộ, Scrum"},"avatarAlt":"Ảnh hồ sơ của Nguyễn Hoàng Tín"},"projects":{"title":"Dự án","labels":{"role":"Vai trò:","tools":"Công nghệ:","tasks":"Nhiệm vụ:","results":"Kết quả:"},"actions":{"viewDetail":"Xem chi tiết","close":"Đóng","backToProjects":"Quay lại dự án"},"sections":{"overview":"Tổng quan","gallery":"Hình ảnh"},"items":[{"id":"igate","name":"Hệ thống Thông tin Giải quyết Thủ tục Hành chính","period":"2025 – NAY","description":"Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.","role":"Fullstack Developer","tasks":["Tối ưu báo cáo và hỗ trợ vận hành hệ thống.","Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp."],"impact":"Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây.","tools":["Angular","Java Spring Boot","MongoDB","Microservices"],"gallery":["/igate1.jpg","/igate2.jpg","/igate3.png"]},{"id":"ecabinet","name":"VNPT eCabinet - Phòng họp không giấy tờ","period":"2021 – 2025","description":"Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.","role":"Trưởng nhóm triển khai","tasks":["Triển khai và vận hành hệ thống (phần cứng + phần mềm).","Điều phối nhóm 5 kỹ thuật viên, setup 1–2 kỳ họp/tháng.","Hỗ trợ kỹ thuật tại hiện trường, đảm bảo hệ thống hoạt động ổn định."],"impact":"Đảm bảo các kỳ họp HĐND ổn định, không sự cố CNTT trong 5 năm. Duy trì hợp đồng dịch vụ dài hạn cấp tỉnh.","tools":["C#",".NET Framework","Oracle","IoT"],"gallery":["/ecabinet1.jpg","/ecabinet2.jpg","/ecabinet3.jpg"]},{"id":"ioffice","name":"VNPT iOffice - Điều hành Văn bản","period":"2017 – 2024","description":"Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.","role":"Fullstack Developer","tasks":["Phát triển và nâng cấp các chức năng core: luồng xử lý văn bản, phê duyệt, ký số, tìm kiếm.","Tối ưu hiệu năng truy vấn và xử lý nghiệp vụ trên hệ thống quy mô lớn.","Phối hợp phân tích yêu cầu, sửa lỗi và hỗ trợ vận hành trong quá trình triển khai."],"impact":"Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.","tools":["ASP.NET","C#","DevExpress","Oracle"],"gallery":["/ioffice1.jpg","/ioffice2.jpg","/ioffice3.jpg"]}],"galleryAlt":"Slide hình ảnh cho"},"timeline":{"title":"Kinh nghiệm","achievements":"Thành tựu:","items":[{"year":"2017 – NAY","company":"VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM","role":"NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH","tasks":["Tham gia phát triển và vận hành các hệ thống phần mềm quy mô tỉnh/thành.","Đảm nhiệm vai trò chính trong phát triển backend, tối ưu hiệu năng và hỗ trợ nghiệp vụ.","Tham gia các dự án lớn: Hệ thống Dịch vụ công, Văn bản điều hành, Hóa đơn điện tử, Phòng họp không giấy,...","Áp dụng các công cụ AI vào quy trình phát triển giúp rút ngắn thời gian coding 20–30%. Nâng cao chất lượng code, phát hiện lỗi tiềm ẩn và đảm bảo tuân thủ các quy tắc của dự án."],"achievements":["Đạt danh hiệu \"Chiến sỹ thi đua\" trong nhiều năm","Người lao động tiêu biểu năm 2021"]}]},"contact":{"title":"Hợp tác","description":"Cứ thoải mái liên hệ với tôi nếu bạn có bất kỳ câu hỏi nào.","channels":{"phone":"SĐT","zalo":"Zalo","telegram":"Telegram","email":"Email"}},"layout":{"title":"Nguyễn Hoàng Tín — Full‑Stack Developer","description":"Portfolio & CV online của Nguyễn Hoàng Tín"}};
+const translationsEn = {"hero":{"name":"Tin NGUYEN HOANG","role":"Full‑Stack Developer","summary":"Backend/Fullstack Developer specializing in large-scale systems, proficient in .NET, Java/Spring Boot, Microservices, SQL/NoSQL, focused on complex projects and professional environments.","badge":"Software Engineer","buttons":{"viewProjects":"Projects","contact":"Contact","downloadCV":"Download CV"},"highlights":{"frontend":"Frontend:","frontendContent":"Angular, Bootstrap, HTML/CSS/JS","backend":"Backend:","backendContent":".NET, Java, Spring Boot, Microservices, Oracle, MongoDB","devops":"DevOps & Tools:","devopsContent":"Git, Jira, Docker","english":"English:","englishContent":"Technical documentation reading, basic work communication","other":"Other:","otherContent":"Presentation, Internal Trainer, Scrum"},"avatarAlt":"Profile photo of Nguyễn Hoàng Tín"},"projects":{"title":"Projects","labels":{"role":"Role:","tools":"Technologies:","tasks":"Tasks:","results":"Results:"},"actions":{"viewDetail":"View details","close":"Close","backToProjects":"Back to projects"},"sections":{"overview":"Overview","gallery":"Gallery"},"items":[{"id":"igate","name":"Administrative Procedure Resolution Information System","period":"2025 – PRESENT","description":"Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.","role":"Fullstack Developer","tasks":["Optimize reports and support system operations.","Guide staff, handle incidents during the transition to 2-level government model."],"impact":"Optimized report data retrieval time from 3 minutes to 60 seconds.","tools":["Angular","Java Spring Boot","MongoDB","Microservices"],"gallery":["/igate1.jpg","/igate2.jpg","/igate3.png"]},{"id":"ecabinet","name":"VNPT eCabinet - Paperless Meeting Room","period":"2021 – 2025","description":"Provincial-level paperless meeting solution, integrating IoT hardware with management software.","role":"Deployment Team Lead","tasks":["Deploy and operate the system (hardware + software).","Coordinate a team of 5 technicians, setup 1–2 meetings/month.","Provide on-site technical support, ensure stable system operation."],"impact":"Ensured stable People's Council meetings, no IT incidents for 5 years. Maintained long-term provincial service contracts.","tools":["C#",".NET Framework","Oracle","IoT"],"gallery":["/ecabinet1.jpg","/ecabinet2.jpg","/ecabinet3.jpg"]},{"id":"ioffice","name":"VNPT iOffice - Document Management","period":"2017 – 2024","description":"Large-scale document management and execution system, integrated with internal management and collaboration.","role":"Fullstack Developer","tasks":["Develop and enhance core features: document workflow, approvals, digital signatures, and search.","Optimize performance for queries and business processing at scale.","Collaborate on requirement analysis, bug fixing, and operational support during deployment."],"impact":"Increased management efficiency for 10,000+ staff. Developed and upgraded core features.","tools":["ASP.NET","C#","DevExpress","Oracle"],"gallery":["/ioffice1.jpg","/ioffice2.jpg","/ioffice3.jpg"]}],"galleryAlt":"Image slide for"},"timeline":{"title":"Experience","achievements":"Achievements:","items":[{"year":"2017 – PRESENT","company":"VNPT PHÚ YÊN - VIETNAM POSTS AND TELECOMMUNICATIONS GROUP","role":"IT SOLUTION STAFF / SOFTWARE ENGINEER","tasks":["Participate in development and operation of provincial/city-scale software systems.","Take main role in backend development, performance optimization and business support.","Participate in major projects: Public Service System, Document Management, E-Invoice, Paperless Meeting,...","Apply AI tools to development process, reducing coding time by 20–30%. Improve code quality, detect potential errors and ensure project rule compliance."],"achievements":["Achieved \"Emulation Fighter\" title for multiple years","Outstanding Employee of 2021"]}]},"contact":{"title":"Collaboration","description":"Feel free to contact me if you have any questions.","channels":{"phone":"Phone","zalo":"Zalo","telegram":"Telegram","email":"Email"}},"layout":{"title":"Nguyễn Hoàng Tín — Full‑Stack Developer","description":"Portfolio & CV online of Nguyễn Hoàng Tín"}};
+
+      // Language Switcher Script
+      (function() {
+        // Get current language
+        function getCurrentLang() {
+          if (typeof window === 'undefined') return 'vi';
+          const urlParams = new URLSearchParams(window.location.search);
+          const langParam = urlParams.get('lang');
+          if (langParam === 'vi' || langParam === 'en') return langParam;
+          const stored = localStorage.getItem('lang');
+          return (stored === 'vi' || stored === 'en') ? stored : 'vi';
+        }
+
+        // Expose getCurrentLang globally so it can be called from other scripts
+        window.getCurrentLang = getCurrentLang;
+
+        // Set active state
+        function setActiveLang(lang) {
+          // Update both desktop and mobile switchers
+          const switchers = [
+            document.getElementById('lang-switcher'),
+            document.getElementById('lang-switcher-mobile')
+          ].filter(Boolean); // Remove null values
+          
+          switchers.forEach(switcher => {
+            const options = switcher.querySelectorAll('.lang-option');
+            options.forEach(opt => {
+              if (opt.dataset.lang === lang) {
+                opt.classList.add('active');
+              } else {
+                opt.classList.remove('active');
+              }
+            });
+          });
+        }
+
+        // Expose setActiveLang globally so it can be called from other scripts
+        window.setActiveLang = setActiveLang;
+
+
+        // Initialize on load
+        function init() {
+          setActiveLang(getCurrentLang());
+
+          // Handle click using event delegation
+          setupClickHandler();
+        }
+
+        function setupClickHandler() {
+          const switcher = document.getElementById('lang-switcher');
+          if (!switcher) {
+            // Retry if not ready yet
+            setTimeout(setupClickHandler, 100);
+            return;
+          }
+          
+          // Use event delegation - attach to button, handle clicks on children
+          switcher.addEventListener('click', function(e) {
+            // Find the clicked lang-option
+            let target = e.target;
+            
+            // Traverse up to find lang-option
+            while (target && target !== switcher) {
+              if (target.classList && target.classList.contains('lang-option')) {
+                const lang = target.dataset.lang;
+                if (lang === 'vi' || lang === 'en') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  
+                  console.log('Language switcher clicked, switching to:', lang);
+                  
+                  // Save to localStorage
+                  localStorage.setItem('lang', lang);
+                  
+                  // Dispatch event with bubbles and cancelable
+                  const event = new CustomEvent('langchange', { 
+                    detail: { lang: lang },
+                    bubbles: true,
+                    cancelable: true
+                  });
+                  
+                  const dispatched = window.dispatchEvent(event);
+                  console.log('Event dispatched:', dispatched, 'Event detail:', event.detail);
+                  
+                  return;
+                }
+              }
+              target = target.parentElement;
+            }
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+
+      // Language switching client-side script
+      (function() {
+        // @ts-ignore - translationsVi and translationsEn are injected via define:vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const translations = {
+          // @ts-ignore
+          vi: translationsVi,
+          // @ts-ignore
+          en: translationsEn
+        };
+
+        // Update text content
+        function updateTextContent(element, translations, path) {
+          const keys = path.split('.');
+          let value = translations;
+          for (const key of keys) {
+            if (value && typeof value === 'object') {
+              // Handle array indices (numeric keys)
+              const numKey = parseInt(key, 10);
+              if (!isNaN(numKey) && Array.isArray(value)) {
+                value = value[numKey];
+              } else {
+                value = value[key];
+              }
+            } else {
+              return;
+            }
+          }
+          
+          if (typeof value === 'string') {
+            element.textContent = value;
+          }
+        }
+
+        // Update all translatable elements
+        function updatePageContent(lang) {
+          const langTranslations = translations[lang] || translations.vi;
+          
+          // Update HTML lang attribute
+          document.documentElement.lang = lang;
+          
+          // Update elements with data-i18n attribute
+          document.querySelectorAll('[data-i18n]').forEach(element => {
+            const path = element.getAttribute('data-i18n');
+            if (path) {
+              updateTextContent(element, langTranslations, path);
+            }
+          });
+
+          // Helper function to get translation value by path
+          function getTranslationByPath(translations, path) {
+            const keys = path.split('.');
+            let value = translations;
+            for (const key of keys) {
+              if (value && typeof value === 'object') {
+                const numKey = parseInt(key, 10);
+                if (!isNaN(numKey) && Array.isArray(value)) {
+                  value = value[numKey];
+                } else {
+                  value = value[key];
+                }
+              } else {
+                return null;
+              }
+            }
+            return typeof value === 'string' ? value : null;
+          }
+
+          // Update elements with data-i18n-attr (for attributes like alt, title, etc.)
+          document.querySelectorAll('[data-i18n-attr]').forEach(element => {
+            const attrData = element.getAttribute('data-i18n-attr');
+            if (attrData) {
+              try {
+                const [attr, path] = attrData.split(':');
+                const value = getTranslationByPath(langTranslations, path);
+                
+                if (value && attr) {
+                  // Check if there's dynamic content path to fetch
+                  const dynamicPath = element.getAttribute('data-i18n-dynamic-path');
+                  const dynamicSuffix = element.getAttribute('data-i18n-dynamic-suffix') || '';
+                  
+                  if (dynamicPath) {
+                    // Get the translated dynamic content
+                    const dynamicValue = getTranslationByPath(langTranslations, dynamicPath);
+                    if (dynamicValue) {
+                      element.setAttribute(attr, `${value} ${dynamicValue}${dynamicSuffix}`);
+                    } else {
+                      element.setAttribute(attr, value);
+                    }
+                  } else {
+                    // Check for old data-i18n-dynamic (static value) for backward compatibility
+                    const dynamicContent = element.getAttribute('data-i18n-dynamic');
+                    if (dynamicContent) {
+                      element.setAttribute(attr, `${value} ${dynamicContent}${dynamicSuffix}`);
+                    } else {
+                      element.setAttribute(attr, value + dynamicSuffix);
+                    }
+                  }
+                }
+              } catch (e) {
+                console.error('Error updating attribute:', e);
+              }
+            }
+          });
+
+          // Update elements with data-i18n-attr-title (for title attributes)
+          document.querySelectorAll('[data-i18n-attr-title]').forEach(element => {
+            const attrData = element.getAttribute('data-i18n-attr-title');
+            if (attrData) {
+              try {
+                const [attr, path] = attrData.split(':');
+                const value = getTranslationByPath(langTranslations, path);
+                if (value && attr) {
+                  element.setAttribute(attr, value);
+                }
+              } catch (e) {
+                console.error('Error updating title attribute:', e);
+              }
+            }
+          });
+
+          // Save to localStorage
+          localStorage.setItem('lang', lang);
+          
+          // Update URL without reload
+          const url = new URL(window.location);
+          url.searchParams.set('lang', lang);
+          window.history.replaceState({}, '', url);
+        }
+
+        // Listen for language change events
+        window.addEventListener('langchange', (e) => {
+          const newLang = e.detail?.lang;
+          if (newLang === 'vi' || newLang === 'en') {
+            // Add fade transition
+            document.body.style.transition = 'opacity 0.2s ease';
+            document.body.style.opacity = '0.7';
+            
+            updatePageContent(newLang);
+            
+            // Update language switcher active state for both desktop and mobile
+            setActiveLang(newLang);
+            
+            // Fade back in
+            setTimeout(() => {
+              document.body.style.opacity = '1';
+            }, 50);
+          }
+        });
+
+        // Initialize on load - use server-rendered language
+        const initialLang = document.documentElement.lang || 'vi';
+        if (initialLang === 'vi' || initialLang === 'en') {
+          // Update from localStorage if different
+          const storedLang = localStorage.getItem('lang');
+          const currentLang = (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
+          if (currentLang !== initialLang) {
+            updatePageContent(currentLang);
+          }
+        }
+      })();
+    })();</script> </body> </html>

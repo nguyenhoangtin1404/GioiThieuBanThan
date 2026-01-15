@@ -1,168 +1,103 @@
-# Profilio — Astro Profile
+# GioiThieuBanThan — Astro Portfolio (VI/EN)
 
-Hồ sơ cá nhân tối giản được dựng bằng [Astro](https://astro.build/) với layout dạng một trang, phù hợp để giới thiệu bản thân, kỹ năng và dự án nổi bật.
+Website portfolio/CV online dựng bằng [Astro](https://astro.build/) theo kiểu **one-page + fullpage (desktop)** và **scroll thường (mobile)**, có **i18n VI/EN** theo query `?lang=` và phần **Dự án** có **modal xem nhanh + trang chi tiết có URL**.
+
+## Tính năng chính
+
+- **Fullpage scrolling trên desktop** bằng thư viện tự viết `public/js/vanilla-fullpage.js` (instance: `window.vanillaFullpage`).
+- **Mobile layout**: tắt fullpage, dùng scroll tự nhiên + IntersectionObserver để trigger animation khi cuộn.
+- **i18n**: `vi` / `en` theo `?lang=` (ưu tiên URL → localStorage → mặc định `vi`).
+- **Projects**:
+  - Click card mở **modal xem nhanh**
+  - Nút “Xem chi tiết” dẫn tới `/projects/<id>?lang=...`
+  - Gallery dạng carousel (scroll-snap) + **GLightbox** (load từ CDN jsDelivr) để xem ảnh full.
 
 ## Yêu cầu
 
-- Node.js >= 18.14
-- pnpm / npm / yarn (ví dụ bên dưới dùng `npm`)
+- Node.js **>= 18.14**
+- npm (hoặc pnpm/yarn)
 
-## Cài đặt
+## Cài đặt & chạy local
 
 ```bash
 npm install
+npm run dev
 ```
 
-## Lệnh hữu ích
+Các lệnh hữu ích:
 
 ```bash
-npm run dev      # Chạy dự án ở chế độ phát triển
-npm run build    # Xuất ra build tĩnh trong thư mục dist
-npm run preview  # Chạy bản build để kiểm tra trước khi deploy
+npm run dev      # dev server
+npm run build    # build static ra dist/
+npm run preview  # preview dist/
 ```
 
-## Cấu trúc chính
+## Cấu trúc thư mục quan trọng
 
-- `src/pages/index.astro`: trang chính với layout hồ sơ
-- `src/components/*`: các section (hero, kỹ năng, dự án…)
-- `src/layouts/BaseLayout.astro`: layout chung, khai báo font và CSS nền
+- `src/pages/index.astro`: trang one-page (Hero / Projects / Timeline / Contact) + logic desktop/mobile/fullpage/animations.
+- `src/layouts/BaseLayout.astro`: layout chung + CSS global + lang switcher.
+- `src/components/*`: các section UI (`Hero.astro`, `Projects.astro`, `Timeline.astro`, `ContactCard.astro`, `ProjectDetail.astro`).
+- `src/pages/projects/[id].astro`: **trang chi tiết dự án** (static build với `getStaticPaths()`).
+- `src/i18n/translations/{vi,en}.json`: dữ liệu nội dung + dự án cho từng ngôn ngữ.
+- `public/js/vanilla-fullpage.js`: thư viện fullpage tự viết.
 
-Bạn có thể chỉnh nội dung các component để khớp với hồ sơ của riêng mình rồi deploy lên bất kỳ dịch vụ static hosting nào (Netlify, Vercel, Cloudflare Pages,…).
+## i18n (VI/EN) hoạt động thế nào?
 
-## CI/CD với GitHub Actions và FTP
+- Hàm xác định ngôn ngữ nằm ở `src/i18n/utils.ts`:
+  - Server-side: đọc `?lang=vi|en` từ `Astro.url`
+  - Client-side: đọc `?lang=` → fallback localStorage → fallback `vi`
+- Dữ liệu text được map thông qua `data-i18n`, `data-i18n-attr`, `data-i18n-attr-title` (xem `src/layouts/BaseLayout.astro`).
 
-Dự án đã được cấu hình để tự động build và deploy lên hosting qua FTP mỗi khi push code lên nhánh `main`.
+## Dự án (Modal + Trang chi tiết)
 
-### Cách hoạt động
+- Modal xem nhanh nằm trong `src/components/Projects.astro`
+  - Khi mở modal sẽ **disable wheel** của fullpage: `window.vanillaFullpage.setWheelEnabled(false)`; đóng modal bật lại.
+  - Gallery modal render động và init GLightbox bằng CDN (jsDelivr).
+- Trang chi tiết dự án: `src/pages/projects/[id].astro`
+  - Static build yêu cầu `getStaticPaths()` → list `id` lấy từ `src/i18n/translations/vi.json` và `en.json`.
 
-1. **Build trên GitHub Actions**: Khi bạn push code lên nhánh `main`, GitHub Actions sẽ tự động:
-   - Checkout source code
-   - Cài đặt Node.js và dependencies
-   - Build dự án Astro (`npm run build`)
-   - Upload files đã build từ thư mục `dist/` lên FTP server
+### Thêm/sửa dự án
 
-2. **Hosting chỉ nhận static files**: Hosting của bạn chỉ cần phục vụ static files (HTML, CSS, JS đã được build sẵn), không cần Node.js.
+Sửa trong:
+- `src/i18n/translations/vi.json`
+- `src/i18n/translations/en.json`
 
-### Cấu hình GitHub Secrets
+Mỗi project nên có tối thiểu:
+- `id` (unique, dùng làm URL `/projects/<id>`)
+- `name`, `description`, `tools`, `impact`, `gallery`
 
-Để sử dụng CI/CD, bạn cần cấu hình các secrets sau trong GitHub repository:
+Field tuỳ chọn:
+- `period`, `role`, `tasks` (trang chi tiết chỉ hiển thị “Nhiệm vụ” khi có `tasks`).
 
-1. Vào repository trên GitHub
-2. **Settings** → **Secrets and variables** → **Actions**
-3. Click **New repository secret** và thêm các secrets sau:
+## Fullpage scrolling (VanillaFullpage)
 
-   - `FTP_HOST`: Địa chỉ FTP server (ví dụ: `ftp.example.com` hoặc `123.456.789.0`)
-     - **Lưu ý**: Nếu hostname không resolve được (lỗi DNS), hãy dùng IP address thay vì hostname
-     - Bạn có thể tìm IP trong cPanel → FTP Accounts → Configure FTP Client
-   - `FTP_USER`: Tên đăng nhập FTP
-   - `FTP_PASS`: Mật khẩu FTP
+- **Trang test**: `http://localhost:4321/vanilla-fullpage-test` (`src/pages/vanilla-fullpage-test.astro`)
+- **Thư viện**: `public/js/vanilla-fullpage.js`
+- Lưu ý:
+  - Class global là `VanillaFullpage` (sau khi load script).
+  - Project này lưu instance ở `window.vanillaFullpage`.
+  - Có API `setWheelEnabled(boolean)` để khoá mở wheel khi cần (ví dụ mở modal).
 
-### Kiểm tra deployment
+## CI/CD với GitHub Actions + FTP
 
-Sau khi push code lên nhánh `main`:
+Repo có workflow deploy qua FTP khi push lên nhánh `main`:
+- Workflow: `.github/workflows/deploy-ftp.yml`
+- Output build: `dist/`
 
-1. Vào tab **Actions** trên GitHub để xem workflow đang chạy
-2. Click vào workflow run để xem chi tiết logs
-3. Kiểm tra website của bạn để verify files đã được upload thành công
+### Secrets cần cấu hình
 
-### Lưu ý
+- `FTP_HOST`
+- `FTP_USER`
+- `FTP_PASS`
 
-- Đảm bảo FTP server cho phép kết nối từ GitHub Actions IPs (hầu hết các hosting đều cho phép)
-- Nếu deployment thất bại, kiểm tra logs trong tab Actions để xem lỗi cụ thể
-- Workflow file nằm tại `.github/workflows/deploy-ftp.yml` nếu bạn cần chỉnh sửa
+### Troubleshooting deploy
 
-### Troubleshooting
+- **Lỗi DNS/ENOTFOUND**: ưu tiên dùng **IP** thay cho hostname trong `FTP_HOST`.
 
-**Lỗi "ENOTFOUND" hoặc "DNS lookup failed":**
-- Hostname không tồn tại trong DNS hoặc không accessible từ GitHub Actions
-- **Giải pháp**: Dùng IP address thay vì hostname
-  1. Vào cPanel → FTP Accounts → Configure FTP Client để xem IP address
-  2. Hoặc liên hệ hosting provider để lấy IP address của FTP server
-  3. Cập nhật secret `FTP_HOST` với IP address (ví dụ: `123.456.789.0`)
+## Troubleshooting dev
 
-## Trang Test Full Page Scrolling
+- Nếu gặp lỗi kiểu “Outdated Optimize Dep” / load module fail khi dev, thử restart dev server với:
 
-Giải pháp full page scrolling:
-
-### Trang Test
-- **URL**: `http://localhost:4321/vanilla-fullpage-test`
-- **File**: `src/pages/vanilla-fullpage-test.astro`
-
-### Module VanillaFullpage
-- **Location**: `public/js/vanilla-fullpage.js`
-- **Mô tả**: Thư viện full page scrolling tự code, không phụ thuộc thư viện bên ngoài
-- **Tính năng**:
-  - ✅ Full page scrolling với smooth animation
-  - ✅ Hỗ trợ scroll dọc (vertical) và ngang (horizontal)
-  - ✅ Navigation dots (các chấm bên phải màn hình)
-  - ✅ Keyboard navigation (Arrow keys, Page Up/Down, Home, End)
-  - ✅ Mouse wheel scrolling (tự động phát hiện hướng)
-  - ✅ Touch/Swipe support cho mobile (hỗ trợ cả dọc và ngang)
-  - ✅ URL hash anchors (ví dụ: `#contact`)
-  - ✅ Loop bottom (quay về đầu từ section cuối)
-  - ✅ Hoàn toàn miễn phí, không watermark
-
-### Cách sử dụng
-
-```javascript
-// Load script
-<script src="/js/vanilla-fullpage.js"></script>
-
-// Khởi tạo với scroll dọc (mặc định)
-const fullpage = new VanillaFullpage('#fullpage', {
-  anchors: ['home', 'about-us', 'contact', 'footer'],
-  navigation: true,        // Bật navigation dots
-  scrollingSpeed: 1000,     // Tốc độ scroll (ms)
-  loopBottom: true,         // Cho phép loop từ cuối về đầu
-  direction: 'vertical'     // 'vertical' (dọc) hoặc 'horizontal' (ngang)
-});
-
-// Hoặc cho phép cả cuộn dọc và ngang
-const fullpageHorizontalBoth = new VanillaFullpage('#fullpage', {
-  anchors: ['home', 'about-us', 'contact', 'footer'],
-  navigation: true,
-  scrollingSpeed: 1000,
-  loopBottom: true,
-  direction: 'horizontal',
-  allowVerticalScrollInHorizontal: true        // Bật tính năng scroll bằng cả cuộn dọc và ngang
-});
+```bash
+npm run dev -- --force
 ```
-
-### Cấu trúc HTML cần thiết
-
-```html
-<div id="fullpage">
-  <div class="section" data-anchor="home">Section 1</div>
-  <div class="section" data-anchor="about">Section 2</div>
-  <div class="section" data-anchor="contact">Section 3</div>
-</div>
-
-<!-- Navigation dots (optional) -->
-<ul class="fp-nav">
-  <li><a href="#home" data-index="0"></a></li>
-  <li><a href="#about" data-index="1"></a></li>
-  <li><a href="#contact" data-index="2"></a></li>
-</ul>
-```
-
-### Tài liệu API
-
-Xem JSDoc comments trong file `public/js/vanilla-fullpage.js` để biết chi tiết về các methods và options.
-
-### Options
-
-| Option | Type | Default | Mô tả |
-|--------|------|---------|-------|
-| `anchors` | `string[]` | `[]` | Mảng anchors cho URL hash |
-| `navigation` | `boolean` | `true` | Bật/tắt navigation dots |
-| `scrollingSpeed` | `number` | `1000` | Tốc độ scroll animation (milliseconds) |
-| `loopBottom` | `boolean` | `false` | Cho phép loop từ section cuối về đầu |
-| `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | Hướng scroll: dọc hoặc ngang |
-| `allowVerticalScrollInHorizontal` | `boolean` | `false` | Khi `direction='horizontal'`, cho phép scroll bằng cả cuộn dọc (deltaY) và cuộn ngang (deltaX). Mặc định `false` (chỉ hỗ trợ cuộn ngang). Đặt `true` để bật tính năng này |
-
-### Lưu ý
-
-- Module được expose ra `window.VanillaFullpage` sau khi script load
-- Cần đợi script load xong trước khi khởi tạo (xem ví dụ trong `vanilla-fullpage-test.astro`)
-- Trong Astro, script tags cần có `is:inline` để tránh lỗi 500
-- Khi sử dụng `direction: 'horizontal'`, CSS sẽ tự động được áp dụng để hỗ trợ scroll ngang

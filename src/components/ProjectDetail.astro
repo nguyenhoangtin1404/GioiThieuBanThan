@@ -1,0 +1,356 @@
+---
+export interface Props {
+  project?: any;
+  labels?: any;
+  actions?: any;
+  sections?: any;
+  galleryAlt?: string;
+  /**
+   * When `variant="modal"`, component renders placeholders that JS can populate.
+   * When `variant="page"`, component renders full content from `project`.
+   */
+  variant?: 'modal' | 'page';
+}
+
+const {
+  project,
+  labels = {},
+  actions = {},
+  sections = {},
+  galleryAlt = 'Image slide for',
+  variant = 'page'
+} = Astro.props;
+
+const isModal = variant === 'modal';
+---
+
+<article class={`project-detail ${isModal ? 'project-detail--modal' : 'project-detail--page'}`}>
+  <header class="pd-header">
+    <h1 class="pd-title" data-pd-title id={isModal ? 'project-modal-title' : undefined}>
+      {isModal ? '' : project?.name}
+    </h1>
+    <div class="pd-meta" data-pd-meta hidden={isModal ? true : undefined}>
+      {isModal ? null : (
+        <>
+          {project?.period && <span class="pd-pill" data-pd-period>{project.period}</span>}
+          {project?.role && <span class="pd-pill" data-pd-role>{project.role}</span>}
+        </>
+      )}
+    </div>
+  </header>
+
+  <section class="pd-impact" data-pd-impact hidden={isModal ? true : !project?.impact}>
+    <div class="pd-impact-title">{labels?.results || 'Results:'}</div>
+    <div class="pd-impact-body" data-pd-impact-body>
+      {isModal ? '' : project?.impact}
+    </div>
+  </section>
+
+  <section class="pd-section" data-pd-overview hidden={isModal ? true : !project?.description}>
+    <h2 class="pd-section-title">{sections?.overview || 'Overview'}</h2>
+    <p class="pd-section-body" data-pd-description>
+      {isModal ? '' : project?.description}
+    </p>
+  </section>
+
+  {!isModal && (
+    <section class="pd-section" data-pd-tasks hidden={!(Array.isArray(project?.tasks) && project.tasks.length)}>
+      <h2 class="pd-section-title">{labels?.tasks || 'Tasks:'}</h2>
+      <ul class="pd-list" data-pd-tasks-list>
+        {project?.tasks?.map((task: string) => <li>{task}</li>)}
+      </ul>
+    </section>
+  )}
+
+  <section class="pd-section" data-pd-tools hidden={isModal ? true : !(Array.isArray(project?.tools) && project.tools.length)}>
+    <h2 class="pd-section-title">{labels?.tools || 'Technologies:'}</h2>
+    <div class="pd-chips" data-pd-tools-chips>
+      {isModal ? null : project?.tools?.map((tool: string) => <span class="pd-chip">{tool}</span>)}
+    </div>
+  </section>
+
+  <section class="pd-section" data-pd-gallery hidden={isModal ? true : !(Array.isArray(project?.gallery) && project.gallery.length)}>
+    <h2 class="pd-section-title">{sections?.gallery || 'Gallery'}</h2>
+    <div class="pd-carousel" data-pd-carousel>
+      <button
+        class="pd-carousel-btn pd-carousel-btn--prev"
+        type="button"
+        aria-label="Previous image"
+        data-pd-carousel-prev
+      >
+        ‹
+      </button>
+
+      <div class="pd-carousel-viewport" data-pd-gallery-grid role="region" aria-roledescription="carousel">
+        {isModal
+          ? null
+          : project?.gallery?.map((src: string, idx: number) => (
+              <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}`}>
+                <img
+                  src={src}
+                  alt={`${galleryAlt} ${project?.name || ''} - ${idx + 1}`}
+                  loading="lazy"
+                />
+              </a>
+            ))}
+      </div>
+
+      <button
+        class="pd-carousel-btn pd-carousel-btn--next"
+        type="button"
+        aria-label="Next image"
+        data-pd-carousel-next
+      >
+        ›
+      </button>
+    </div>
+  </section>
+
+  {isModal && (
+    <div class="pd-actions">
+      <a class="pd-primary" data-pd-view-detail href="#">
+        {actions?.viewDetail || 'View details'}
+      </a>
+      <button class="pd-secondary" type="button" data-pd-close>
+        {actions?.close || 'Close'}
+      </button>
+    </div>
+  )}
+</article>
+
+<style is:global>
+  .project-detail {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(14, 165, 233, 0.15);
+    box-shadow: 0 12px 36px rgba(2, 6, 23, 0.10);
+    padding: clamp(1.1rem, 3.5vw, 2rem);
+    color: var(--text);
+  }
+
+  .pd-header {
+    margin-bottom: 1rem;
+  }
+
+  .pd-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .pd-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pd-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(14, 165, 233, 0.12);
+    color: #075985;
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+
+  .pd-impact {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.14), rgba(99, 102, 241, 0.10));
+    border: 1px solid rgba(14, 165, 233, 0.18);
+  }
+
+  .pd-impact-title {
+    font-weight: 900;
+    margin-bottom: 0.35rem;
+  }
+
+  .pd-impact-body {
+    color: var(--muted);
+    font-weight: 650;
+  }
+
+  .pd-section {
+    margin-top: 1.35rem;
+  }
+
+  .pd-section-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .pd-section-body {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .pd-list {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+    color: var(--muted);
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .pd-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .pd-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(2, 6, 23, 0.06);
+    color: var(--text);
+    font-weight: 750;
+    font-size: 0.85rem;
+    border: 1px solid rgba(2, 6, 23, 0.06);
+  }
+
+  /* Carousel (scroll-snap) */
+  .pd-carousel {
+    margin-top: 0.75rem;
+    position: relative;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(2, 6, 23, 0.06);
+    overflow: hidden;
+  }
+
+  .pd-carousel-viewport {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Keep swipe/drag natural; buttons will jump exactly one slide */
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    min-width: 0;
+    /* Make snap deterministic and avoid peeking */
+    scroll-padding-left: 0;
+  }
+
+  .pd-carousel-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pd-slide {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    aspect-ratio: 16 / 9;
+    background: #fff; /* fill any empty space with white */
+    overflow: hidden;
+  }
+
+  .pd-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* fit image inside frame */
+    object-position: center;
+    display: block;
+    background: #fff; /* avoid showing content behind if image has transparency */
+  }
+
+  .pd-carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(2, 6, 23, 0.45);
+    color: #fff;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    line-height: 1;
+    z-index: 2;
+  }
+
+  .pd-carousel-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .pd-carousel-btn--prev {
+    left: 10px;
+  }
+
+  .pd-carousel-btn--next {
+    right: 10px;
+  }
+
+  .pd-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+    justify-content: flex-end;
+  }
+
+  .pd-primary,
+  .pd-secondary {
+    border-radius: 999px;
+    padding: 0.75rem 1rem;
+    font-weight: 800;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .pd-primary {
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #010409;
+  }
+
+  .pd-secondary {
+    background: rgba(2, 6, 23, 0.04);
+    color: var(--text);
+    border-color: rgba(2, 6, 23, 0.06);
+  }
+
+  @media (max-width: 767px) {
+    .pd-slide {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* Mobile: swipe-only (hide buttons) */
+    .pd-carousel-btn {
+      display: none;
+    }
+
+    .pd-actions {
+      justify-content: stretch;
+    }
+
+    .pd-primary,
+    .pd-secondary {
+      width: 100%;
+    }
+  }
+</style>
+

@@ -1,10 +1,14 @@
 ---
 import { getTranslations, getLang } from '@i18n/utils';
+import ProjectDetail from '@components/ProjectDetail.astro';
 
 const lang = getLang(Astro.url);
 const t = await getTranslations(lang);
 const projects = t.projects.items;
 const labels = t.projects.labels;
+const actions = t.projects.actions || {};
+const sections = t.projects.sections || {};
+const galleryAlt = t.projects.galleryAlt || '';
 
 // Animation delay configuration
 const ANIMATION_BASE_DELAY = 0; // Base delay in milliseconds
@@ -33,6 +37,7 @@ function escapeCssUrl(url: string): string {
       <article 
         class="project-card fade-in-item" 
         data-project-index={index}
+        data-project-id={project.id}
         data-fade-delay={ANIMATION_BASE_DELAY + index * ANIMATION_STAGGER_DELAY}
         data-i18n-name={`projects.items.${index}.name`}
         data-i18n-description={`projects.items.${index}.description`}
@@ -61,23 +66,36 @@ function escapeCssUrl(url: string): string {
 </section>
 
 <!-- Modal for project details -->
-<div id="project-modal" class="project-modal">
-  <div class="modal-backdrop"></div>
-  <div class="modal-content">
-    <button class="modal-close" aria-label="Close modal">&times;</button>
-    <div id="modal-body"></div>
+<div id="project-modal" class="project-modal" aria-hidden="true">
+  <div class="modal-backdrop" data-modal-close></div>
+  <div class="modal-sheet" role="dialog" aria-modal="true" aria-labelledby="project-modal-title" tabindex="-1">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <button class="modal-close" type="button" aria-label="Close modal" data-modal-close>&times;</button>
+    <ProjectDetail
+      variant="modal"
+      labels={labels}
+      actions={actions}
+      sections={sections}
+      galleryAlt={galleryAlt}
+    />
   </div>
 </div>
 
-<script is:inline define:vars={{ projectsData: JSON.stringify(projects), labelsData: JSON.stringify(labels) }}>
+<script is:inline define:vars={{ projectsData: JSON.stringify(projects), labelsData: JSON.stringify(labels), actionsData: JSON.stringify(actions), sectionsData: JSON.stringify(sections), galleryAltData: JSON.stringify(galleryAlt) }}>
   // Store projects data for modal (parse JSON strings)
   try {
     window.projectsData = typeof projectsData === 'string' ? JSON.parse(projectsData) : projectsData;
     window.labelsData = typeof labelsData === 'string' ? JSON.parse(labelsData) : labelsData;
+    window.projectActionsData = typeof actionsData === 'string' ? JSON.parse(actionsData) : actionsData;
+    window.projectSectionsData = typeof sectionsData === 'string' ? JSON.parse(sectionsData) : sectionsData;
+    window.projectGalleryAlt = typeof galleryAltData === 'string' ? JSON.parse(galleryAltData) : galleryAltData;
   } catch (e) {
     console.error('Error parsing projects data:', e);
     window.projectsData = [];
     window.labelsData = {};
+    window.projectActionsData = {};
+    window.projectSectionsData = {};
+    window.projectGalleryAlt = '';
   }
 </script>
 
@@ -112,143 +130,260 @@ function escapeCssUrl(url: string): string {
   // Modal functionality
   function initModal() {
     const modal = document.getElementById('project-modal');
-    const modalBody = document.getElementById('modal-body');
-    const closeBtn = modal?.querySelector('.modal-close');
-    const backdrop = modal?.querySelector('.modal-backdrop');
-    const projectCards = document.querySelectorAll('.project-card');
+    if (!modal) return;
 
-    if (!modal || !modalBody) return;
-
-    // Helper function to escape HTML
-    function escapeHtml(text) {
-      if (!text) return '';
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
+    // IMPORTANT: Move modal to <body> to escape fullpage section stacking contexts (transform)
+    // Otherwise fixed elements like .sidebar-nav (outside #fullpage) can appear above the modal.
+    if (modal.parentElement !== document.body) {
+      document.body.appendChild(modal);
     }
 
-    // Open modal with project details
-    function openModal(projectIndex) {
+    const sheet = modal.querySelector('.modal-sheet');
+    const closeButtons = modal.querySelectorAll('[data-modal-close], [data-pd-close]');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    if (!sheet) return;
+
+    // Cache modal fields from ProjectDetail (variant="modal")
+    const titleEl = modal.querySelector('[data-pd-title]');
+    const metaEl = modal.querySelector('[data-pd-meta]');
+    const impactSection = modal.querySelector('[data-pd-impact]');
+    const impactBody = modal.querySelector('[data-pd-impact-body]');
+    const overviewSection = modal.querySelector('[data-pd-overview]');
+    const descEl = modal.querySelector('[data-pd-description]');
+    const tasksSection = modal.querySelector('[data-pd-tasks]');
+    const tasksList = modal.querySelector('[data-pd-tasks-list]');
+    const toolsSection = modal.querySelector('[data-pd-tools]');
+    const toolsChips = modal.querySelector('[data-pd-tools-chips]');
+    const gallerySection = modal.querySelector('[data-pd-gallery]');
+    const galleryGrid = modal.querySelector('[data-pd-gallery-grid]');
+    const galleryPrevBtn = modal.querySelector('[data-pd-carousel-prev]');
+    const galleryNextBtn = modal.querySelector('[data-pd-carousel-next]');
+    const viewDetailLink = modal.querySelector('[data-pd-view-detail]');
+
+    let lastFocusedEl = null;
+
+    function getCurrentLang() {
+      try {
+        if (typeof window.getCurrentLang === 'function') return window.getCurrentLang();
+      } catch {}
+      const urlParams = new URLSearchParams(window.location.search);
+      const langParam = urlParams.get('lang');
+      if (langParam === 'vi' || langParam === 'en') return langParam;
+      const stored = localStorage.getItem('lang');
+      if (stored === 'vi' || stored === 'en') return stored;
+      return 'vi';
+    }
+
+    function buildDetailUrl(projectId) {
+      const lang = getCurrentLang();
+      return `/projects/${encodeURIComponent(projectId)}?lang=${encodeURIComponent(lang)}`;
+    }
+
+    function setHidden(el, hidden) {
+      if (!el) return;
+      el.hidden = !!hidden;
+    }
+
+    function clearChildren(el) {
+      if (!el) return;
+      while (el.firstChild) el.removeChild(el.firstChild);
+    }
+
+    function getProjectById(projectId) {
       const projects = window.projectsData || [];
-      const labels = window.labelsData || {};
-      const project = projects[projectIndex];
+      return projects.find(p => p && p.id === projectId) || null;
+    }
+
+    function renderProjectToModal(project) {
       if (!project) return;
 
-      // Get translated labels
-      const roleLabel = labels.role || 'Role:';
-      const tasksLabel = labels.tasks || 'Tasks:';
-      const resultsLabel = labels.results || 'Results:';
-      const toolsLabel = labels.tools || 'Technologies:';
+      // Title
+      if (titleEl) titleEl.textContent = project.name || '';
 
-      // Escape all user-controlled data
-      const escapedName = escapeHtml(project.name || '');
-      const escapedPeriod = project.period ? escapeHtml(project.period) : '';
-      const escapedDescription = escapeHtml(project.description || '');
-      const escapedRole = project.role ? escapeHtml(project.role) : '';
-      const escapedImpact = project.impact ? escapeHtml(project.impact) : '';
-      const escapedGalleryName = escapeHtml(project.name || '').replace(/\s+/g, '-').toLowerCase();
+      // Popup spec: hide meta (period/role) for a cleaner quick view
+      clearChildren(metaEl);
+      if (metaEl) metaEl.hidden = true;
 
-      // Build modal content with escaped data
-      let modalHTML = `
-        <div class="modal-header">
-          <h3 data-i18n="projects.items.${projectIndex}.name">${escapedName}</h3>
-          ${escapedPeriod ? `<p class="period" data-i18n="projects.items.${projectIndex}.period">${escapedPeriod}</p>` : ''}
-        </div>
-        <div class="modal-body-content">
-          <div class="modal-section">
-            <p class="description" data-i18n="projects.items.${projectIndex}.description">${escapedDescription}</p>
-          </div>
-          ${escapedRole ? `
-            <div class="modal-section">
-              <strong>${escapeHtml(roleLabel)}</strong>
-              <span data-i18n="projects.items.${projectIndex}.role">${escapedRole}</span>
-            </div>
-          ` : ''}
-          ${project.tasks && project.tasks.length > 0 ? `
-            <div class="modal-section">
-              <strong>${escapeHtml(tasksLabel)}</strong>
-              <ul class="task-list">
-                ${project.tasks.map((task, idx) => `
-                  <li data-i18n="projects.items.${projectIndex}.tasks.${idx}">${escapeHtml(task)}</li>
-                `).join('')}
-              </ul>
-            </div>
-          ` : ''}
-          ${escapedImpact ? `
-            <div class="modal-section">
-              <strong>${escapeHtml(resultsLabel)}</strong>
-              <p class="impact" data-i18n="projects.items.${projectIndex}.impact">${escapedImpact}</p>
-            </div>
-          ` : ''}
-          ${project.tools && project.tools.length > 0 ? `
-            <div class="modal-section">
-              <strong>${escapeHtml(toolsLabel)}</strong>
-              <ul class="tools">
-                ${project.tools.map((tool) => `<li>${escapeHtml(tool)}</li>`).join('')}
-              </ul>
-            </div>
-          ` : ''}
-          ${project.gallery && project.gallery.length > 0 ? `
-            <div class="modal-section gallery-section">
-              <div class="gallery" role="region" aria-label="Project gallery">
-                ${project.gallery.map((image, imgIndex) => {
-                  const escapedImage = escapeHtml(image);
-                  const escapedAlt = escapeHtml(`${project.name || ''} - ${imgIndex + 1}`);
-                  return `
-                  <figure>
-                    <a href="${escapedImage}" class="glightbox" data-gallery="gallery-${escapedGalleryName}">
-                      <img src="${escapedImage}" alt="${escapedAlt}" loading="lazy" />
-                    </a>
-                  </figure>
-                `;
-                }).join('')}
-              </div>
-            </div>
-          ` : ''}
-        </div>
-      `;
+      // Impact
+      const hasImpact = !!project.impact;
+      setHidden(impactSection, !hasImpact);
+      if (impactBody) impactBody.textContent = project.impact || '';
 
-      modalBody.innerHTML = modalHTML;
-      modal?.classList.add('active');
-      document.body.style.overflow = 'hidden';
+      // Overview
+      const hasDesc = !!project.description;
+      setHidden(overviewSection, !hasDesc);
+      if (descEl) descEl.textContent = project.description || '';
 
-      // Reinitialize GLightbox for new gallery
-      if (typeof GLightbox !== 'undefined') {
-        // @ts-ignore
-        GLightbox({
-          selector: '.glightbox',
-          touchNavigation: true,
-          loop: true,
-          autoplayVideos: true
+      // Popup spec: do not show tasks in modal quick view
+      setHidden(tasksSection, true);
+      clearChildren(tasksList);
+
+      // Tools
+      const hasTools = Array.isArray(project.tools) && project.tools.length > 0;
+      setHidden(toolsSection, !hasTools);
+      clearChildren(toolsChips);
+      if (hasTools && toolsChips) {
+        project.tools.forEach((tool) => {
+          const chip = document.createElement('span');
+          chip.className = 'pd-chip';
+          chip.textContent = tool;
+          toolsChips.appendChild(chip);
         });
       }
 
-      // Update i18n for modal content
-      if (window.updateI18n) {
-        window.updateI18n();
+      // Gallery
+      const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
+      setHidden(gallerySection, !hasGallery);
+      clearChildren(galleryGrid);
+      if (hasGallery && galleryGrid) {
+        const galleryAlt = window.projectGalleryAlt || 'Image slide for';
+        project.gallery.forEach((src, idx) => {
+          const a = document.createElement('a');
+          a.className = 'pd-slide glightbox';
+          a.href = src;
+          a.setAttribute('data-gallery', `gallery-${project.id || 'project'}`);
+
+          const img = document.createElement('img');
+          img.src = src;
+          img.alt = `${galleryAlt} ${project.name || ''} - ${idx + 1}`;
+          img.loading = 'lazy';
+          a.appendChild(img);
+          galleryGrid.appendChild(a);
+        });
       }
+
+      // Reset carousel position to the start
+      try {
+        if (galleryGrid && typeof galleryGrid.scrollTo === 'function') {
+          galleryGrid.scrollTo({ left: 0, behavior: 'auto' });
+        }
+      } catch {}
+
+      // View detail link
+      if (viewDetailLink && project.id) {
+        viewDetailLink.setAttribute('href', buildDetailUrl(project.id));
+      }
+
+      // Reinitialize GLightbox for new gallery
+      // @ts-ignore
+      if (typeof GLightbox !== 'undefined') {
+        // @ts-ignore
+        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+      }
+    }
+
+    // Carousel controls (desktop): jump exactly 1 slide per click
+    function jumpSlide(direction) {
+      if (!galleryGrid) return;
+      const page = galleryGrid.clientWidth || 1;
+      const current = Math.round(galleryGrid.scrollLeft / page);
+      const slides = galleryGrid.querySelectorAll('.pd-slide').length;
+      const nextIndex = Math.max(0, Math.min(slides - 1, current + direction));
+      galleryGrid.scrollTo({ left: nextIndex * page, behavior: 'auto' });
+    }
+
+    if (galleryPrevBtn) galleryPrevBtn.addEventListener('click', () => jumpSlide(-1));
+    if (galleryNextBtn) galleryNextBtn.addEventListener('click', () => jumpSlide(1));
+
+    function getFocusableElements() {
+      return Array.from(
+        sheet.querySelectorAll(
+          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !(el.offsetParent === null) && !el.hasAttribute('hidden'));
+    }
+
+    function trapFocus(e) {
+      if (!modal.classList.contains('active')) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeModal();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const focusables = getFocusableElements();
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+
+      if (e.shiftKey) {
+        if (active === first || !sheet.contains(active)) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    // Open modal with project details
+    function openModal(projectId) {
+      const project = getProjectById(projectId);
+      if (!project) return;
+
+      lastFocusedEl = document.activeElement;
+      renderProjectToModal(project);
+
+      // Desktop fullpage: disable wheel/trackpad section switching while modal is open
+      try {
+        if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
+          window.vanillaFullpage.setWheelEnabled(false);
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Focus the dialog container for accessibility
+      setTimeout(() => sheet.focus(), 0);
+      document.addEventListener('keydown', trapFocus);
     }
 
     // Close modal
     function closeModal() {
-      modal?.classList.remove('active');
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', trapFocus);
+
+      // Desktop fullpage: re-enable wheel/trackpad section switching
+      try {
+        if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
+          window.vanillaFullpage.setWheelEnabled(true);
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      if (lastFocusedEl && typeof lastFocusedEl.focus === 'function') {
+        setTimeout(() => lastFocusedEl.focus(), 0);
+      }
     }
 
     // Event listeners
     projectCards.forEach((card) => {
       card.addEventListener('click', function() {
-        const index = parseInt(card.getAttribute('data-project-index') || '0');
-        openModal(index);
+        const id = card.getAttribute('data-project-id') || '';
+        if (id) openModal(id);
       });
     });
 
-    closeBtn?.addEventListener('click', closeModal);
-    backdrop?.addEventListener('click', closeModal);
+    closeButtons.forEach((btn) => btn.addEventListener('click', closeModal));
 
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && modal?.classList.contains('active')) {
+    // Click backdrop closes
+    modal.addEventListener('click', (e) => {
+      const target = e.target;
+      if (target && target.hasAttribute && target.hasAttribute('data-modal-close')) {
         closeModal();
       }
     });
@@ -411,7 +546,8 @@ function escapeCssUrl(url: string): string {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 9999;
+    /* Must be above BaseLayout sidebar-nav (z-index: 10000) */
+    z-index: 20000;
     display: none;
     align-items: center;
     justify-content: center;
@@ -438,9 +574,9 @@ function escapeCssUrl(url: string): string {
     backdrop-filter: blur(4px);
   }
 
-  .modal-content {
+  .modal-sheet {
     position: relative;
-    z-index: 1001;
+    z-index: 20001;
     background: var(--card);
     border-radius: 24px;
     max-width: 900px;
@@ -452,10 +588,20 @@ function escapeCssUrl(url: string): string {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     transform: scale(0.9);
     transition: transform 0.3s ease;
+    outline: none;
   }
 
-  .project-modal.active .modal-content {
+  .project-modal.active .modal-sheet {
     transform: scale(1);
+  }
+
+  .modal-handle {
+    display: none;
+    width: 44px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(2, 6, 23, 0.18);
+    margin: -0.5rem auto 1rem;
   }
 
   .modal-close {
@@ -479,6 +625,33 @@ function escapeCssUrl(url: string): string {
 
   .modal-close:hover {
     background: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Bottom sheet behavior on mobile */
+  @media (max-width: 767px) {
+    .project-modal {
+      align-items: flex-end;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 24px 24px 0 0;
+      max-height: 88vh;
+      transform: translateY(18px);
+      transition: transform 0.25s ease;
+      padding: 1.25rem;
+      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    }
+
+    .project-modal.active .modal-sheet {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      display: block;
+    }
   }
 
   .modal-header {
@@ -615,10 +788,8 @@ function escapeCssUrl(url: string): string {
       padding: 1.5rem;
     }
 
-    .modal-content {
-      width: 95%;
-      padding: 1.5rem;
-      margin: 1rem;
+    .modal-sheet {
+      padding: 1.1rem;
     }
 
     .gallery-section .gallery {

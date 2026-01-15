@@ -31,8 +31,18 @@
       "tasks": "Nhiệm vụ:",
       "results": "Kết quả:"
     },
+    "actions": {
+      "viewDetail": "Xem chi tiết",
+      "close": "Đóng",
+      "backToProjects": "Quay lại dự án"
+    },
+    "sections": {
+      "overview": "Tổng quan",
+      "gallery": "Hình ảnh"
+    },
     "items": [
       {
+        "id": "igate",
         "name": "Hệ thống Thông tin Giải quyết Thủ tục Hành chính",
         "period": "2025 – NAY",
         "description": "Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.",
@@ -55,6 +65,7 @@
         ]
       },
       {
+        "id": "ecabinet",
         "name": "VNPT eCabinet - Phòng họp không giấy tờ",
         "period": "2021 – 2025",
         "description": "Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.",
@@ -78,10 +89,16 @@
         ]
       },
       {
+        "id": "ioffice",
         "name": "VNPT iOffice - Điều hành Văn bản",
         "period": "2017 – 2024",
         "description": "Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.",
         "role": "Fullstack Developer",
+        "tasks": [
+          "Phát triển và nâng cấp các chức năng core: luồng xử lý văn bản, phê duyệt, ký số, tìm kiếm.",
+          "Tối ưu hiệu năng truy vấn và xử lý nghiệp vụ trên hệ thống quy mô lớn.",
+          "Phối hợp phân tích yêu cầu, sửa lỗi và hỗ trợ vận hành trong quá trình triển khai."
+        ],
         "impact": "Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.",
         "tools": [
           "ASP.NET",

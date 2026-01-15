@@ -31,8 +31,18 @@
       "tasks": "Tasks:",
       "results": "Results:"
     },
+    "actions": {
+      "viewDetail": "View details",
+      "close": "Close",
+      "backToProjects": "Back to projects"
+    },
+    "sections": {
+      "overview": "Overview",
+      "gallery": "Gallery"
+    },
     "items": [
       {
+        "id": "igate",
         "name": "Administrative Procedure Resolution Information System",
         "period": "2025 – PRESENT",
         "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
@@ -55,6 +65,7 @@
         ]
       },
       {
+        "id": "ecabinet",
         "name": "VNPT eCabinet - Paperless Meeting Room",
         "period": "2021 – 2025",
         "description": "Provincial-level paperless meeting solution, integrating IoT hardware with management software.",
@@ -78,10 +89,16 @@
         ]
       },
       {
+        "id": "ioffice",
         "name": "VNPT iOffice - Document Management",
         "period": "2017 – 2024",
         "description": "Large-scale document management and execution system, integrated with internal management and collaboration.",
         "role": "Fullstack Developer",
+        "tasks": [
+          "Develop and enhance core features: document workflow, approvals, digital signatures, and search.",
+          "Optimize performance for queries and business processing at scale.",
+          "Collaborate on requirement analysis, bug fixing, and operational support during deployment."
+        ],
         "impact": "Increased management efficiency for 10,000+ staff. Developed and upgraded core features.",
         "tools": [
           "ASP.NET",

@@ -70,6 +70,21 @@ const translationsEn = await getTranslations('en');
         position: relative;
       }
 
+      /* Non-fullpage pages (e.g. /projects/[id]): allow normal scrolling */
+      html:not(:has(#fullpage)) {
+        overflow: auto;
+      }
+
+      body:not(:has(#fullpage)) {
+        overflow: auto;
+      }
+
+      /* Hide fullpage navigation UI on non-fullpage pages */
+      body:not(:has(#fullpage)) .sidebar-nav,
+      body:not(:has(#fullpage)) .sidebar-nav-mobile {
+        display: none !important;
+      }
+
       /* Khi có fullpage, body không có margin/padding và background */
       body:has(#fullpage) {
         margin: 0;

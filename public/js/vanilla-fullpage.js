@@ -34,6 +34,7 @@ class VanillaFullpage {
     // Trạng thái hiện tại
     this.currentIndex = 0; // Index của section đang active
     this.isScrolling = false; // Flag để tránh scroll quá nhanh
+    this.wheelEnabled = true; // Cho phép/khóa xử lý wheel (trackpad/mouse)
     this.navHideTimeout = null; // Timeout để ẩn navigation sau khi không scroll
     this.hideTimeout = null; // Timeout để ẩn section sau khi animation hoàn tất
     
@@ -48,6 +49,15 @@ class VanillaFullpage {
     
     // Khởi tạo tất cả components
     this.init();
+  }
+
+  /**
+   * Bật/tắt xử lý wheel để tránh đổi section (ví dụ khi mở modal)
+   * @public
+   * @param {boolean} enabled
+   */
+  setWheelEnabled(enabled) {
+    this.wheelEnabled = !!enabled;
   }
 
   /**
@@ -199,6 +209,8 @@ class VanillaFullpage {
   setupWheel() {
     let wheelTimeout;
     document.addEventListener('wheel', (e) => {
+      // Nếu wheel đang bị khóa, bỏ qua (không đổi section)
+      if (!this.wheelEnabled) return;
       // Nếu đang scroll, bỏ qua
       if (this.isScrolling) return;
 

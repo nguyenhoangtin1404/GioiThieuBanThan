@@ -1,0 +1,152 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ProjectDetail from '@components/ProjectDetail.astro';
+import { getLang, getTranslations } from '@i18n/utils';
+
+export async function getStaticPaths() {
+  // Static build requires enumerating all dynamic route params.
+  const vi = await getTranslations('vi');
+  const en = await getTranslations('en');
+  const ids = new Set<string>();
+
+  (vi.projects?.items || []).forEach((p: any) => p?.id && ids.add(p.id));
+  (en.projects?.items || []).forEach((p: any) => p?.id && ids.add(p.id));
+
+  return Array.from(ids).map((id) => ({
+    params: { id }
+  }));
+}
+
+const lang = getLang(Astro.url);
+const t = await getTranslations(lang);
+
+const id = Astro.params.id || '';
+const project = (t.projects?.items || []).find((p: any) => p?.id === id);
+const title = project ? `${project.name} | ${t.projects?.title || 'Projects'}` : `Project | ${t.projects?.title || 'Projects'}`;
+const description = project?.description || t.layout?.description || '';
+const labels = t.projects?.labels || {};
+const actions = t.projects?.actions || {};
+const sections = t.projects?.sections || {};
+const galleryAlt = t.projects?.galleryAlt || 'Image slide for';
+
+function withLang(url: string) {
+  try {
+    const u = new URL(url, Astro.url);
+    u.searchParams.set('lang', lang);
+    return u.pathname + u.search + u.hash;
+  } catch {
+    return `${url}${url.includes('?') ? '&' : '?'}lang=${lang}`;
+  }
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="project-detail-page">
+    <a class="back-link" href={withLang('/#du-an')}>
+      ← {actions?.backToProjects || 'Back to projects'}
+    </a>
+
+    {project ? (
+      <ProjectDetail
+        project={project}
+        labels={labels}
+        actions={actions}
+        sections={sections}
+        galleryAlt={galleryAlt}
+        variant="page"
+      />
+    ) : (
+      <section class="not-found">
+        <h1>Project not found</h1>
+        <p>Không tìm thấy dự án với id: <code>{id}</code></p>
+        <a class="back-link" href={withLang('/#du-an')}>
+          ← {actions?.backToProjects || 'Back to projects'}
+        </a>
+      </section>
+    )}
+  </main>
+
+  <script is:inline>
+    // Carousel controls (ProjectDetail gallery)
+    (function() {
+      const viewport = document.querySelector('.pd-carousel-viewport');
+      const prev = document.querySelector('[data-pd-carousel-prev]');
+      const next = document.querySelector('[data-pd-carousel-next]');
+      if (!viewport || !prev || !next) return;
+
+      function jump(direction) {
+        const page = viewport.clientWidth || 1;
+        const current = Math.round(viewport.scrollLeft / page);
+        const slides = viewport.querySelectorAll('.pd-slide').length;
+        const nextIndex = Math.max(0, Math.min(slides - 1, current + direction));
+        viewport.scrollTo({ left: nextIndex * page, behavior: 'auto' });
+      }
+
+      prev.addEventListener('click', () => jump(-1));
+      next.addEventListener('click', () => jump(1));
+    })();
+
+    // Load GLightbox assets on demand (for project detail gallery)
+    if (!document.querySelector('link[href*="glightbox"]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css';
+      document.head.appendChild(link);
+    }
+
+    if (!document.querySelector('script[src*="glightbox"]')) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
+      script.onload = function() {
+        // @ts-ignore
+        if (typeof GLightbox !== 'undefined') {
+          // @ts-ignore
+          GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+        }
+      };
+      document.head.appendChild(script);
+    } else {
+      // @ts-ignore
+      if (typeof GLightbox !== 'undefined') {
+        // @ts-ignore
+        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+      }
+    }
+  </script>
+
+  <style>
+    .project-detail-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+
+    .back-link:hover {
+      color: var(--text);
+    }
+
+    .not-found {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 3rem 0;
+      text-align: center;
+    }
+
+    @media (max-width: 767px) {
+      .project-detail-page {
+        padding: 1.5rem 1rem 3rem;
+      }
+    }
+  </style>
+</BaseLayout>
+

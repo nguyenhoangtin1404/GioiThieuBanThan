@@ -111,6 +111,57 @@
           "/ioffice2.jpg",
           "/ioffice3.jpg"
         ]
+      },
+      {
+        "id": "other-projects",
+        "name": "CÁC DỰ ÁN TIÊU BIỂU KHÁC",
+        "period": "",
+        "description": "Tổng hợp các dự án tham gia ngắn hạn hoặc thời gian ngắn.",
+        "role": "",
+        "tasks": [],
+        "impact": "",
+        "tools": [
+          "ASP.NET MVC",
+          "Oracle",
+          "JavaScript",
+          "XSL/XSLT",
+          "XML",
+          "JasperReports",
+          ".NET Core 2.2",
+          "Vue.js"
+        ],
+        "gallery": [],
+        "hasDetail": false,
+        "subProjects": [
+          {
+            "name": "VNPT Invoice – Hóa đơn điện tử",
+            "summary": "Thiết kế hơn 150 mẫu hóa đơn, phát triển 20+ tính năng và biểu mẫu thống kê theo yêu cầu.",
+            "tools": [
+              "ASP.NET MVC",
+              "Oracle",
+              "JavaScript",
+              "XSL/XSLT",
+              "XML"
+            ]
+          },
+          {
+            "name": "VNPT HIS – Phần mềm quản lý bệnh viện",
+            "summary": "Thiết kế và chỉnh sửa ~20 mẫu báo cáo.",
+            "tools": [
+              "Oracle",
+              "JasperReports"
+            ]
+          },
+          {
+            "name": "PMS – Hệ thống thu thập dữ liệu & báo cáo băng rộng cố định",
+            "summary": "Phát triển chức năng mới và migrate hệ thống từ nền tảng cũ sang nền tảng mới.",
+            "tools": [
+              ".NET Core 2.2",
+              "Vue.js",
+              "Oracle"
+            ]
+          }
+        ]
       }
     ],
     "galleryAlt": "Slide hình ảnh cho"

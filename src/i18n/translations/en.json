@@ -111,6 +111,57 @@
           "/ioffice2.jpg",
           "/ioffice3.jpg"
         ]
+      },
+      {
+        "id": "other-projects",
+        "name": "OTHER HIGHLIGHT PROJECTS",
+        "period": "",
+        "description": "A short list of projects I joined briefly or for a limited time.",
+        "role": "",
+        "tasks": [],
+        "impact": "",
+        "tools": [
+          "ASP.NET MVC",
+          "Oracle",
+          "JavaScript",
+          "XSL/XSLT",
+          "XML",
+          "JasperReports",
+          ".NET Core 2.2",
+          "Vue.js"
+        ],
+        "gallery": [],
+        "hasDetail": false,
+        "subProjects": [
+          {
+            "name": "VNPT Invoice – E‑Invoice",
+            "summary": "Designed 150+ invoice templates; delivered 20+ features and custom reporting forms.",
+            "tools": [
+              "ASP.NET MVC",
+              "Oracle",
+              "JavaScript",
+              "XSL/XSLT",
+              "XML"
+            ]
+          },
+          {
+            "name": "VNPT HIS – Hospital Management Software",
+            "summary": "Designed and updated about 20 report templates.",
+            "tools": [
+              "Oracle",
+              "JasperReports"
+            ]
+          },
+          {
+            "name": "PMS – Fixed Broadband Data Collection & Reporting",
+            "summary": "Built new features and migrated the system from the legacy platform to the new platform.",
+            "tools": [
+              ".NET Core 2.2",
+              "Vue.js",
+              "Oracle"
+            ]
+          }
+        ]
       }
     ],
     "galleryAlt": "Image slide for"

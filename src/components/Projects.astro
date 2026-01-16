@@ -159,6 +159,9 @@ function escapeCssUrl(url: string): string {
     const galleryGrid = modal.querySelector('[data-pd-gallery-grid]');
     const galleryPrevBtn = modal.querySelector('[data-pd-carousel-prev]');
     const galleryNextBtn = modal.querySelector('[data-pd-carousel-next]');
+    const subProjectsSection = modal.querySelector('[data-pd-subprojects]');
+    const subProjectsTabs = modal.querySelector('[data-pd-subprojects-tabs]');
+    const subProjectsPanel = modal.querySelector('[data-pd-subprojects-panel]');
     const viewDetailLink = modal.querySelector('[data-pd-view-detail]');
 
     let lastFocusedEl = null;
@@ -190,6 +193,92 @@ function escapeCssUrl(url: string): string {
       while (el.firstChild) el.removeChild(el.firstChild);
     }
 
+    function renderSubProjects(subProjects) {
+      if (!subProjectsSection || !subProjectsTabs || !subProjectsPanel) return;
+      const labels = window.labelsData || {};
+      const resultsLabel = labels.results || 'Results:';
+      const toolsLabel = labels.tools || 'Technologies:';
+
+      setHidden(subProjectsSection, false);
+      clearChildren(subProjectsTabs);
+      clearChildren(subProjectsPanel);
+
+      function renderPanel(idx) {
+        clearChildren(subProjectsPanel);
+        const sp = subProjects[idx] || {};
+
+        if (sp.name) {
+          const title = document.createElement('h3');
+          title.className = 'pd-subproject-title';
+          title.textContent = sp.name;
+          subProjectsPanel.appendChild(title);
+        }
+
+        if (sp.summary) {
+          const summaryWrap = document.createElement('div');
+          const summaryLabel = document.createElement('div');
+          summaryLabel.className = 'pd-subproject-label';
+          summaryLabel.textContent = resultsLabel;
+
+          const summary = document.createElement('p');
+          summary.className = 'pd-subproject-summary';
+          summary.textContent = sp.summary;
+
+          summaryWrap.appendChild(summaryLabel);
+          summaryWrap.appendChild(summary);
+          subProjectsPanel.appendChild(summaryWrap);
+        }
+
+        if (Array.isArray(sp.tools) && sp.tools.length > 0) {
+          const toolsWrap = document.createElement('div');
+          const toolsLabelEl = document.createElement('div');
+          toolsLabelEl.className = 'pd-subproject-label';
+          toolsLabelEl.textContent = toolsLabel;
+
+          const toolsList = document.createElement('div');
+          toolsList.className = 'pd-subproject-tools';
+          sp.tools.forEach((tool) => {
+            const chip = document.createElement('span');
+            chip.className = 'pd-chip';
+            chip.textContent = tool;
+            toolsList.appendChild(chip);
+          });
+
+          toolsWrap.appendChild(toolsLabelEl);
+          toolsWrap.appendChild(toolsList);
+          subProjectsPanel.appendChild(toolsWrap);
+        }
+      }
+
+      function setActive(idx) {
+        const tabs = subProjectsTabs.querySelectorAll('[role="tab"]');
+        tabs.forEach((tab, tabIdx) => {
+          const isActive = tabIdx === idx;
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          if (isActive) {
+            tab.classList.add('active');
+          } else {
+            tab.classList.remove('active');
+          }
+        });
+        renderPanel(idx);
+      }
+
+      subProjects.forEach((sp, idx) => {
+        const tab = document.createElement('button');
+        tab.type = 'button';
+        tab.className = 'pd-subprojects-tab';
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+        if (idx === 0) tab.classList.add('active');
+        tab.textContent = sp.name || `Project ${idx + 1}`;
+        tab.addEventListener('click', () => setActive(idx));
+        subProjectsTabs.appendChild(tab);
+      });
+
+      setActive(0);
+    }
+
     function getProjectById(projectId) {
       const projects = window.projectsData || [];
       return projects.find(p => p && p.id === projectId) || null;
@@ -197,6 +286,8 @@ function escapeCssUrl(url: string): string {
 
     function renderProjectToModal(project) {
       if (!project) return;
+      const subProjects = Array.isArray(project.subProjects) ? project.subProjects : [];
+      const hasSubProjects = subProjects.length > 0;
 
       // Title
       if (titleEl) titleEl.textContent = project.name || '';
@@ -205,52 +296,68 @@ function escapeCssUrl(url: string): string {
       clearChildren(metaEl);
       if (metaEl) metaEl.hidden = true;
 
-      // Impact
-      const hasImpact = !!project.impact;
-      setHidden(impactSection, !hasImpact);
-      if (impactBody) impactBody.textContent = project.impact || '';
+      if (hasSubProjects) {
+        setHidden(impactSection, true);
+        setHidden(overviewSection, true);
+        setHidden(tasksSection, true);
+        setHidden(toolsSection, true);
+        setHidden(gallerySection, true);
+        clearChildren(tasksList);
+        clearChildren(toolsChips);
+        clearChildren(galleryGrid);
+        renderSubProjects(subProjects);
+      } else {
+        setHidden(subProjectsSection, true);
+        clearChildren(subProjectsTabs);
+        clearChildren(subProjectsPanel);
 
-      // Overview
-      const hasDesc = !!project.description;
-      setHidden(overviewSection, !hasDesc);
-      if (descEl) descEl.textContent = project.description || '';
+        // Impact
+        const hasImpact = !!project.impact;
+        setHidden(impactSection, !hasImpact);
+        if (impactBody) impactBody.textContent = project.impact || '';
 
-      // Popup spec: do not show tasks in modal quick view
-      setHidden(tasksSection, true);
-      clearChildren(tasksList);
+        // Overview
+        const hasDesc = !!project.description;
+        setHidden(overviewSection, !hasDesc);
+        if (descEl) descEl.textContent = project.description || '';
 
-      // Tools
-      const hasTools = Array.isArray(project.tools) && project.tools.length > 0;
-      setHidden(toolsSection, !hasTools);
-      clearChildren(toolsChips);
-      if (hasTools && toolsChips) {
-        project.tools.forEach((tool) => {
-          const chip = document.createElement('span');
-          chip.className = 'pd-chip';
-          chip.textContent = tool;
-          toolsChips.appendChild(chip);
-        });
-      }
+        // Popup spec: do not show tasks in modal quick view
+        setHidden(tasksSection, true);
+        clearChildren(tasksList);
 
-      // Gallery
-      const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
-      setHidden(gallerySection, !hasGallery);
-      clearChildren(galleryGrid);
-      if (hasGallery && galleryGrid) {
-        const galleryAlt = window.projectGalleryAlt || 'Image slide for';
-        project.gallery.forEach((src, idx) => {
-          const a = document.createElement('a');
-          a.className = 'pd-slide glightbox';
-          a.href = src;
-          a.setAttribute('data-gallery', `gallery-${project.id || 'project'}`);
+        // Tools
+        const hasTools = Array.isArray(project.tools) && project.tools.length > 0;
+        setHidden(toolsSection, !hasTools);
+        clearChildren(toolsChips);
+        if (hasTools && toolsChips) {
+          project.tools.forEach((tool) => {
+            const chip = document.createElement('span');
+            chip.className = 'pd-chip';
+            chip.textContent = tool;
+            toolsChips.appendChild(chip);
+          });
+        }
 
-          const img = document.createElement('img');
-          img.src = src;
-          img.alt = `${galleryAlt} ${project.name || ''} - ${idx + 1}`;
-          img.loading = 'lazy';
-          a.appendChild(img);
-          galleryGrid.appendChild(a);
-        });
+        // Gallery
+        const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
+        setHidden(gallerySection, !hasGallery);
+        clearChildren(galleryGrid);
+        if (hasGallery && galleryGrid) {
+          const galleryAlt = window.projectGalleryAlt || 'Image slide for';
+          project.gallery.forEach((src, idx) => {
+            const a = document.createElement('a');
+            a.className = 'pd-slide glightbox';
+            a.href = src;
+            a.setAttribute('data-gallery', `gallery-${project.id || 'project'}`);
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `${galleryAlt} ${project.name || ''} - ${idx + 1}`;
+            img.loading = 'lazy';
+            a.appendChild(img);
+            galleryGrid.appendChild(a);
+          });
+        }
       }
 
       // Reset carousel position to the start
@@ -261,8 +368,15 @@ function escapeCssUrl(url: string): string {
       } catch {}
 
       // View detail link
-      if (viewDetailLink && project.id) {
-        viewDetailLink.setAttribute('href', buildDetailUrl(project.id));
+      if (viewDetailLink) {
+        const canViewDetail = !!(project.id && !hasSubProjects && project.hasDetail !== false);
+        if (canViewDetail) {
+          viewDetailLink.hidden = false;
+          viewDetailLink.setAttribute('href', buildDetailUrl(project.id));
+        } else {
+          viewDetailLink.hidden = true;
+          viewDetailLink.removeAttribute('href');
+        }
       }
 
       // Reinitialize GLightbox for new gallery

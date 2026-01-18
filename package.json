@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "generate:og-image": "node scripts/generate-og-image.js"
   },
   "dependencies": {
     "astro": "^4.11.3",
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.7.0",
+    "canvas": "^3.2.1",
     "tslib": "^2.6.2",
     "typescript": "^5.4.0"
   }

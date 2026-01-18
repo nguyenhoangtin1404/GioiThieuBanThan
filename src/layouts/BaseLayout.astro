@@ -19,6 +19,11 @@ const translationsVi = await getTranslations('vi');
 const translationsEn = await getTranslations('en');
 
 const GA_ID = 'G-C00KEFJSZR';
+
+// Get site URL for OG image
+const siteUrl = import.meta.env.SITE || 'https://profilio.local';
+const ogImageUrl = `${siteUrl}/og-image.png`;
+const pageUrl = Astro.url.href;
 ---
 
 <!doctype html>
@@ -28,6 +33,25 @@ const GA_ID = 'G-C00KEFJSZR';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    
+    {/* Open Graph / Facebook */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={pageUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={title} />
+    
     <link rel="icon" href="/avatar.png" type="image/png" />
     <link rel="apple-touch-icon" href="/avatar.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

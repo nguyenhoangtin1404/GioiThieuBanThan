@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  site: 'https://profilio.local',
+  site: 'https://www.nguyenhoangtin.com',
   srcDir: 'src',
   server: {
     host: true

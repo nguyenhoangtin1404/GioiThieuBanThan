@@ -1342,6 +1342,14 @@ const pageUrl = Astro.url.href;
             }
           });
 
+          // Update CV link based on language
+          document.querySelectorAll('[data-cv-link]').forEach(element => {
+            const cvLink = lang === 'en' 
+              ? 'https://nguyenhoangtin.com/CV_EN.pdf' 
+              : 'https://nguyenhoangtin.com/CV_.pdf';
+            element.setAttribute('href', cvLink);
+          });
+
           // Save to localStorage
           localStorage.setItem('lang', lang);
           

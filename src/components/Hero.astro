@@ -7,7 +7,7 @@ const profile = {
   name: t.hero.name,
   role: t.hero.role,
   summary: t.hero.summary,
-  cvLink: 'https://tinnh.com/docs/nguyenhoangtin-cv.pdf'
+  cvLink: lang === 'en' ? 'https://nguyenhoangtin.com/CV_EN.pdf' : 'https://nguyenhoangtin.com/CV_.pdf'
 };
 
 const highlights = [
@@ -39,7 +39,7 @@ const highlights = [
     </div>
     <div class="badge" data-i18n="hero.badge">{t.hero.badge}</div>
     <div class="actions">
-      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer" data-i18n="hero.buttons.downloadCV">{t.hero.buttons.downloadCV}</a>
+      <a class="primary" href={profile.cvLink} target="_blank" rel="noreferrer" data-i18n="hero.buttons.downloadCV" data-cv-link>{t.hero.buttons.downloadCV}</a>
       <a class="primary" href="#lien-he" data-i18n="hero.buttons.contact">{t.hero.buttons.contact}</a>
     </div>
   </div>

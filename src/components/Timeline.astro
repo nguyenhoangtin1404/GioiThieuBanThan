@@ -318,6 +318,20 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
     .timeline-section.alt {
       background: var(--bg);
     }
+
+    .timeline,
+    .item,
+    .item > div {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .timeline h3,
+    .timeline p,
+    .timeline li {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
   }
 
   @media (max-width: 640px) {

@@ -204,6 +204,7 @@ const pageUrl = Astro.url.href;
         box-sizing: border-box;
         overflow-y: auto;
         overflow-x: hidden;
+        scrollbar-gutter: stable;
         flex-shrink: 0;
         /* Mặc định: ẩn tất cả sections trừ active */
         opacity: 0 !important;
@@ -940,28 +941,42 @@ const pageUrl = Astro.url.href;
 
         /* Section content styles for mobile */
         #fullpage .section[data-anchor="home"] .hero {
-          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+          padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 1.5rem !important;
         }
 
         #fullpage .section[data-anchor^="du-an"] .projects-section {
-          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+          padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 1.5rem !important;
         }
 
         #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section,
         #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section.alt {
-          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+          padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 1.5rem !important;
         }
 
         #fullpage .section[data-anchor="lien-he"] .card {
-          padding: 1.5rem clamp(1rem, 4vw, 2rem) !important;
+          padding: calc(1.5rem + env(safe-area-inset-top)) clamp(1rem, 4vw, 2rem) 1.5rem !important;
         }
       }
 
       /* Mobile responsive tweaks */
       @media (max-width: 640px) {
+        html,
+        body {
+          overflow-x: hidden !important;
+        }
+
+        #fullpage,
+        .section,
+        .section > * {
+          max-width: 100% !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+        }
+
         .section {
           height: auto !important;
           min-height: auto !important;
+          overflow-x: hidden !important;
         }
 
         .section.active > * {

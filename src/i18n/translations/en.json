@@ -130,7 +130,9 @@
           ".NET Core 2.2",
           "Vue.js"
         ],
-        "gallery": [],
+        "gallery": [
+          "/other-projects-bg.jpg"
+        ],
         "hasDetail": false,
         "subProjects": [
           {

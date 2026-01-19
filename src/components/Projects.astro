@@ -43,12 +43,12 @@ function escapeCssUrl(url: string): string {
         data-i18n-description={`projects.items.${index}.description`}
         data-i18n-period={`projects.items.${index}.period`}
       >
-        {project.gallery && project.gallery.length > 0 && (
-          <div 
-            class="card-background" 
-            style={`background-image: url('${escapeCssUrl(project.gallery[0])}')`}
-          ></div>
-        )}
+        <div
+          class="card-background"
+          style={project.gallery && project.gallery.length > 0
+            ? `background-image: url('${escapeCssUrl(project.gallery[0])}')`
+            : ''}
+        ></div>
         <div class="card-content">
           <h3 data-i18n={`projects.items.${index}.name`}>{project.name}</h3>
           <p class="description" data-i18n={`projects.items.${index}.description`}>
@@ -886,6 +886,21 @@ function escapeCssUrl(url: string): string {
   @media (max-width: 767px) {
     .project-card {
       background: var(--bg);
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .card-content,
+    .card-content h3,
+    .card-content .description,
+    .card-content .tools,
+    .tool-tag {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
   }
 

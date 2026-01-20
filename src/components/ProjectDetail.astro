@@ -1,4 +1,6 @@
 ---
+import { getLang } from '@i18n/utils';
+
 export interface Props {
   project?: any;
   labels?: any;
@@ -22,6 +24,26 @@ const {
 } = Astro.props;
 
 const isModal = variant === 'modal';
+
+// Helper function to transform image URL based on language
+function getImageUrlForLang(imageUrl: string, lang: string): string {
+  if (!imageUrl || typeof imageUrl !== 'string') return imageUrl;
+  if (lang === 'vi') return imageUrl;
+  
+  // English: add _en before extension
+  const lastDot = imageUrl.lastIndexOf('.');
+  if (lastDot === -1) return imageUrl + '_en';
+  
+  const path = imageUrl.substring(0, lastDot);
+  const ext = imageUrl.substring(lastDot);
+  return `${path}_en${ext}`;
+}
+
+// Get current language and transform gallery URLs
+const lang = getLang(Astro.url);
+const galleryForLang = !isModal && project?.gallery 
+  ? project.gallery.map((url: string) => getImageUrlForLang(url, lang))
+  : [];
 ---
 
 <article class={`project-detail ${isModal ? 'project-detail--modal' : 'project-detail--page'}`}>
@@ -91,7 +113,7 @@ const isModal = variant === 'modal';
       <div class="pd-carousel-viewport" data-pd-gallery-grid role="region" aria-roledescription="carousel">
         {isModal
           ? null
-          : project?.gallery?.map((src: string, idx: number) => (
+          : galleryForLang.map((src: string, idx: number) => (
               <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}`}>
                 <img
                   src={src}

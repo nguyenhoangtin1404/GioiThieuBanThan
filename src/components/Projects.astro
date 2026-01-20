@@ -40,6 +40,20 @@ function escapeCssUrl(url: string): string {
   // Escape single quotes, double quotes, and backslashes for CSS url()
   return url.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
 }
+
+// Helper function to transform image URL based on language
+function getImageUrlForLang(imageUrl: string, lang: string): string {
+  if (!imageUrl || typeof imageUrl !== 'string') return imageUrl;
+  if (lang === 'vi') return imageUrl;
+  
+  // English: add _en before extension
+  const lastDot = imageUrl.lastIndexOf('.');
+  if (lastDot === -1) return imageUrl + '_en';
+  
+  const path = imageUrl.substring(0, lastDot);
+  const ext = imageUrl.substring(lastDot);
+  return `${path}_en${ext}`;
+}
 ---
 
 <section id="du-an" class="projects-section" data-slide-in="right">
@@ -59,8 +73,9 @@ function escapeCssUrl(url: string): string {
       >
         <div
           class="card-background"
+          data-project-id={project.id}
           style={project.gallery && project.gallery.length > 0
-            ? `background-image: url('${escapeCssUrl(project.gallery[0])}')`
+            ? `background-image: url('${escapeCssUrl(getImageUrlForLang(project.gallery[0], lang))}')`
             : ''}
         ></div>
         <div class="card-content">
@@ -224,6 +239,26 @@ function escapeCssUrl(url: string): string {
       const stored = localStorage.getItem('lang');
       if (stored === 'vi' || stored === 'en') return stored;
       return 'vi';
+    }
+
+    // Helper function to transform image URL based on language
+    function getImageUrlForLang(imageUrl, lang) {
+      if (!imageUrl || typeof imageUrl !== 'string') return imageUrl;
+      if (lang === 'vi') return imageUrl;
+      
+      // English: add _en before extension
+      const lastDot = imageUrl.lastIndexOf('.');
+      if (lastDot === -1) return imageUrl + '_en';
+      
+      const path = imageUrl.substring(0, lastDot);
+      const ext = imageUrl.substring(lastDot);
+      return `${path}_en${ext}`;
+    }
+
+    // Helper function to transform entire gallery array
+    function getGalleryForLang(gallery, lang) {
+      if (!Array.isArray(gallery)) return [];
+      return gallery.map(url => getImageUrlForLang(url, lang));
     }
 
     function buildDetailUrl(projectId) {
@@ -400,7 +435,10 @@ function escapeCssUrl(url: string): string {
         clearChildren(galleryGrid);
         if (hasGallery && galleryGrid) {
           const galleryAlt = window.projectGalleryAlt || 'Image slide for';
-          project.gallery.forEach((src, idx) => {
+          const currentLang = getCurrentLang();
+          const transformedGallery = getGalleryForLang(project.gallery, currentLang);
+          
+          transformedGallery.forEach((src, idx) => {
             const a = document.createElement('a');
             a.className = 'pd-slide glightbox';
             a.href = src;
@@ -598,6 +636,22 @@ function escapeCssUrl(url: string): string {
       if (closeBtn && window.projectActionsData?.close) {
         closeBtn.textContent = window.projectActionsData.close;
       }
+
+      // Update background images of project cards
+      const projectCards = document.querySelectorAll('.project-card');
+      projectCards.forEach((card) => {
+        const projectId = card.getAttribute('data-project-id');
+        if (!projectId) return;
+        
+        const project = getProjectById(projectId);
+        if (!project || !project.gallery || project.gallery.length === 0) return;
+        
+        const backgroundEl = card.querySelector('.card-background');
+        if (backgroundEl) {
+          const transformedUrl = getImageUrlForLang(project.gallery[0], lang);
+          backgroundEl.style.backgroundImage = `url('${transformedUrl.replace(/'/g, "\\'")}')`;
+        }
+      });
 
       // If modal is open, re-render it with new language data
       if (modal.classList.contains('active') && currentProjectId) {

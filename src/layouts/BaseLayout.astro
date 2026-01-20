@@ -1387,6 +1387,13 @@ const pageUrl = Astro.url.href;
           const currentLang = (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
           if (currentLang !== initialLang) {
             updatePageContent(currentLang);
+            // Dispatch langchange event so other components (like Projects) can update images
+            const event = new CustomEvent('langchange', { 
+              detail: { lang: currentLang },
+              bubbles: true,
+              cancelable: true
+            });
+            window.dispatchEvent(event);
           }
         }
       })();

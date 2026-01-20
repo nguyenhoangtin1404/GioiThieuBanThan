@@ -648,8 +648,13 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         
         const backgroundEl = card.querySelector('.card-background');
         if (backgroundEl) {
-          const transformedUrl = getImageUrlForLang(project.gallery[0], lang);
-          backgroundEl.style.backgroundImage = `url('${transformedUrl.replace(/'/g, "\\'")}')`;
+          const originalUrl = project.gallery[0];
+          const transformedUrl = getImageUrlForLang(originalUrl, lang);
+          // Escape URL properly for CSS background-image
+          const escapedUrl = transformedUrl.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+          backgroundEl.style.backgroundImage = `url('${escapedUrl}')`;
+          // Force reflow to ensure browser applies the change
+          backgroundEl.style.backgroundImage = backgroundEl.style.backgroundImage;
         }
       });
 
@@ -662,13 +667,45 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       }
     }
 
-    // Listen for language change events
-    window.addEventListener('langchange', (e) => {
+    // Listen for language change events (register early to catch BaseLayout's initial update)
+    const langChangeHandler = (e) => {
       const newLang = e.detail?.lang;
       if (newLang === 'vi' || newLang === 'en') {
         updateProjectsDataForLang(newLang);
       }
-    });
+    };
+    window.addEventListener('langchange', langChangeHandler);
+
+    // Update images on initial page load to match current language
+    // This handles the case where localStorage has 'en' but server rendered with 'vi' (no URL param)
+    function updateImagesOnLoad() {
+      const currentLang = getCurrentLang();
+      
+      // Always update images based on current language to ensure consistency
+      if (currentLang === 'vi' || currentLang === 'en') {
+        updateProjectsDataForLang(currentLang);
+      }
+    }
+
+    // Run after modal initialization and BaseLayout language update
+    // Use multiple triggers to ensure it runs:
+    // 1. After a delay (for BaseLayout to finish)
+    // 2. On DOMContentLoaded (if page still loading)
+    // 3. On langchange event (from BaseLayout) - already handled above
+    function scheduleImageUpdate() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(updateImagesOnLoad, 200);
+        });
+      } else {
+        // DOM already loaded, run after BaseLayout has a chance to update
+        setTimeout(updateImagesOnLoad, 400);
+        // Also run again after a longer delay as fallback
+        setTimeout(updateImagesOnLoad, 800);
+      }
+    }
+
+    scheduleImageUpdate();
   }
 
   // Initialize modal - check if DOM is already loaded

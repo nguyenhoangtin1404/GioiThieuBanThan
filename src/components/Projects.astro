@@ -10,6 +10,20 @@ const actions = t.projects.actions || {};
 const sections = t.projects.sections || {};
 const galleryAlt = t.projects.galleryAlt || '';
 
+// Load both languages for client-side switching
+const tVi = await getTranslations('vi');
+const tEn = await getTranslations('en');
+const projectsVi = tVi.projects.items;
+const projectsEn = tEn.projects.items;
+const labelsVi = tVi.projects.labels;
+const labelsEn = tEn.projects.labels;
+const actionsVi = tVi.projects.actions || {};
+const actionsEn = tEn.projects.actions || {};
+const sectionsVi = tVi.projects.sections || {};
+const sectionsEn = tEn.projects.sections || {};
+const galleryAltVi = tVi.projects.galleryAlt || '';
+const galleryAltEn = tEn.projects.galleryAlt || '';
+
 // Animation delay configuration
 const ANIMATION_BASE_DELAY = 0; // Base delay in milliseconds
 const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each card
@@ -81,14 +95,43 @@ function escapeCssUrl(url: string): string {
   </div>
 </div>
 
-<script is:inline define:vars={{ projectsData: JSON.stringify(projects), labelsData: JSON.stringify(labels), actionsData: JSON.stringify(actions), sectionsData: JSON.stringify(sections), galleryAltData: JSON.stringify(galleryAlt) }}>
+<script is:inline define:vars={{ 
+  projectsData: JSON.stringify(projects), 
+  labelsData: JSON.stringify(labels), 
+  actionsData: JSON.stringify(actions), 
+  sectionsData: JSON.stringify(sections), 
+  galleryAltData: JSON.stringify(galleryAlt),
+  projectsDataVi: JSON.stringify(projectsVi),
+  projectsDataEn: JSON.stringify(projectsEn),
+  labelsDataVi: JSON.stringify(labelsVi),
+  labelsDataEn: JSON.stringify(labelsEn),
+  actionsDataVi: JSON.stringify(actionsVi),
+  actionsDataEn: JSON.stringify(actionsEn),
+  sectionsDataVi: JSON.stringify(sectionsVi),
+  sectionsDataEn: JSON.stringify(sectionsEn),
+  galleryAltDataVi: JSON.stringify(galleryAltVi),
+  galleryAltDataEn: JSON.stringify(galleryAltEn)
+}}>
   // Store projects data for modal (parse JSON strings)
   try {
+    // Store current language data
     window.projectsData = typeof projectsData === 'string' ? JSON.parse(projectsData) : projectsData;
     window.labelsData = typeof labelsData === 'string' ? JSON.parse(labelsData) : labelsData;
     window.projectActionsData = typeof actionsData === 'string' ? JSON.parse(actionsData) : actionsData;
     window.projectSectionsData = typeof sectionsData === 'string' ? JSON.parse(sectionsData) : sectionsData;
     window.projectGalleryAlt = typeof galleryAltData === 'string' ? JSON.parse(galleryAltData) : galleryAltData;
+    
+    // Store both language versions for switching
+    window.projectsDataVi = typeof projectsDataVi === 'string' ? JSON.parse(projectsDataVi) : projectsDataVi;
+    window.projectsDataEn = typeof projectsDataEn === 'string' ? JSON.parse(projectsDataEn) : projectsDataEn;
+    window.labelsDataVi = typeof labelsDataVi === 'string' ? JSON.parse(labelsDataVi) : labelsDataVi;
+    window.labelsDataEn = typeof labelsDataEn === 'string' ? JSON.parse(labelsDataEn) : labelsDataEn;
+    window.projectActionsDataVi = typeof actionsDataVi === 'string' ? JSON.parse(actionsDataVi) : actionsDataVi;
+    window.projectActionsDataEn = typeof actionsDataEn === 'string' ? JSON.parse(actionsDataEn) : actionsDataEn;
+    window.projectSectionsDataVi = typeof sectionsDataVi === 'string' ? JSON.parse(sectionsDataVi) : sectionsDataVi;
+    window.projectSectionsDataEn = typeof sectionsDataEn === 'string' ? JSON.parse(sectionsDataEn) : sectionsDataEn;
+    window.projectGalleryAltVi = typeof galleryAltDataVi === 'string' ? JSON.parse(galleryAltDataVi) : galleryAltDataVi;
+    window.projectGalleryAltEn = typeof galleryAltDataEn === 'string' ? JSON.parse(galleryAltDataEn) : galleryAltDataEn;
   } catch (e) {
     console.error('Error parsing projects data:', e);
     window.projectsData = [];
@@ -148,14 +191,18 @@ function escapeCssUrl(url: string): string {
     const titleEl = modal.querySelector('[data-pd-title]');
     const metaEl = modal.querySelector('[data-pd-meta]');
     const impactSection = modal.querySelector('[data-pd-impact]');
+    const impactTitleEl = modal.querySelector('.pd-impact-title');
     const impactBody = modal.querySelector('[data-pd-impact-body]');
     const overviewSection = modal.querySelector('[data-pd-overview]');
+    const overviewTitleEl = modal.querySelector('[data-pd-overview] .pd-section-title');
     const descEl = modal.querySelector('[data-pd-description]');
     const tasksSection = modal.querySelector('[data-pd-tasks]');
     const tasksList = modal.querySelector('[data-pd-tasks-list]');
     const toolsSection = modal.querySelector('[data-pd-tools]');
+    const toolsTitleEl = modal.querySelector('[data-pd-tools] .pd-section-title');
     const toolsChips = modal.querySelector('[data-pd-tools-chips]');
     const gallerySection = modal.querySelector('[data-pd-gallery]');
+    const galleryTitleEl = modal.querySelector('[data-pd-gallery] .pd-section-title');
     const galleryGrid = modal.querySelector('[data-pd-gallery-grid]');
     const galleryPrevBtn = modal.querySelector('[data-pd-carousel-prev]');
     const galleryNextBtn = modal.querySelector('[data-pd-carousel-next]');
@@ -165,6 +212,7 @@ function escapeCssUrl(url: string): string {
     const viewDetailLink = modal.querySelector('[data-pd-view-detail]');
 
     let lastFocusedEl = null;
+    let currentProjectId = null; // Track currently open project for language switching
 
     function getCurrentLang() {
       try {
@@ -288,6 +336,14 @@ function escapeCssUrl(url: string): string {
       if (!project) return;
       const subProjects = Array.isArray(project.subProjects) ? project.subProjects : [];
       const hasSubProjects = subProjects.length > 0;
+      const labels = window.labelsData || {};
+      const sections = window.projectSectionsData || {};
+
+      // Update labels and section titles
+      if (impactTitleEl) impactTitleEl.textContent = labels.results || 'Results:';
+      if (overviewTitleEl) overviewTitleEl.textContent = sections.overview || 'Overview';
+      if (toolsTitleEl) toolsTitleEl.textContent = labels.tools || 'Technologies:';
+      if (galleryTitleEl) galleryTitleEl.textContent = sections.gallery || 'Gallery';
 
       // Title
       if (titleEl) titleEl.textContent = project.name || '';
@@ -367,15 +423,29 @@ function escapeCssUrl(url: string): string {
         }
       } catch {}
 
-      // View detail link
+      // View detail link - hide if project has subProjects or hasDetail is explicitly false
       if (viewDetailLink) {
-        const canViewDetail = !!(project.id && !hasSubProjects && project.hasDetail !== false);
-        if (canViewDetail) {
-          viewDetailLink.hidden = false;
-          viewDetailLink.setAttribute('href', buildDetailUrl(project.id));
-        } else {
+        // Hide for "other-projects" or any project with subProjects or hasDetail: false
+        const shouldHide = project.id === 'other-projects' || 
+                          hasSubProjects || 
+                          project.hasDetail === false ||
+                          project.hasDetail === 'false';
+        
+        if (shouldHide) {
           viewDetailLink.hidden = true;
+          viewDetailLink.style.display = 'none';
           viewDetailLink.removeAttribute('href');
+        } else {
+          const canViewDetail = !!(project.id && !hasSubProjects && project.hasDetail !== false);
+          if (canViewDetail) {
+            viewDetailLink.hidden = false;
+            viewDetailLink.style.display = '';
+            viewDetailLink.setAttribute('href', buildDetailUrl(project.id));
+          } else {
+            viewDetailLink.hidden = true;
+            viewDetailLink.style.display = 'none';
+            viewDetailLink.removeAttribute('href');
+          }
         }
       }
 
@@ -442,6 +512,7 @@ function escapeCssUrl(url: string): string {
       const project = getProjectById(projectId);
       if (!project) return;
 
+      currentProjectId = projectId; // Track current project
       lastFocusedEl = document.activeElement;
       renderProjectToModal(project);
 
@@ -465,6 +536,7 @@ function escapeCssUrl(url: string): string {
 
     // Close modal
     function closeModal() {
+      currentProjectId = null; // Clear current project
       modal.classList.remove('active');
       modal.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
@@ -499,6 +571,48 @@ function escapeCssUrl(url: string): string {
       const target = e.target;
       if (target && target.hasAttribute && target.hasAttribute('data-modal-close')) {
         closeModal();
+      }
+    });
+
+    // Update projects data and re-render modal when language changes
+    function updateProjectsDataForLang(lang) {
+      if (lang === 'vi') {
+        window.projectsData = window.projectsDataVi || [];
+        window.labelsData = window.labelsDataVi || {};
+        window.projectActionsData = window.projectActionsDataVi || {};
+        window.projectSectionsData = window.projectSectionsDataVi || {};
+        window.projectGalleryAlt = window.projectGalleryAltVi || '';
+      } else if (lang === 'en') {
+        window.projectsData = window.projectsDataEn || [];
+        window.labelsData = window.labelsDataEn || {};
+        window.projectActionsData = window.projectActionsDataEn || {};
+        window.projectSectionsData = window.projectSectionsDataEn || {};
+        window.projectGalleryAlt = window.projectGalleryAltEn || '';
+      }
+
+      // Update action buttons text
+      if (viewDetailLink && window.projectActionsData?.viewDetail) {
+        viewDetailLink.textContent = window.projectActionsData.viewDetail;
+      }
+      const closeBtn = modal.querySelector('[data-pd-close]');
+      if (closeBtn && window.projectActionsData?.close) {
+        closeBtn.textContent = window.projectActionsData.close;
+      }
+
+      // If modal is open, re-render it with new language data
+      if (modal.classList.contains('active') && currentProjectId) {
+        const project = getProjectById(currentProjectId);
+        if (project) {
+          renderProjectToModal(project);
+        }
+      }
+    }
+
+    // Listen for language change events
+    window.addEventListener('langchange', (e) => {
+      const newLang = e.detail?.lang;
+      if (newLang === 'vi' || newLang === 'en') {
+        updateProjectsDataForLang(newLang);
       }
     });
   }

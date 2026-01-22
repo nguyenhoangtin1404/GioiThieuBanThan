@@ -6,6 +6,7 @@
     "badge": "Software Engineer",
     "buttons": {
       "viewProjects": "Projects",
+      "github": "GitHub",
       "contact": "Contact",
       "downloadCV": "Download CV"
     },
@@ -196,7 +197,8 @@
       "phone": "Phone",
       "zalo": "Zalo",
       "telegram": "Telegram",
-      "email": "Email"
+      "email": "Email",
+      "github": "GitHub"
     }
   },
   "layout": {

@@ -241,7 +241,7 @@
 
   .lang-option {
     padding: 0.25rem 0.5rem;
-    color: var(--muted, #475569);
+    color: var(--text, #0a0a0a);
     transition: all 0.2s ease;
     user-select: none;
     border-radius: 6px;
@@ -260,9 +260,13 @@
   }
 
   .lang-option.active {
-    color: var(--accent, #0ea5e9);
-    background: rgba(14, 165, 233, 0.1);
+    color: var(--text, #0a0a0a);
+    background: rgba(14, 165, 233, 0.15);
     font-weight: 700;
+  }
+
+  .lang-option.active .text {
+    color: #0a0a0a;
   }
 
   .lang-option:hover:not(.active) {
@@ -271,7 +275,7 @@
   }
 
   .lang-separator {
-    color: rgba(14, 165, 233, 0.3);
+    color: var(--text, #0a0a0a);
     user-select: none;
     pointer-events: none;
   }

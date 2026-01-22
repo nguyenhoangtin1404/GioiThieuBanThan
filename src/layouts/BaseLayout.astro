@@ -620,7 +620,7 @@ const pageUrl = Astro.url.href;
 
       .sidebar-nav .lang-option {
         padding: 0.25rem 0.5rem;
-        color: var(--muted, #475569);
+        color: var(--text, #0a0a0a);
         transition: all 0.2s ease;
         user-select: none;
         border-radius: 6px;
@@ -639,9 +639,12 @@ const pageUrl = Astro.url.href;
       }
 
       .sidebar-nav .lang-option.active {
-        color: var(--accent, #0ea5e9);
-        background: rgba(14, 165, 233, 0.1);
+        background: rgba(14, 165, 233, 0.15);
         font-weight: 700;
+      }
+
+      .sidebar-nav .lang-option.active .text {
+        color: #0a0a0a;
       }
 
       .sidebar-nav .lang-option:hover:not(.active) {
@@ -650,7 +653,7 @@ const pageUrl = Astro.url.href;
       }
 
       .sidebar-nav .lang-separator {
-        color: rgba(14, 165, 233, 0.3);
+        color: var(--text, #0a0a0a);
         user-select: none;
         pointer-events: none;
       }

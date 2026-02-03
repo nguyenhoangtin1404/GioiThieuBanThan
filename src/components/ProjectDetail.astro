@@ -47,104 +47,110 @@ const galleryForLang = !isModal && project?.gallery
 ---
 
 <article class={`project-detail ${isModal ? 'project-detail--modal' : 'project-detail--page'}`}>
-  <header class="pd-header">
-    <h1 class="pd-title" data-pd-title id={isModal ? 'project-modal-title' : undefined}>
-      {isModal ? '' : project?.name}
-    </h1>
-    <div class="pd-meta" data-pd-meta hidden={isModal ? true : undefined}>
-      {isModal ? (
-        <>
-          <span class="pd-pill" data-pd-period hidden></span>
-          <span class="pd-pill" data-pd-role hidden></span>
-        </>
-      ) : (
-        <>
-          {project?.period && <span class="pd-pill" data-pd-period>{project.period}</span>}
-          {project?.role && <span class="pd-pill" data-pd-role>{project.role}</span>}
-        </>
+  <div class="pd-grid">
+    <div class="pd-info-col">
+      <header class="pd-header">
+        <h1 class="pd-title" data-pd-title id={isModal ? 'project-modal-title' : undefined}>
+          {isModal ? '' : project?.name}
+        </h1>
+        <div class="pd-meta" data-pd-meta hidden={isModal ? true : undefined}>
+          {isModal ? (
+            <>
+              <span class="pd-pill" data-pd-period hidden></span>
+              <span class="pd-pill" data-pd-role hidden></span>
+            </>
+          ) : (
+            <>
+              {project?.period && <span class="pd-pill" data-pd-period>{project.period}</span>}
+              {project?.role && <span class="pd-pill" data-pd-role>{project.role}</span>}
+            </>
+          )}
+        </div>
+      </header>
+
+      <section class="pd-impact" data-pd-impact hidden={isModal ? true : !project?.impact}>
+        <div class="pd-impact-title">{labels?.results || 'Results:'}</div>
+        <div class="pd-impact-body" data-pd-impact-body>
+          {isModal ? '' : project?.impact}
+        </div>
+      </section>
+
+      <section class="pd-section" data-pd-overview hidden={isModal ? true : !project?.description}>
+        <h2 class="pd-section-title">{sections?.overview || 'Overview'}</h2>
+        <p class="pd-section-body" data-pd-description>
+          {isModal ? '' : project?.description}
+        </p>
+      </section>
+
+      {isModal && (
+        <section class="pd-section pd-subprojects" data-pd-subprojects hidden>
+          <div class="pd-subprojects-tabs" role="tablist" data-pd-subprojects-tabs></div>
+          <div class="pd-subprojects-panel" data-pd-subprojects-panel></div>
+        </section>
       )}
+
+      <section class="pd-section" data-pd-tasks hidden={isModal ? true : !(Array.isArray(project?.tasks) && project.tasks.length)}>
+        <h2 class="pd-section-title">{labels?.tasks || 'Tasks:'}</h2>
+        <ul class="pd-list" data-pd-tasks-list>
+          {isModal ? '' : project?.tasks?.map((task: string) => <li>{task}</li>)}
+        </ul>
+      </section>
+
+      <section class="pd-section" data-pd-tools hidden={isModal ? true : !(Array.isArray(project?.tools) && project.tools.length)}>
+        <h2 class="pd-section-title">{labels?.tools || 'Technologies:'}</h2>
+        <div class="pd-chips" data-pd-tools-chips>
+          {isModal ? null : project?.tools?.map((tool: string) => <span class="pd-chip">{tool}</span>)}
+        </div>
+      </section>
+
     </div>
-  </header>
 
-  <section class="pd-impact" data-pd-impact hidden={isModal ? true : !project?.impact}>
-    <div class="pd-impact-title">{labels?.results || 'Results:'}</div>
-    <div class="pd-impact-body" data-pd-impact-body>
-      {isModal ? '' : project?.impact}
+      <section class="pd-section" data-pd-gallery hidden={isModal ? true : !(Array.isArray(project?.gallery) && project.gallery.length)}>
+        <h2 class="pd-section-title">{sections?.gallery || 'Gallery'}</h2>
+        <div class="pd-carousel" data-pd-carousel>
+          <button
+            class="pd-carousel-btn pd-carousel-btn--prev"
+            type="button"
+            aria-label="Previous image"
+            data-pd-carousel-prev
+          >
+            ‹
+          </button>
+
+          <div class="pd-carousel-viewport" data-pd-gallery-grid role="region" aria-roledescription="carousel">
+            {isModal
+              ? null
+              : galleryForLang.map((src: string, idx: number) => (
+                  <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}`}>
+                    <img
+                      src={src}
+                      alt={`${galleryAlt} ${project?.name || ''} - ${idx + 1}`}
+                      loading="lazy"
+                    />
+                  </a>
+                ))}
+          </div>
+
+          <button
+            class="pd-carousel-btn pd-carousel-btn--next"
+            type="button"
+            aria-label="Next image"
+            data-pd-carousel-next
+          >
+            ›
+          </button>
+        </div>
+      </section>
     </div>
-  </section>
 
-  <section class="pd-section" data-pd-overview hidden={isModal ? true : !project?.description}>
-    <h2 class="pd-section-title">{sections?.overview || 'Overview'}</h2>
-    <p class="pd-section-body" data-pd-description>
-      {isModal ? '' : project?.description}
-    </p>
-  </section>
-
-  {isModal && (
-    <section class="pd-section pd-subprojects" data-pd-subprojects hidden>
-      <div class="pd-subprojects-tabs" role="tablist" data-pd-subprojects-tabs></div>
-      <div class="pd-subprojects-panel" data-pd-subprojects-panel></div>
-    </section>
-  )}
-
-  <section class="pd-section" data-pd-tasks hidden={isModal ? true : !(Array.isArray(project?.tasks) && project.tasks.length)}>
-    <h2 class="pd-section-title">{labels?.tasks || 'Tasks:'}</h2>
-    <ul class="pd-list" data-pd-tasks-list>
-      {isModal ? '' : project?.tasks?.map((task: string) => <li>{task}</li>)}
-    </ul>
-  </section>
-
-  <section class="pd-section" data-pd-tools hidden={isModal ? true : !(Array.isArray(project?.tools) && project.tools.length)}>
-    <h2 class="pd-section-title">{labels?.tools || 'Technologies:'}</h2>
-    <div class="pd-chips" data-pd-tools-chips>
-      {isModal ? null : project?.tools?.map((tool: string) => <span class="pd-chip">{tool}</span>)}
-    </div>
-  </section>
-
-  <section class="pd-section" data-pd-gallery hidden={isModal ? true : !(Array.isArray(project?.gallery) && project.gallery.length)}>
-    <h2 class="pd-section-title">{sections?.gallery || 'Gallery'}</h2>
-    <div class="pd-carousel" data-pd-carousel>
-      <button
-        class="pd-carousel-btn pd-carousel-btn--prev"
-        type="button"
-        aria-label="Previous image"
-        data-pd-carousel-prev
-      >
-        ‹
-      </button>
-
-      <div class="pd-carousel-viewport" data-pd-gallery-grid role="region" aria-roledescription="carousel">
-        {isModal
-          ? null
-          : galleryForLang.map((src: string, idx: number) => (
-              <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}`}>
-                <img
-                  src={src}
-                  alt={`${galleryAlt} ${project?.name || ''} - ${idx + 1}`}
-                  loading="lazy"
-                />
-              </a>
-            ))}
+    {isModal && (
+      <div class="pd-actions">
+        <button class="pd-secondary" type="button" data-pd-close>
+          {actions?.close || 'Close'}
+        </button>
       </div>
-
-      <button
-        class="pd-carousel-btn pd-carousel-btn--next"
-        type="button"
-        aria-label="Next image"
-        data-pd-carousel-next
-      >
-        ›
-      </button>
-    </div>
-  </section>
-
-  {isModal && (
-    <div class="pd-actions">
-      <button class="pd-secondary" type="button" data-pd-close>
-        {actions?.close || 'Close'}
-      </button>
-    </div>
-  )}
+    )}
+  </div>
 </article>
 
 <style is:global>
@@ -412,8 +418,32 @@ const galleryForLang = !isModal && project?.gallery
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
-    margin-top: 1.25rem;
+    margin-top: 2rem;
     justify-content: flex-end;
+  }
+
+  .pd-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  /* Desktop Grid Layout (8/4 split) */
+  @media (min-width: 992px) {
+    .pd-grid {
+      display: grid;
+      grid-template-columns: 8fr 4fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .pd-gallery-col .pd-section {
+      margin-top: 0; /* Align with top of info */
+    }
+
+    .pd-actions {
+      grid-column: 1 / -1;
+    }
   }
 
   .pd-primary[hidden],
@@ -424,7 +454,7 @@ const galleryForLang = !isModal && project?.gallery
   .pd-primary,
   .pd-secondary {
     border-radius: 999px;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 1.5rem;
     font-weight: 800;
     text-decoration: none;
     border: 1px solid transparent;
@@ -432,7 +462,9 @@ const galleryForLang = !isModal && project?.gallery
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
+    min-height: 48px;
+    font-size: 1rem;
+    min-width: 120px;
   }
 
   .pd-primary {
@@ -458,6 +490,7 @@ const galleryForLang = !isModal && project?.gallery
 
     .pd-actions {
       justify-content: stretch;
+      margin-top: 1.5rem;
     }
 
     .pd-primary,

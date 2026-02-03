@@ -263,6 +263,9 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       if (!imageUrl || typeof imageUrl !== 'string') return imageUrl;
       if (lang === 'vi') return imageUrl;
       
+      // If already has _en suffix, return as is (allow override in JSON)
+      if (imageUrl.includes('_en.')) return imageUrl;
+      
       // English: add _en before extension
       const lastDot = imageUrl.lastIndexOf('.');
       if (lastDot === -1) return imageUrl + '_en';

@@ -400,9 +400,21 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       // Title
       if (titleEl) titleEl.textContent = project.name || '';
 
-      // Popup spec: hide meta (period/role) for a cleaner quick view
-      clearChildren(metaEl);
-      if (metaEl) metaEl.hidden = true;
+      // Meta (Period/Role) - Show in modal now
+      if (metaEl) {
+        metaEl.hidden = false;
+        const periodEl = modal.querySelector('[data-pd-period]');
+        const roleEl = modal.querySelector('[data-pd-role]');
+        
+        if (periodEl) {
+          periodEl.textContent = project.period || '';
+          periodEl.hidden = !project.period;
+        }
+        if (roleEl) {
+          roleEl.textContent = project.role || '';
+          roleEl.hidden = !project.role;
+        }
+      }
 
       if (hasSubProjects) {
         setHidden(impactSection, true);
@@ -429,9 +441,17 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         setHidden(overviewSection, !hasDesc);
         if (descEl) descEl.textContent = project.description || '';
 
-        // Popup spec: do not show tasks in modal quick view
-        setHidden(tasksSection, true);
+        // Tasks - Show in modal now
+        const hasTasks = Array.isArray(project.tasks) && project.tasks.length > 0;
+        setHidden(tasksSection, !hasTasks);
         clearChildren(tasksList);
+        if (hasTasks && tasksList) {
+           project.tasks.forEach(task => {
+             const li = document.createElement('li');
+             li.textContent = task;
+             tasksList.appendChild(li);
+           });
+        }
 
         // Tools
         const hasTools = Array.isArray(project.tools) && project.tools.length > 0;
@@ -446,7 +466,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
           });
         }
 
-        // Gallery
+        // Gallery - Show in modal now
         const hasGallery = Array.isArray(project.gallery) && project.gallery.length > 0;
         setHidden(gallerySection, !hasGallery);
         clearChildren(galleryGrid);
@@ -564,6 +584,21 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
 
     // Open modal with project details
     function openModal(projectId) {
+      if (!projectId) return;
+
+      // Handle history state
+      // Only push state if we are not currently on this project URL
+      // Check current URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.has('project') || urlParams.get('project') !== projectId) {
+         const newUrl = new URL(window.location.href);
+         newUrl.searchParams.set('project', projectId);
+         window.history.pushState({ projectId: projectId }, '', newUrl.toString());
+      } else {
+         // Replace state just to ensure we have the state object
+         window.history.replaceState({ projectId: projectId }, '', window.location.href);
+      }
+
       const project = getProjectById(projectId);
       if (!project) return;
 
@@ -575,6 +610,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       try {
         if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
           window.vanillaFullpage.setWheelEnabled(false);
+          window.vanillaFullpage.setAllowScrolling(false); // Also disable scrolling
         }
       } catch (e) {
         // ignore
@@ -590,7 +626,23 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     }
 
     // Close modal
-    function closeModal() {
+    function closeModal(skipHistoryBack = false) {
+      // If we need to go back in history (e.g. user clicked X button), do it
+      if (!skipHistoryBack && currentProjectId) {
+         // Check if current history state matches current project
+         if (window.history.state && window.history.state.projectId === currentProjectId) {
+             window.history.back();
+             return; // Let popstate handler call closeModal again with skipHistoryBack=true
+         }
+         // Fallback: if no state but we want to clear URL param
+         const urlParams = new URLSearchParams(window.location.search);
+         if (urlParams.has('project')) {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.delete('project');
+            window.history.replaceState(null, '', newUrl.toString());
+         }
+      }
+
       currentProjectId = null; // Clear current project
       modal.classList.remove('active');
       modal.setAttribute('aria-hidden', 'true');
@@ -601,6 +653,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       try {
         if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
           window.vanillaFullpage.setWheelEnabled(true);
+          window.vanillaFullpage.setAllowScrolling(true);
         }
       } catch (e) {
         // ignore
@@ -610,6 +663,38 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         setTimeout(() => lastFocusedEl.focus(), 0);
       }
     }
+
+    // Handle back button (popstate)
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.projectId) {
+            // Forward/Back to a project
+            // We need to confirm if we are already open on this project to avoid re-rendering loop?
+            // But openModal checks getProjectById which is cheap.
+            openModal(event.state.projectId); 
+            // openModal pushed state, but here we are IN a popstate event, so we shouldn't push again.
+            // Wait, openModal logic above unconditionally pushes state!
+            // I need to refactor openModal to accept a flag or check history closer.
+            // REFACTORING openModal to not push state if already there is simpler.
+            // See updated openModal logic above checking URL params.
+        } else {
+            // Back to root (no project)
+            if (modal.classList.contains('active')) {
+                closeModal(true); // true = skip history.back()
+            }
+        }
+    });
+
+    // Check URL on load to open modal if needed
+    setTimeout(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('project');
+        if (projectId) {
+            const project = getProjectById(projectId);
+            if (project) {
+                openModal(projectId);
+            }
+        }
+    }, 500); // Delay to allow data loading
 
     // Event listeners
     projectCards.forEach((card) => {
@@ -875,7 +960,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     backdrop-filter: blur(4px);
   }
 
-  /* Modal Styles */
+  /* Modal Styles - Full Screen */
   .project-modal {
     position: fixed;
     top: 0;
@@ -884,17 +969,16 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     height: 100%;
     /* Must be above BaseLayout sidebar-nav (z-index: 10000) */
     z-index: 20000;
-    display: none;
-    align-items: center;
+    display: flex;
     justify-content: center;
+    align-items: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.3s ease;
     pointer-events: none;
   }
 
   .project-modal.active {
-    display: flex;
     opacity: 1;
     visibility: visible;
     pointer-events: all;
@@ -906,87 +990,81 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(4px);
+    background: rgba(2, 6, 23, 0.95); /* Darker, solid-ish background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1;
   }
 
   .modal-sheet {
     position: relative;
-    z-index: 20001;
-    background: var(--card);
-    border-radius: 24px;
-    max-width: 900px;
-    width: 90%;
-    max-height: 90vh;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    background: transparent;
     overflow-y: auto;
-    padding: 2rem;
-    margin: 2rem;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-    outline: none;
+    overflow-x: hidden;
+    /* Remove default modal styling */
+    border-radius: 0;
+    box-shadow: none;
+    transform: none !important;
+    display: block;
+    padding: 0;
+    margin: 0;
   }
-
-  .project-modal.active .modal-sheet {
-    transform: scale(1);
-  }
-
-  .modal-handle {
-    display: none;
-    width: 44px;
-    height: 4px;
-    border-radius: 999px;
-    background: rgba(2, 6, 23, 0.18);
-    margin: -0.5rem auto 1rem;
+  
+  /* Update project-detail style inside modal to be full screen container */
+  .project-modal .project-detail {
+    min-height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    padding: 4rem clamp(1rem, 5vw, 4rem) 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: transparent; 
   }
 
   .modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text);
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
-    z-index: 1002;
+    color: var(--text);
+    font-size: 2rem;
+    line-height: 1;
+    z-index: 20005; /* Above everything */
+    transition: all 0.2s ease;
   }
 
   .modal-close:hover {
     background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
   }
 
-  /* Bottom sheet behavior on mobile */
+  .modal-handle {
+    display: none;
+  }
+
   @media (max-width: 767px) {
-    .project-modal {
-      align-items: flex-end;
+    .project-modal .project-detail {
+      padding: 5rem 1rem 2rem; /* Add top padding to clear close button */
     }
-
-    .modal-sheet {
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
-      border-radius: 24px 24px 0 0;
-      max-height: 88vh;
-      transform: translateY(18px);
-      transition: transform 0.25s ease;
-      padding: 1.25rem;
-      padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
-    }
-
-    .project-modal.active .modal-sheet {
-      transform: translateY(0);
-    }
-
-    .modal-handle {
-      display: block;
+    
+    .modal-close {
+      top: 1rem;
+      right: 1rem;
+      background: rgba(2, 6, 23, 0.3);
     }
   }
 

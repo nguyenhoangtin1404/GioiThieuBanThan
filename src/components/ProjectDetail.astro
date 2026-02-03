@@ -52,7 +52,12 @@ const galleryForLang = !isModal && project?.gallery
       {isModal ? '' : project?.name}
     </h1>
     <div class="pd-meta" data-pd-meta hidden={isModal ? true : undefined}>
-      {isModal ? null : (
+      {isModal ? (
+        <>
+          <span class="pd-pill" data-pd-period hidden></span>
+          <span class="pd-pill" data-pd-role hidden></span>
+        </>
+      ) : (
         <>
           {project?.period && <span class="pd-pill" data-pd-period>{project.period}</span>}
           {project?.role && <span class="pd-pill" data-pd-role>{project.role}</span>}
@@ -82,14 +87,12 @@ const galleryForLang = !isModal && project?.gallery
     </section>
   )}
 
-  {!isModal && (
-    <section class="pd-section" data-pd-tasks hidden={!(Array.isArray(project?.tasks) && project.tasks.length)}>
-      <h2 class="pd-section-title">{labels?.tasks || 'Tasks:'}</h2>
-      <ul class="pd-list" data-pd-tasks-list>
-        {project?.tasks?.map((task: string) => <li>{task}</li>)}
-      </ul>
-    </section>
-  )}
+  <section class="pd-section" data-pd-tasks hidden={isModal ? true : !(Array.isArray(project?.tasks) && project.tasks.length)}>
+    <h2 class="pd-section-title">{labels?.tasks || 'Tasks:'}</h2>
+    <ul class="pd-list" data-pd-tasks-list>
+      {isModal ? '' : project?.tasks?.map((task: string) => <li>{task}</li>)}
+    </ul>
+  </section>
 
   <section class="pd-section" data-pd-tools hidden={isModal ? true : !(Array.isArray(project?.tools) && project.tools.length)}>
     <h2 class="pd-section-title">{labels?.tools || 'Technologies:'}</h2>
@@ -137,9 +140,6 @@ const galleryForLang = !isModal && project?.gallery
 
   {isModal && (
     <div class="pd-actions">
-      <a class="pd-primary" data-pd-view-detail href="#">
-        {actions?.viewDetail || 'View details'}
-      </a>
       <button class="pd-secondary" type="button" data-pd-close>
         {actions?.close || 'Close'}
       </button>
@@ -239,6 +239,8 @@ const galleryForLang = !isModal && project?.gallery
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     margin-bottom: -1px;
+    font-family: inherit;
+    font-size: 0.95rem;
   }
 
   .pd-subprojects-tab[aria-selected="true"] {

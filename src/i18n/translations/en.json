@@ -30,7 +30,10 @@
       "role": "Role:",
       "tools": "Technologies:",
       "tasks": "Tasks:",
-      "results": "Results:"
+      "results": "Results:",
+      "problem": "Problem:",
+      "myRole": "My Role:",
+      "impact": "Impact:"
     },
     "actions": {
       "viewDetail": "View details",
@@ -47,6 +50,8 @@
         "name": "Administrative Procedure Resolution Information System",
         "period": "2025 – PRESENT",
         "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
+        "problem": "Report queries were slow on province-wide data.",
+        "myRole": "Backend engineer focusing on query optimization.",
         "role": "Fullstack Developer",
         "tasks": [
           "Optimize reports and support system operations.",
@@ -70,6 +75,8 @@
         "name": "VNPT eCabinet - Paperless Meeting Room",
         "period": "2021 – 2025",
         "description": "Provincial-level paperless meeting solution, integrating IoT hardware with management software.",
+        "problem": "Meeting processes were inefficient and paper-heavy.",
+        "myRole": "Deployment Team Lead & Technical Support.",
         "role": "Deployment Team Lead",
         "tasks": [
           "Deploy and operate the system (hardware + software).",
@@ -94,6 +101,8 @@
         "name": "VNPT iOffice - Document Management",
         "period": "2017 – 2024",
         "description": "Large-scale document management and execution system, integrated with internal management and collaboration.",
+        "problem": "Document management for government systems requiring high security and high load capacity. Ensuring timely document processing and exchange.",
+        "myRole": "Fullstack Developer & Core Feature Lead.",
         "role": "Fullstack Developer",
         "tasks": [
           "Develop and enhance core features: document workflow, approvals, digital signatures, and search.",

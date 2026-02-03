@@ -30,7 +30,10 @@
       "role": "Vai trò:",
       "tools": "Công nghệ:",
       "tasks": "Nhiệm vụ:",
-      "results": "Kết quả:"
+      "results": "Kết quả:",
+      "problem": "Vấn đề:",
+      "myRole": "Vai trò:",
+      "impact": "Kết quả:"
     },
     "actions": {
       "viewDetail": "Xem chi tiết",
@@ -47,6 +50,8 @@
         "name": "Hệ thống Thông tin Giải quyết Thủ tục Hành chính",
         "period": "2025 – NAY",
         "description": "Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.",
+        "problem": "Truy vấn báo cáo chậm trên dữ liệu toàn tỉnh.",
+        "myRole": "Backend engineer tập trung tối ưu truy vấn.",
         "role": "Fullstack Developer",
         "tasks": [
           "Tối ưu báo cáo và hỗ trợ vận hành hệ thống.",
@@ -70,6 +75,8 @@
         "name": "VNPT eCabinet - Phòng họp không giấy tờ",
         "period": "2021 – 2025",
         "description": "Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.",
+        "problem": "Quy trình họp kém hiệu quả và tốn giấy tờ.",
+        "myRole": "Trưởng nhóm triển khai & Hỗ trợ kỹ thuật.",
         "role": "Trưởng nhóm triển khai",
         "tasks": [
           "Triển khai và vận hành hệ thống (phần cứng + phần mềm).",
@@ -94,6 +101,8 @@
         "name": "VNPT iOffice - Điều hành Văn bản",
         "period": "2017 – 2024",
         "description": "Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.",
+        "problem": "Hệ thống quản lý văn bản cho các hệ thống chính quyền yêu cầu độ bảo mật cao và khả năng chịu tải lớn. Đảm bảo văn bản được gửi nhận và xử lý kịp thời.",
+        "myRole": "Fullstack Developer & Phát triển tính năng lõi.",
         "role": "Fullstack Developer",
         "tasks": [
           "Phát triển và nâng cấp các chức năng core: luồng xử lý văn bản, phê duyệt, ký số, tìm kiếm.",

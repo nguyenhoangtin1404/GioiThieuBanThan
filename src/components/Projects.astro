@@ -80,9 +80,26 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         ></div>
         <div class="card-content">
           <h3 data-i18n={`projects.items.${index}.name`}>{project.name}</h3>
-          <p class="description" data-i18n={`projects.items.${index}.description`}>
-            {truncate(project.description, 120)}
-          </p>
+          {project.problem ? (
+            <div class="project-metrics">
+              <div class="metric-row">
+                <span class="metric-label" data-i18n="projects.labels.problem">{labels.problem}</span>
+                <span class="metric-value" data-i18n={`projects.items.${index}.problem`}>{project.problem}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label" data-i18n="projects.labels.myRole">{labels.myRole}</span>
+                <span class="metric-value" data-i18n={`projects.items.${index}.myRole`}>{project.myRole}</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-label" data-i18n="projects.labels.impact">{labels.impact}</span>
+                <span class="metric-value" data-i18n={`projects.items.${index}.impact`}>{project.impact}</span>
+              </div>
+            </div>
+          ) : (
+            <p class="description" data-i18n={`projects.items.${index}.description`}>
+              {truncate(project.description, 120)}
+            </p>
+          )}
           <div class="tools">
             {project.tools && project.tools.map((tool: string) => (
               <span class="tool-tag">{tool}</span>
@@ -1129,5 +1146,38 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     .gallery-section .gallery {
       grid-template-columns: 1fr;
     }
+  }
+
+  /* Project Metrics on Card */
+  .project-metrics {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1; /* Replace description flex:1 */
+  }
+
+  .metric-row {
+    display: flex;
+    align-items: baseline;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .metric-label {
+    font-weight: 700;
+    margin-right: 0.5rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    min-width: 70px;
+  }
+
+  .metric-value {
+    color: rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 </style>

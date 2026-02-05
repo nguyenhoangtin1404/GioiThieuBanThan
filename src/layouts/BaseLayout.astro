@@ -1191,8 +1191,6 @@ const pageUrl = Astro.url.href;
                   e.preventDefault();
                   e.stopPropagation();
                   
-                  console.log('Language switcher clicked, switching to:', lang);
-                  
                   // Save to localStorage
                   localStorage.setItem('lang', lang);
                   
@@ -1203,8 +1201,7 @@ const pageUrl = Astro.url.href;
                     cancelable: true
                   });
                   
-                  const dispatched = window.dispatchEvent(event);
-                  console.log('Event dispatched:', dispatched, 'Event detail:', event.detail);
+                  window.dispatchEvent(event);
                   
                   return;
                 }

@@ -49,9 +49,9 @@ import ContactCard from '@components/ContactCard.astro';
       loopBottom: true
     };
 
-    const anchors = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
-
     // Store scroll handler reference to prevent accumulation
+    // Use anchors from initOptions to avoid duplication
+    const anchors = initOptions.anchors;
     let mobileScrollHandler = null;
     
     // Store animation observer references for cleanup
@@ -794,17 +794,9 @@ import ContactCard from '@components/ContactCard.astro';
               }
             });
           }, 500);
-        } else {
-          // DESKTOP: Don't setup IntersectionObserver for fade-in items
-          // Desktop uses triggerActiveSectionAnimation() in initFullpage() to trigger
-          // animations when sections become active. Fade-in items will be handled there.
-          // We just need to ensure items in the initial active section are handled.
-          const activeSection = document.querySelector('.section.active');
-          if (activeSection) {
-            // Items in active section will be triggered by triggerActiveSectionAnimation()
-            // when user navigates to section, so we don't need to do anything here
-          }
         }
+        // DESKTOP: Desktop uses triggerActiveSectionAnimation() in initFullpage() to trigger
+        // animations when sections become active. Fade-in items will be handled there.
       }
     }
 

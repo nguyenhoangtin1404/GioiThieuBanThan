@@ -45,6 +45,9 @@ function escapeCssUrl(url: string): string {
 function getImageUrlForLang(imageUrl: string, lang: string): string {
   if (!imageUrl || typeof imageUrl !== 'string') return imageUrl;
   if (lang === 'vi') return imageUrl;
+
+  // Allow explicit English asset overrides in content data.
+  if (imageUrl.includes('_en.')) return imageUrl;
   
   // English: add _en before extension
   const lastDot = imageUrl.lastIndexOf('.');
@@ -53,6 +56,11 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
   const path = imageUrl.substring(0, lastDot);
   const ext = imageUrl.substring(lastDot);
   return `${path}_en${ext}`;
+}
+
+function getCardBackgroundForProject(project: any, lang: string): string {
+  const imageUrl = project?.cardBackground || project?.gallery?.[0] || '';
+  return getImageUrlForLang(imageUrl, lang);
 }
 ---
 
@@ -67,6 +75,10 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         data-project-index={index}
         data-project-id={project.id}
         data-fade-delay={ANIMATION_BASE_DELAY + index * ANIMATION_STAGGER_DELAY}
+        role="button"
+        tabindex="0"
+        aria-haspopup="dialog"
+        aria-label={`Open project details for ${project.name}`}
         data-i18n-name={`projects.items.${index}.name`}
         data-i18n-description={`projects.items.${index}.description`}
         data-i18n-period={`projects.items.${index}.period`}
@@ -74,8 +86,8 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         <div
           class="card-background"
           data-project-id={project.id}
-          style={project.gallery && project.gallery.length > 0
-            ? `background-image: url('${escapeCssUrl(getImageUrlForLang(project.gallery[0], lang))}')`
+          style={getCardBackgroundForProject(project, lang)
+            ? `background-image: url('${escapeCssUrl(getCardBackgroundForProject(project, lang))}')`
             : ''}
         ></div>
         <div class="card-content">
@@ -207,6 +219,9 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     const modal = document.getElementById('project-modal');
     if (!modal) return;
 
+    if (modal.dataset.initialized === 'true') return;
+    modal.dataset.initialized = 'true';
+
     // IMPORTANT: Move modal to <body> to escape fullpage section stacking contexts (transform)
     // Otherwise fixed elements like .sidebar-nav (outside #fullpage) can appear above the modal.
     if (modal.parentElement !== document.body) {
@@ -273,6 +288,11 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       const path = imageUrl.substring(0, lastDot);
       const ext = imageUrl.substring(lastDot);
       return `${path}_en${ext}`;
+    }
+
+    function getCardBackgroundForProject(project, lang) {
+      const imageUrl = project?.cardBackground || project?.gallery?.[0] || '';
+      return getImageUrlForLang(imageUrl, lang);
     }
 
     // Helper function to transform entire gallery array
@@ -699,11 +719,18 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         }
     }, 500); // Delay to allow data loading
 
+    function activateCard(card) {
+      const id = card.getAttribute('data-project-id') || '';
+      if (id) openModal(id);
+    }
+
     // Event listeners
     projectCards.forEach((card) => {
-      card.addEventListener('click', function() {
-        const id = card.getAttribute('data-project-id') || '';
-        if (id) openModal(id);
+      card.addEventListener('click', () => activateCard(card));
+      card.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        activateCard(card);
       });
     });
 
@@ -749,12 +776,12 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
         if (!projectId) return;
         
         const project = getProjectById(projectId);
-        if (!project || !project.gallery || project.gallery.length === 0) return;
+        if (!project) return;
         
         const backgroundEl = card.querySelector('.card-background');
         if (backgroundEl) {
-          const originalUrl = project.gallery[0];
-          const transformedUrl = getImageUrlForLang(originalUrl, lang);
+          const transformedUrl = getCardBackgroundForProject(project, lang);
+          if (!transformedUrl) return;
           // Escape URL properly for CSS background-image
           const escapedUrl = transformedUrl.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
           backgroundEl.style.backgroundImage = `url('${escapedUrl}')`;
@@ -878,27 +905,15 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    background: var(--card);
+    background: #0f172a;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     min-height: 320px;
+    padding: 1.5rem;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-  }
-
-  .project-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .project-card:hover .card-background {
-    filter: blur(0px) brightness(0.8);
-    z-index: 3;
-  }
-
-  .project-card:hover .card-content {
-    opacity: 0;
-    visibility: hidden;
   }
 
   .card-background {
@@ -909,37 +924,58 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: blur(8px) brightness(0.4);
+    filter: saturate(0.78) brightness(0.72) contrast(0.92);
     z-index: 0;
-    transition: filter 0.3s ease;
+    transform: scale(1.02);
+  }
+
+  .card-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0.24) 30%, rgba(15, 23, 42, 0.62) 62%, rgba(15, 23, 42, 0.92) 100%),
+      linear-gradient(135deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0) 42%);
   }
 
   .card-content {
     position: relative;
     z-index: 1;
-    padding: 2rem;
+    margin: 0;
+    padding: 1rem 1.1rem 0.95rem;
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(to bottom, transparent 0%, rgba(30, 41, 59, 0.7) 50%, rgba(15, 23, 42, 0.95) 100%);
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    justify-content: flex-end;
+    max-width: min(72%, 520px);
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.38) 0%, rgba(15, 23, 42, 0.56) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
   }
 
   .card-content h3 {
-    margin: 0 0 1rem;
+    margin: 0 0 0.9rem;
     font-size: clamp(1.25rem, 3vw, 1.5rem);
     color: #ffffff;
     font-weight: 700;
-    text-align: center;
+    text-align: left;
+    line-height: 1.2;
+    text-wrap: balance;
+    text-shadow: 0 2px 12px rgba(15, 23, 42, 0.45);
   }
 
   .card-content .description {
-    margin: 0 0 1.5rem;
-    color: rgba(255, 255, 255, 0.85);
-    line-height: 1.6;
+    margin: 0 0 1.25rem;
+    color: rgba(255, 255, 255, 0.86);
+    line-height: 1.65;
     flex: 1;
     font-size: 0.95rem;
-    text-align: center;
+    text-align: left;
+    max-width: 56ch;
+    text-shadow: 0 1px 10px rgba(15, 23, 42, 0.4);
   }
 
   .card-content .tools {
@@ -947,20 +983,19 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: auto;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .tool-tag {
     display: inline-flex;
     align-items: center;
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    background: rgba(30, 41, 59, 0.6);
-    color: #ffffff;
-    font-size: 0.8rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.32);
+    color: rgba(255, 255, 255, 0.94);
+    font-size: 0.78rem;
     font-weight: 500;
-    border: 1px solid rgba(51, 65, 85, 0.4);
-    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
   }
 
   /* Modal Styles - Full Screen */
@@ -1193,6 +1228,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
       max-width: 100%;
       min-width: 0;
       box-sizing: border-box;
+      padding: 1.1rem;
     }
 
     .card-content,
@@ -1217,7 +1253,8 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
     }
 
     .card-content {
-      padding: 1.5rem;
+      max-width: 100%;
+      padding: 0.9rem 0.9rem 0.85rem;
     }
 
     .modal-sheet {
@@ -1231,34 +1268,48 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
 
   /* Project Metrics on Card */
   .project-metrics {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.45rem;
     flex: 1; /* Replace description flex:1 */
+    max-width: 60ch;
   }
 
   .metric-row {
     display: flex;
     align-items: baseline;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.55;
   }
 
   .metric-label {
     font-weight: 700;
-    margin-right: 0.5rem;
-    color: var(--accent);
+    margin-right: 0.6rem;
+    color: rgba(125, 211, 252, 0.95);
     flex-shrink: 0;
     min-width: 70px;
   }
 
   .metric-value {
     color: rgba(255, 255, 255, 0.9);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    overflow: visible;
+    text-overflow: initial;
+    display: block;
+  }
+
+  .project-card[data-project-id="other-projects"] .card-content {
+    max-width: min(78%, 560px);
+  }
+
+  .project-card[data-project-id="other-projects"] .card-content h3,
+  .project-card[data-project-id="other-projects"] .card-content .description {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .project-card[data-project-id="other-projects"] .card-content .tools {
+    justify-content: center;
   }
 </style>

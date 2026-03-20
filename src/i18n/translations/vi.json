@@ -208,7 +208,6 @@
     "description": "Cứ thoải mái liên hệ với tôi nếu bạn có bất kỳ câu hỏi nào.",
     "channels": {
       "phone": "SĐT",
-      "zalo": "Zalo",
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"

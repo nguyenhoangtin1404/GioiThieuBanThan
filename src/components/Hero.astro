@@ -34,7 +34,16 @@ const highlights = [
   <div class="card" data-slide-in="left">
     <div class="avatar">
       <span class="ring">
-        <img src="/avatar.png" width="260" height="260" data-i18n-attr="alt:hero.avatarAlt" alt={t.hero.avatarAlt} loading="lazy" />
+        <img
+          src="/avatar-512.png"
+          width="442"
+          height="512"
+          data-i18n-attr="alt:hero.avatarAlt"
+          alt={t.hero.avatarAlt}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
       </span>
     </div>
     <div class="badge" data-i18n="hero.badge">{t.hero.badge}</div>

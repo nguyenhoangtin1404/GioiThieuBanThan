@@ -49,7 +49,7 @@
         "id": "igate",
         "name": "Administrative Procedure Resolution Information System",
         "period": "2025 – PRESENT",
-        "cardBackground": "/igate3.jpg",
+        "cardBackground": "/igate3_en.png",
         "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
         "problem": "Report queries were slow on province-wide data.",
         "myRole": "Backend engineer focusing on query optimization.",
@@ -208,7 +208,6 @@
     "description": "Feel free to contact me if you have any questions.",
     "channels": {
       "phone": "Phone",
-      "zalo": "Zalo",
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"

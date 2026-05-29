@@ -73,7 +73,8 @@ function getSafeFallbackTranslations() {
         other: '',
         otherContent: ''
       },
-      avatarAlt: ''
+      avatarAlt: '',
+      greeting: ''
     },
     projects: {
       labels: {

@@ -22,7 +22,8 @@
       "other": "Other:",
       "otherContent": "Presentation, Internal Trainer, Scrum"
     },
-    "avatarAlt": "Profile photo of Nguyễn Hoàng Tín"
+    "avatarAlt": "Profile photo of Nguyễn Hoàng Tín",
+    "greeting": "👋 Nice to meet you!"
   },
   "projects": {
     "title": "Projects",

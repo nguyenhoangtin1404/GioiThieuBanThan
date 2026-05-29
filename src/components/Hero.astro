@@ -32,19 +32,33 @@ const highlights = [
     </div>
   </div>
   <div class="card" data-slide-in="left">
-    <div class="avatar">
-      <span class="ring">
-        <img
-          src="/avatar-512.png"
-          width="442"
-          height="512"
-          data-i18n-attr="alt:hero.avatarAlt"
-          alt={t.hero.avatarAlt}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
-      </span>
+    <div class="developer-box">
+      <div class="chat-bubble" aria-live="polite">
+        <div class="typing" data-hero-typing>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+        <p class="message" data-hero-message data-i18n="hero.greeting" hidden>
+          {t.hero.greeting}
+        </p>
+      </div>
+      <div class="avatar-wrapper">
+        <span class="avatar-ring">
+          <img
+            class="avatar"
+            src="/avatar-512.png"
+            width="442"
+            height="512"
+            data-i18n-attr="alt:hero.avatarAlt"
+            alt={t.hero.avatarAlt}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </span>
+        <span class="online" aria-hidden="true"></span>
+      </div>
     </div>
     <div class="badge" data-i18n="hero.badge">{t.hero.badge}</div>
     <div class="actions">
@@ -82,10 +96,195 @@ const highlights = [
   .card { grid-area: card; }
   .intro { grid-area: intro; }
 
-  .avatar { width: 260px; height: 260px; border-radius: 50%; display: inline-grid; place-items: center; border: 4px solid transparent; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(135deg, var(--accent), #6366f1) border-box; background-clip: padding-box, border-box; box-shadow: none; transition: transform 200ms ease, box-shadow 200ms ease; margin: 0; box-sizing: border-box; }
-  .avatar .ring { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; display: grid; place-items: center; background: #dfe3f0; }
-  .avatar img { width: 100%; height: 100%; border-radius: 50%; display: block; border: 0; object-fit: contain; object-position: 50% 50%; box-shadow: none; margin: 0; background: #dfe3f0; }
-  .avatar:hover { transform: translateY(-2px); box-shadow: none; }
+  .developer-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .chat-bubble {
+    position: relative;
+    min-width: 240px;
+    padding: 14px 18px;
+    background: var(--card, #fff);
+    border: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    animation: floatBubble 2.5s ease-in-out infinite;
+  }
+
+  .chat-bubble::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 16px;
+    height: 16px;
+    background: var(--card, #fff);
+    border-right: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+    border-bottom: 1px solid var(--border, rgba(15, 23, 42, 0.08));
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .typing {
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .typing.is-hidden {
+    display: none;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted, #9ca3af);
+    animation: typing 1s infinite ease-in-out;
+  }
+
+  .dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  .message {
+    margin: 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text, #111827);
+  }
+
+  .message:not([hidden]) {
+    display: block;
+  }
+
+  .avatar-wrapper {
+    --avatar-size: 260px;
+    --avatar-radius: calc(var(--avatar-size) / 2);
+    --online-size: 18px;
+    position: relative;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    overflow: visible;
+  }
+
+  .avatar-ring {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 4px solid transparent;
+    background:
+      linear-gradient(var(--card), var(--card)) padding-box,
+      linear-gradient(135deg, var(--accent), #6366f1) border-box;
+    background-clip: padding-box, border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.25s ease;
+  }
+
+  .avatar-wrapper:hover .avatar-ring {
+    transform: scale(1.03);
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: 50% 50%;
+    border-radius: 50%;
+    border: 0;
+    cursor: pointer;
+    background: #dfe3f0;
+    display: block;
+  }
+
+  .online {
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: 50%;
+    width: var(--online-size);
+    height: var(--online-size);
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 3px solid var(--card, #fff);
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
+    pointer-events: none;
+    transition: transform 0.25s ease;
+    /* Tâm chấm nằm trên cung tròn góc dưới-phải (45°) */
+    transform: translate(
+        calc(var(--avatar-radius) * 0.7071),
+        calc(var(--avatar-radius) * 0.7071)
+      )
+      translate(-50%, -50%);
+  }
+
+  .online::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.4);
+    animation: onlinePulse 2s ease-out infinite;
+    z-index: -1;
+  }
+
+  .avatar-wrapper:hover .online {
+    transform: translate(
+        calc(var(--avatar-radius) * 0.7071),
+        calc(var(--avatar-radius) * 0.7071)
+      )
+      translate(-50%, -50%) scale(1.03);
+  }
+
+  @keyframes typing {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.4;
+    }
+
+    30% {
+      transform: translateY(-5px);
+      opacity: 1;
+    }
+  }
+
+  @keyframes floatBubble {
+    0%, 100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes onlinePulse {
+    from {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+
+    to {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
 
   .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; margin: 0; }
 
@@ -119,3 +318,15 @@ const highlights = [
     .intro h1 { text-align: center; }
   }
 </style>
+
+<script>
+  const typing = document.querySelector('[data-hero-typing]');
+  const message = document.querySelector('[data-hero-message]');
+
+  if (typing instanceof HTMLElement && message instanceof HTMLElement) {
+    window.setTimeout(() => {
+      typing.classList.add('is-hidden');
+      message.hidden = false;
+    }, 2500);
+  }
+</script>

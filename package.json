@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -12,11 +15,11 @@
     "generate:og-image": "node scripts/generate-og-image.js"
   },
   "dependencies": {
-    "astro": "^4.11.3",
+    "astro": "^6.0.7",
     "fullpage.js": "^4.0.40"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.7.0",
+    "@astrojs/check": "^0.9.8",
     "canvas": "^3.2.1",
     "tslib": "^2.6.2",
     "typescript": "^5.4.0"

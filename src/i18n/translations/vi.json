@@ -22,7 +22,8 @@
       "other": "Khác:",
       "otherContent": "Thuyết trình, Giảng viên nội bộ, Scrum"
     },
-    "avatarAlt": "Ảnh hồ sơ của Nguyễn Hoàng Tín"
+    "avatarAlt": "Ảnh hồ sơ của Nguyễn Hoàng Tín",
+    "greeting": "👋 Rất vui được gặp bạn!"
   },
   "projects": {
     "title": "Dự án",

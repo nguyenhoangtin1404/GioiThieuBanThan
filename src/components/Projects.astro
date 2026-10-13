@@ -190,7 +190,8 @@ function getCardBackgroundForProject(project: any, lang: string): string {
   // GLightbox is only needed once a project gallery is shown, so it is
   // loaded on first use (keeps it off the home page's critical path).
   let glightboxLoading = null;
-  function initGLightbox() {
+  let glightbox = null;
+  function loadGLightbox() {
     if (!glightboxLoading) {
       glightboxLoading = new Promise((resolve) => {
         const link = document.createElement('link');
@@ -205,14 +206,38 @@ function getCardBackgroundForProject(project: any, lang: string): string {
         document.head.appendChild(script);
       });
     }
-    glightboxLoading.then(() => {
+    return glightboxLoading;
+  }
+  function initGLightbox() {
+    return loadGLightbox().then(() => {
       // @ts-ignore - GLightbox is loaded dynamically
       if (typeof GLightbox !== 'undefined') {
         // @ts-ignore - GLightbox is loaded dynamically
-        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
+        glightbox = GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
       }
+      return glightbox;
     });
   }
+
+  // Start loading as soon as a visitor shows intent to open a project
+  ['pointerover', 'focusin', 'touchstart'].forEach((type) => {
+    document.addEventListener(type, (e) => {
+      if (e.target instanceof Element && e.target.closest('.project-card')) loadGLightbox();
+    }, { passive: true, capture: true });
+  });
+
+  // A gallery click that lands before GLightbox is ready would follow the
+  // link to the raw image; hold it and open the lightbox once it is ready.
+  document.addEventListener('click', (e) => {
+    const link = e.target instanceof Element ? e.target.closest('a.glightbox') : null;
+    if (!link || glightbox) return;
+    e.preventDefault();
+    initGLightbox().then((lb) => {
+      const index = Array.from(document.querySelectorAll('a.glightbox')).indexOf(link);
+      if (lb) lb.openAt(Math.max(0, index));
+      else window.location.href = link.getAttribute('href') || '';
+    });
+  }, true);
 
   // Modal functionality
   function initModal() {

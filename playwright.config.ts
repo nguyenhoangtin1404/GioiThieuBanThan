@@ -26,7 +26,12 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } } },
-    { name: 'mobile', use: { ...devices['Pixel 7'] } }
+    {
+      name: 'mobile',
+      // A full-page capture of the long mobile page can take >5s and then gets
+      // silently skipped; evidence.spec.ts already saves the full mobile page.
+      use: { ...devices['Pixel 7'], screenshot: { mode: 'on', fullPage: false } }
+    }
   ],
   webServer: {
     command: `npm run build && npx astro preview --port ${PORT}`,

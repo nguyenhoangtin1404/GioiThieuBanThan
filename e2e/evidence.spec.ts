@@ -72,7 +72,7 @@ for (const lang of ['vi', 'en'] as const) {
 test('evidence: project pages', async ({ page }, testInfo) => {
   for (const id of PROJECTS) {
     await gotoReady(page, `/projects/${id}/?lang=vi`);
-    await page.locator('.pd-title').first().waitFor();
+    await page.locator('.pd-title').filter({ visible: true }).first().waitFor();
     await snap(page, testInfo, `project-${id}`, true);
   }
 });

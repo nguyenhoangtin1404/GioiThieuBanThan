@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ProjectDetail from '@components/ProjectDetail.astro';
-import { getLang, getTranslations, getProjectIds } from '@i18n/utils';
+import { getTranslations, getProjectIds } from '@i18n/utils';
 
 export async function getStaticPaths() {
   // Static build requires enumerating all dynamic route params.
@@ -10,47 +10,63 @@ export async function getStaticPaths() {
   }));
 }
 
-const lang = getLang(Astro.url);
-const t = await getTranslations(lang);
-
 const id = Astro.params.id || '';
-const project = (t.projects?.items || []).find((p: any) => p?.id === id);
-const title = project ? `${project.name} | ${t.projects?.title || 'Projects'}` : `Project | ${t.projects?.title || 'Projects'}`;
-const description = project?.description || t.layout?.description || '';
-const labels = t.projects?.labels || {};
-const actions = t.projects?.actions || {};
-const sections = t.projects?.sections || {};
-const galleryAlt = t.projects?.galleryAlt || 'Image slide for';
 
-// The static build always renders 'vi', so the back link gets the language
-// actually shown on the page at click time (see script below).
+// The static build has no query string, so both languages are rendered and
+// CSS shows the one matching <html lang> (set client-side from ?lang= or the
+// saved choice).
+const LANGS = ['vi', 'en'] as const;
+const versions = await Promise.all(
+  LANGS.map(async (lang) => {
+    const t = await getTranslations(lang);
+    return {
+      lang,
+      project: (t.projects?.items || []).find((p: any) => p?.id === id),
+      labels: t.projects?.labels || {},
+      actions: t.projects?.actions || {},
+      sections: t.projects?.sections || {},
+      galleryAlt: t.projects?.galleryAlt || 'Image slide for',
+      projectsTitle: t.projects?.title || 'Projects',
+      layoutDescription: t.layout?.description || ''
+    };
+  })
+);
+const titleFor = (v: (typeof versions)[number]) => `${v.project?.name || 'Project'} | ${v.projectsTitle}`;
+const vi = versions[0];
+const title = titleFor(vi);
+const description = vi.project?.description || vi.layoutDescription;
+const titles = Object.fromEntries(versions.map((v) => [v.lang, titleFor(v)]));
+
+// The back link gets the language actually shown at click time (see script below).
 const backHref = '/#du-an';
 ---
 
 <BaseLayout title={title} description={description}>
-  <main class="project-detail-page">
+  <main class="project-detail-page" data-titles={JSON.stringify(titles)}>
     <a class="back-link" href={backHref}>
-      ← {actions?.backToProjects || 'Back to projects'}
+      ← <span data-i18n="projects.actions.backToProjects">{vi.actions?.backToProjects || 'Back to projects'}</span>
     </a>
 
-    {project ? (
-      <ProjectDetail
-        project={project}
-        labels={labels}
-        actions={actions}
-        sections={sections}
-        galleryAlt={galleryAlt}
-        variant="page"
-      />
-    ) : (
-      <section class="not-found">
-        <h1>Project not found</h1>
-        <p>Không tìm thấy dự án với id: <code>{id}</code></p>
-        <a class="back-link" href={backHref}>
-          ← {actions?.backToProjects || 'Back to projects'}
-        </a>
-      </section>
-    )}
+    {versions.map((v) => (
+      <div data-lang-block={v.lang}>
+        {v.project ? (
+          <ProjectDetail
+            project={v.project}
+            labels={v.labels}
+            actions={v.actions}
+            sections={v.sections}
+            galleryAlt={v.galleryAlt}
+            lang={v.lang}
+            variant="page"
+          />
+        ) : (
+          <section class="not-found">
+            <h1>Project not found</h1>
+            <p>Không tìm thấy dự án với id: <code>{id}</code></p>
+          </section>
+        )}
+      </div>
+    ))}
   </main>
 
   <script is:inline>
@@ -62,11 +78,24 @@ const backHref = '/#du-an';
       });
     });
 
-    // Carousel controls (ProjectDetail gallery)
+    // Show the page title for the displayed language
     (function() {
-      const viewport = document.querySelector('.pd-carousel-viewport');
-      const prev = document.querySelector('[data-pd-carousel-prev]');
-      const next = document.querySelector('[data-pd-carousel-next]');
+      const main = document.querySelector('.project-detail-page');
+      let titles = {};
+      try { titles = JSON.parse(main?.getAttribute('data-titles') || '{}'); } catch {}
+      const sync = () => {
+        const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
+        if (titles[lang]) document.title = titles[lang];
+      };
+      window.addEventListener('langchange', () => setTimeout(sync, 0));
+      sync();
+    })();
+
+    // Carousel controls (ProjectDetail gallery), one per language block
+    document.querySelectorAll('[data-pd-carousel]').forEach((carousel) => {
+      const viewport = carousel.querySelector('.pd-carousel-viewport');
+      const prev = carousel.querySelector('[data-pd-carousel-prev]');
+      const next = carousel.querySelector('[data-pd-carousel-next]');
       if (!viewport || !prev || !next) return;
 
       function jump(direction) {
@@ -79,7 +108,7 @@ const backHref = '/#du-an';
 
       prev.addEventListener('click', () => jump(-1));
       next.addEventListener('click', () => jump(1));
-    })();
+    });
 
     // Load GLightbox assets on demand (for project detail gallery)
     if (!document.querySelector('link[href*="glightbox"]')) {
@@ -108,6 +137,13 @@ const backHref = '/#du-an';
       }
     }
   </script>
+
+  <style is:global>
+    html[lang='en'] [data-lang-block='vi'],
+    html:not([lang='en']) [data-lang-block='en'] {
+      display: none;
+    }
+  </style>
 
   <style>
     .project-detail-page {

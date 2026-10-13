@@ -70,7 +70,7 @@ function getCardBackgroundForProject(project: any, lang: string): string {
   </header>
   <div class="projects-grid">
     {projects.map((project: any, index: number) => (
-      <article 
+      <div 
         class="project-card fade-in-item" 
         data-project-index={index}
         data-project-id={project.id}
@@ -118,7 +118,7 @@ function getCardBackgroundForProject(project: any, lang: string): string {
             ))}
           </div>
         </div>
-      </article>
+      </div>
     ))}
   </div>
 </section>
@@ -187,31 +187,31 @@ function getCardBackgroundForProject(project: any, lang: string): string {
 </script>
 
 <script is:inline>
-  // Load GLightbox CSS
-  if (!document.querySelector('link[href*="glightbox"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css';
-    document.head.appendChild(link);
-  }
+  // GLightbox is only needed once a project gallery is shown, so it is
+  // loaded on first use (keeps it off the home page's critical path).
+  let glightboxLoading = null;
+  function initGLightbox() {
+    if (!glightboxLoading) {
+      glightboxLoading = new Promise((resolve) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css';
+        document.head.appendChild(link);
 
-  // Load GLightbox JS
-  if (!document.querySelector('script[src*="glightbox"]')) {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
-    script.onload = function() {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js';
+        script.onload = resolve;
+        script.onerror = resolve;
+        document.head.appendChild(script);
+      });
+    }
+    glightboxLoading.then(() => {
       // @ts-ignore - GLightbox is loaded dynamically
       if (typeof GLightbox !== 'undefined') {
         // @ts-ignore - GLightbox is loaded dynamically
-        GLightbox({
-          selector: '.glightbox',
-          touchNavigation: true,
-          loop: true,
-          autoplayVideos: true
-        });
+        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
       }
-    };
-    document.head.appendChild(script);
+    });
   }
 
   // Modal functionality
@@ -547,12 +547,8 @@ function getCardBackgroundForProject(project: any, lang: string): string {
         }
       }
 
-      // Reinitialize GLightbox for new gallery
-      // @ts-ignore
-      if (typeof GLightbox !== 'undefined') {
-        // @ts-ignore
-        GLightbox({ selector: '.glightbox', touchNavigation: true, loop: true, autoplayVideos: true });
-      }
+      // (Re)initialize GLightbox for the new gallery
+      initGLightbox();
     }
 
     // Carousel controls (desktop): jump exactly 1 slide per click

@@ -7,6 +7,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://www.nguyenhoangtin.com',
   srcDir: 'src',
+  // CSS is small (~10 KB): inline it so it doesn't block the first render
+  build: {
+    inlineStylesheets: 'always'
+  },
   server: {
     host: true
   },

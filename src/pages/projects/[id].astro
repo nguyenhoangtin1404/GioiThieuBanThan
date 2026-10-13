@@ -22,8 +22,8 @@ const actions = t.projects?.actions || {};
 const sections = t.projects?.sections || {};
 const galleryAlt = t.projects?.galleryAlt || 'Image slide for';
 
-// No ?lang= here: the static build always renders 'vi', which would override the
-// visitor's saved language. The home page picks it up from localStorage instead.
+// The static build always renders 'vi', so the back link gets the language
+// actually shown on the page at click time (see script below).
 const backHref = '/#du-an';
 ---
 
@@ -54,6 +54,14 @@ const backHref = '/#du-an';
   </main>
 
   <script is:inline>
+    // Keep the displayed language when going back to the home page
+    document.querySelectorAll('.back-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
+        link.setAttribute('href', `/?lang=${lang}#du-an`);
+      });
+    });
+
     // Carousel controls (ProjectDetail gallery)
     (function() {
       const viewport = document.querySelector('.pd-carousel-viewport');

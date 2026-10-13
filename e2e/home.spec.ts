@@ -81,6 +81,20 @@ test.describe('home page', () => {
     await expect(page.locator('[data-hero-message]')).toContainText(GREETING.en, { timeout: 5_000 });
   });
 
+  test('a shared ?lang= link does not overwrite the saved language', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await page.evaluate(() => localStorage.setItem('lang', 'vi'));
+
+    await gotoReady(page, '/?lang=en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('[data-hero-message]')).toContainText(GREETING.en, { timeout: 5_000 });
+    expect(await page.evaluate(() => localStorage.getItem('lang'))).toBe('vi');
+
+    // An explicit switch is still saved.
+    await page.locator('.lang-switcher .lang-option[data-lang="en"]').filter({ visible: true }).first().click();
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('lang'))).toBe('en');
+  });
+
   test('no horizontal overflow on small phones (320px)', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'mobile only');
     await page.setViewportSize({ width: 320, height: 640 });

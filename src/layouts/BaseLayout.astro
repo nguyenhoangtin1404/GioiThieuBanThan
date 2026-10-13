@@ -1255,7 +1255,9 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         }
 
         // Update all translatable elements
-        function updatePageContent(lang) {
+        // persist=false shows a language (e.g. from a shared ?lang= link) without
+        // overwriting the visitor's own saved choice.
+        function updatePageContent(lang, persist = true) {
           const langTranslations = translations[lang] || translations.vi;
           
           // Update HTML lang attribute
@@ -1349,8 +1351,9 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
             element.setAttribute('href', cvLink);
           });
 
-          // Save to localStorage
-          localStorage.setItem('lang', lang);
+          if (persist) {
+            localStorage.setItem('lang', lang);
+          }
           
           // Update URL without reload
           const url = new URL(window.location);
@@ -1362,19 +1365,24 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         window.addEventListener('langchange', (e) => {
           const newLang = e.detail?.lang;
           if (newLang === 'vi' || newLang === 'en') {
-            // Add fade transition
-            document.body.style.transition = 'opacity 0.2s ease';
-            document.body.style.opacity = '0.7';
+            const isInitial = e.detail?.initial === true;
+
+            // Fade only for user-triggered switches, not on first paint
+            if (!isInitial) {
+              document.body.style.transition = 'opacity 0.2s ease';
+              document.body.style.opacity = '0.7';
+            }
             
-            updatePageContent(newLang);
+            updatePageContent(newLang, !isInitial);
             
             // Update language switcher active state for both desktop and mobile
             setActiveLang(newLang);
             
-            // Fade back in
-            setTimeout(() => {
-              document.body.style.opacity = '1';
-            }, 50);
+            if (!isInitial) {
+              setTimeout(() => {
+                document.body.style.opacity = '1';
+              }, 50);
+            }
           }
         });
 
@@ -1388,10 +1396,10 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
             ? urlLang
             : (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
           if (currentLang !== initialLang) {
-            updatePageContent(currentLang);
-            // Dispatch langchange event so other components (like Projects) can update images
+            // The langchange listener above updates the page; other components
+            // (like Projects) use the same event to update images.
             const event = new CustomEvent('langchange', { 
-              detail: { lang: currentLang },
+              detail: { lang: currentLang, initial: true },
               bubbles: true,
               cancelable: true
             });

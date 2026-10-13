@@ -37,6 +37,9 @@ async function revealAll(page: Page) {
   await page.waitForTimeout(300);
 }
 
+// snap() already captures everything; skip the automatic end-of-test screenshot.
+test.use({ screenshot: 'off' });
+
 const SECTIONS = ['home', 'du-an', 'kinh-nghiem', 'lien-he'];
 const PROJECTS = ['igate', 'ecabinet', 'ioffice', 'other-projects'];
 

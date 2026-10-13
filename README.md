@@ -98,21 +98,21 @@ docker run --rm --ipc=host -e CI=1 -v "$PWD":/work -w /work mcr.microsoft.com/pl
 
 Chạy `npm run test:e2e` trực tiếp trên máy vẫn được, nhưng các test so sánh ảnh có thể lệch nhẹ do khác môi trường. Khi nâng `@playwright/test`, nhớ đổi tag image trong lệnh trên và trong `.github/workflows/e2e.yml`. Workflow `.github/workflows/e2e.yml` chạy test cho mọi PR và push lên `main`.
 
-## CI/CD với GitHub Actions + FTP
+## Deploy (Cloudflare Workers)
 
-Repo có workflow deploy qua FTP khi push lên nhánh `main`:
-- Workflow: `.github/workflows/deploy-ftp.yml`
-- Output build: `dist/`
+Site được deploy tự động bởi **Cloudflare Workers Builds**, kết nối trực tiếp với repo GitHub:
 
-### Secrets cần cấu hình
+- Push/merge vào `main` → build và deploy lên `https://www.nguyenhoangtin.com` (và `nguyenhoangtin.com`)
+- Mỗi PR/nhánh khác → có link preview `*.workers.dev` riêng (bot Cloudflare comment trên PR)
+- Cấu hình (Cloudflare dashboard → Workers & Pages → `gioithieubanthan` → Settings → Build):
+  - Build command: `npm run build`
+  - Deploy command: `npx wrangler deploy --assets=./dist --name=gioithieubanthan --compatibility-date=2026-10-01`
+  - Node lấy theo `.nvmrc`
+- Rollback: tab **Deployments** → chọn bản cũ → **Rollback**
 
-- `FTP_HOST`
-- `FTP_USER`
-- `FTP_PASS`
+## CI (GitHub Actions)
 
-### Troubleshooting deploy
-
-- **Lỗi DNS/ENOTFOUND**: ưu tiên dùng **IP** thay cho hostname trong `FTP_HOST`.
+`.github/workflows/e2e.yml` chạy cho mọi PR và push lên `main`: `astro check` + toàn bộ E2E test (xem mục E2E test ở trên).
 
 ## Troubleshooting dev
 

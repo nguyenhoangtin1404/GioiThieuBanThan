@@ -73,6 +73,27 @@ test.describe('home page', () => {
     }
   });
 
+  test('back link from a project page keeps the chosen language', async ({ page }) => {
+    await gotoReady(page, '/projects/igate/?lang=en');
+    await page.locator('.back-link').first().click();
+    await page.waitForURL(/\/(\?.*)?#du-an$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('[data-hero-message]')).toContainText(GREETING.en, { timeout: 5_000 });
+  });
+
+  test('no horizontal overflow on small phones (320px)', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'mobile only');
+    await page.setViewportSize({ width: 320, height: 640 });
+    await gotoReady(page, '/?lang=vi');
+    await expect(page.locator('[data-hero-message]')).toBeVisible({ timeout: 5_000 });
+    await expectNoHorizontalScroll(page);
+    for (const sel of ['.intro h1', '.card', '.chat-bubble', '.avatar']) {
+      const box = (await page.locator(sel).first().boundingBox())!;
+      expect(box.x, `${sel} left edge`).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width, `${sel} right edge`).toBeLessThanOrEqual(320);
+    }
+  });
+
   test('visual: hero', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     await expect(page.locator('[data-hero-message]')).toBeVisible({ timeout: 5_000 });

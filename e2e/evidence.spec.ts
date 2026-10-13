@@ -17,7 +17,7 @@ async function settle(page: Page, scope: string) {
     const fades = [...root.querySelectorAll('.fade-in-item')].every((el) => el.classList.contains('fade-in-visible'));
     const slides = [...root.querySelectorAll('[data-slide-in]')].every((el) => el.classList.contains('slide-in-visible'));
     return fades && slides;
-  }, scope);
+  }, scope, { timeout: 15_000 });
   // Only one-shot CSS transitions; the floating chat bubble animation loops forever.
   await page.evaluate(() =>
     Promise.all(document.getAnimations().filter((a) => a instanceof CSSTransition).map((a) => a.finished.catch(() => {})))
@@ -26,10 +26,10 @@ async function settle(page: Page, scope: string) {
 
 // Scrolls through the page so scroll-triggered reveals fire, then returns to top.
 async function revealAll(page: Page) {
-  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  // Re-read scrollHeight each step: images loading can make the page grow.
   const step = page.viewportSize()!.height / 2;
-  for (let y = 0; y < height; y += step) {
-    await page.mouse.wheel(0, step);
+  for (let y = step; y < (await page.evaluate(() => document.documentElement.scrollHeight)); y += step) {
+    await page.evaluate((top) => window.scrollTo(0, top), y);
     await page.waitForTimeout(150);
   }
   await settle(page, '#fullpage');
@@ -58,6 +58,8 @@ for (const lang of ['vi', 'en'] as const) {
       await page.locator(`#sidebar li[data-menuanchor="${anchor}"] button`).click();
       const section = `#fullpage > .section[data-anchor="${anchor}"]`;
       await page.locator(`${section}.active`).waitFor();
+      // The page resets and replays reveal animations shortly after a section turns active.
+      await page.waitForTimeout(600);
       await settle(page, section);
       await snap(page, testInfo, `home-${lang}-${anchor}`);
     }

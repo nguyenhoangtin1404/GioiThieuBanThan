@@ -130,3 +130,15 @@ export async function getTranslations(lang: Lang = DEFAULT_LANG) {
     }
   }
 }
+
+/**
+ * All project ids across languages (used for static paths and the sitemap)
+ */
+export async function getProjectIds(): Promise<string[]> {
+  const ids = new Set<string>();
+  for (const lang of ['vi', 'en'] as const) {
+    const t = await getTranslations(lang);
+    (t.projects?.items || []).forEach((p: any) => p?.id && ids.add(p.id));
+  }
+  return Array.from(ids);
+}

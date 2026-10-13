@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4321;
+// Not 4321, so a running `astro dev` is never reused by mistake.
+const PORT = 4322;
 
 export default defineConfig({
   testDir: './e2e',

@@ -24,7 +24,7 @@ const GA_ID = 'G-C00KEFJSZR';
 const siteUrl = import.meta.env.SITE || 'https://profilio.local';
 const ogImageUrl = `${siteUrl}/og-image.png`;
 const pageUrl = Astro.url.href;
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>

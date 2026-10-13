@@ -75,7 +75,7 @@ const highlights = [
   .hero {
     display: grid;
     gap: 2rem;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     align-items: flex-start;
     grid-template-areas: 'intro' 'card';
     width: 100%;
@@ -108,8 +108,9 @@ const highlights = [
 
   .chat-bubble {
     position: relative;
-    min-width: 240px;
-    max-width: 340px;
+    box-sizing: border-box;
+    min-width: min(278px, 100%);
+    max-width: min(376px, 100%);
     padding: 14px 18px;
     background: var(--card, #fff);
     border: 1px solid var(--border, rgba(15, 23, 42, 0.08));
@@ -318,6 +319,10 @@ const highlights = [
 
   @media (min-width: 768px) {
     .hero { grid-template-columns: 1fr 1fr; grid-template-areas: 'card intro'; }
+  }
+
+  @media (max-width: 360px) {
+    .avatar-wrapper { --avatar-size: 220px; }
   }
 
   @media (max-width: 640px) {

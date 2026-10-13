@@ -1,5 +1,10 @@
 ---
 import { getLang, getTranslations } from '@i18n/utils';
+// Self-hosted font: no request to Google, same rendering everywhere (incl. CI)
+import '@fontsource/be-vietnam-pro/400.css';
+import '@fontsource/be-vietnam-pro/500.css';
+import '@fontsource/be-vietnam-pro/600.css';
+import '@fontsource/be-vietnam-pro/700.css';
 
 export interface Props {
   title?: string;
@@ -24,6 +29,7 @@ const GA_ID = 'G-C00KEFJSZR';
 const siteUrl = import.meta.env.SITE || 'https://profilio.local';
 const ogImageUrl = `${siteUrl}/og-image.png`;
 const pageUrl = Astro.url.href;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
@@ -33,6 +39,7 @@ const pageUrl = Astro.url.href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
     
     {/* Open Graph / Facebook */}
     <meta property="og:type" content="website" />
@@ -52,14 +59,8 @@ const pageUrl = Astro.url.href;
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={title} />
     
-    <link rel="icon" href="/avatar-512.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/avatar-512.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap&subset=vietnamese"
-      rel="stylesheet"
-    />
+    <link rel="icon" href="/avatar-180.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/avatar-180.png" />
 
     {import.meta.env.PROD && (
       <>
@@ -1253,7 +1254,9 @@ const pageUrl = Astro.url.href;
         }
 
         // Update all translatable elements
-        function updatePageContent(lang) {
+        // persist=false shows a language (e.g. from a shared ?lang= link) without
+        // overwriting the visitor's own saved choice.
+        function updatePageContent(lang, persist = true) {
           const langTranslations = translations[lang] || translations.vi;
           
           // Update HTML lang attribute
@@ -1347,8 +1350,9 @@ const pageUrl = Astro.url.href;
             element.setAttribute('href', cvLink);
           });
 
-          // Save to localStorage
-          localStorage.setItem('lang', lang);
+          if (persist) {
+            localStorage.setItem('lang', lang);
+          }
           
           // Update URL without reload
           const url = new URL(window.location);
@@ -1360,33 +1364,41 @@ const pageUrl = Astro.url.href;
         window.addEventListener('langchange', (e) => {
           const newLang = e.detail?.lang;
           if (newLang === 'vi' || newLang === 'en') {
-            // Add fade transition
-            document.body.style.transition = 'opacity 0.2s ease';
-            document.body.style.opacity = '0.7';
+            const isInitial = e.detail?.initial === true;
+
+            // Fade only for user-triggered switches, not on first paint
+            if (!isInitial) {
+              document.body.style.transition = 'opacity 0.2s ease';
+              document.body.style.opacity = '0.7';
+            }
             
-            updatePageContent(newLang);
+            updatePageContent(newLang, !isInitial);
             
             // Update language switcher active state for both desktop and mobile
             setActiveLang(newLang);
             
-            // Fade back in
-            setTimeout(() => {
-              document.body.style.opacity = '1';
-            }, 50);
+            if (!isInitial) {
+              setTimeout(() => {
+                document.body.style.opacity = '1';
+              }, 50);
+            }
           }
         });
 
         // Initialize on load - use server-rendered language
         const initialLang = document.documentElement.lang || 'vi';
         if (initialLang === 'vi' || initialLang === 'en') {
-          // Update from localStorage if different
+          // Prefer ?lang= from the URL, then localStorage
+          const urlLang = new URLSearchParams(window.location.search).get('lang');
           const storedLang = localStorage.getItem('lang');
-          const currentLang = (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
+          const currentLang = (urlLang === 'vi' || urlLang === 'en')
+            ? urlLang
+            : (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
           if (currentLang !== initialLang) {
-            updatePageContent(currentLang);
-            // Dispatch langchange event so other components (like Projects) can update images
+            // The langchange listener above updates the page; other components
+            // (like Projects) use the same event to update images.
             const event = new CustomEvent('langchange', { 
-              detail: { lang: currentLang },
+              detail: { lang: currentLang, initial: true },
               bubbles: true,
               cancelable: true
             });

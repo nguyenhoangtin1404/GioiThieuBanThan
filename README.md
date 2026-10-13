@@ -78,6 +78,26 @@ Field tuỳ chọn:
   - Project này lưu instance ở `window.vanillaFullpage`.
   - Có API `setWheelEnabled(boolean)` để khoá mở wheel khi cần (ví dụ mở modal).
 
+## E2E test (Playwright)
+
+Test chạy trên 2 viewport: `desktop` (1440×900) và `mobile` (Pixel 7). Kiểm tra hero, chat bubble, chuyển ngôn ngữ, layout mobile/desktop, không bị tràn ngang, trang dự án, robots.txt/sitemap/canonical và so sánh ảnh chụp giao diện.
+
+```bash
+npx playwright install chromium   # lần đầu
+npm run test:e2e                  # build + preview + chạy test
+npm run test:e2e:update           # cập nhật ảnh chuẩn khi đổi giao diện có chủ đích
+```
+
+**Ảnh bằng chứng:** mỗi lần chạy, mọi test đều được chụp màn hình (full page). Riêng `e2e/evidence.spec.ts` chụp từng section trang chủ (VI/EN) và 4 trang dự án trên cả desktop lẫn mobile. Ảnh nằm trong `test-results/` và trong báo cáo HTML (`npx playwright show-report`). Trên CI, report + ảnh được upload thành artifact `playwright-report-<số run>` (giữ 30 ngày) cho mọi lần chạy, kể cả khi pass.
+
+Ảnh chuẩn nằm trong `e2e/*-snapshots/`, được tạo trong Docker image `mcr.microsoft.com/playwright:v1.56.1-noble` — cùng image CI dùng, nên font và Chromium giống hệt nhau. Khi cần cập nhật ảnh chuẩn (chạy được trên cả Windows/macOS):
+
+```bash
+docker run --rm --ipc=host -e CI=1 -v "$PWD":/work -w /work mcr.microsoft.com/playwright:v1.56.1-noble npx playwright test --update-snapshots
+```
+
+Chạy `npm run test:e2e` trực tiếp trên máy vẫn được, nhưng các test so sánh ảnh có thể lệch nhẹ do khác môi trường. Khi nâng `@playwright/test`, nhớ đổi tag image trong lệnh trên và trong `.github/workflows/e2e.yml`. Workflow `.github/workflows/e2e.yml` chạy test cho mọi PR và push lên `main`.
+
 ## CI/CD với GitHub Actions + FTP
 
 Repo có workflow deploy qua FTP khi push lên nhánh `main`:

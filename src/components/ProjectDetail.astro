@@ -12,6 +12,8 @@ export interface Props {
    * When `variant="page"`, component renders full content from `project`.
    */
   variant?: 'modal' | 'page';
+  /** Language of `project` (defaults to the URL language) */
+  lang?: 'vi' | 'en';
 }
 
 const {
@@ -20,7 +22,8 @@ const {
   actions = {},
   sections = {},
   galleryAlt = 'Image slide for',
-  variant = 'page'
+  variant = 'page',
+  lang = getLang(Astro.url)
 } = Astro.props;
 
 const isModal = variant === 'modal';
@@ -41,8 +44,7 @@ function getImageUrlForLang(imageUrl: string, lang: string): string {
   return `${path}_en${ext}`;
 }
 
-// Get current language and transform gallery URLs
-const lang = getLang(Astro.url);
+// Transform gallery URLs for the project's language
 const galleryForLang = !isModal && project?.gallery 
   ? project.gallery.map((url: string) => getImageUrlForLang(url, lang))
   : [];
@@ -123,7 +125,7 @@ const galleryForLang = !isModal && project?.gallery
             {isModal
               ? null
               : galleryForLang.map((src: string, idx: number) => (
-                  <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}`}>
+                  <a class="pd-slide glightbox" href={src} data-gallery={`gallery-${project?.id || 'project'}-${lang}`}>
                     <img
                       src={src}
                       alt={`${galleryAlt} ${project?.name || ''} - ${idx + 1}`}

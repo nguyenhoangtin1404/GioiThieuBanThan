@@ -108,6 +108,19 @@ test.describe('home page', () => {
     }
   });
 
+  test('CV download links point to files served by the site', async ({ page, request }) => {
+    await gotoReady(page, '/?lang=vi');
+    const link = page.locator('[data-cv-link]').first();
+    await expect(link).toHaveAttribute('href', '/CV_.pdf');
+    await page.locator('.lang-switcher .lang-option[data-lang="en"]').filter({ visible: true }).first().click();
+    await expect(link).toHaveAttribute('href', '/CV_EN.pdf');
+    for (const path of ['/CV_.pdf', '/CV_EN.pdf']) {
+      const res = await request.get(path);
+      expect(res.status(), path).toBe(200);
+      expect(res.headers()['content-type']).toContain('pdf');
+    }
+  });
+
   test('element ids are unique', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     const dupes = await page.evaluate(() => {

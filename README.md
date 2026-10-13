@@ -88,6 +88,8 @@ npm run test:e2e                  # build + preview + chạy test
 npm run test:e2e:update           # cập nhật ảnh chuẩn khi đổi giao diện có chủ đích
 ```
 
+**Ảnh bằng chứng:** mỗi lần chạy, mọi test đều được chụp màn hình (full page). Riêng `e2e/evidence.spec.ts` chụp từng section trang chủ (VI/EN) và 4 trang dự án trên cả desktop lẫn mobile. Ảnh nằm trong `test-results/` và trong báo cáo HTML (`npx playwright show-report`). Trên CI, report + ảnh được upload thành artifact `playwright-report-<số run>` (giữ 30 ngày) cho mọi lần chạy, kể cả khi pass.
+
 Ảnh chuẩn nằm trong `e2e/*-snapshots/` (tạo trên Linux, khớp với CI). Workflow `.github/workflows/e2e.yml` chạy test cho mọi PR và push lên `main`.
 
 ## CI/CD với GitHub Actions + FTP

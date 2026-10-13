@@ -1,5 +1,5 @@
 ---
-import { getTranslations, getLang } from '@i18n/utils';
+import { getTranslations, getLang, hasProjectDetail } from '@i18n/utils';
 import ProjectDetail from '@components/ProjectDetail.astro';
 
 const lang = getLang(Astro.url);
@@ -65,63 +65,82 @@ function getCardBackgroundForProject(project: any, lang: string): string {
 ---
 
 <section class="projects-section" data-slide-in="right">
-  <header>
+  <header class="projects-header">
     <h2 class="fade-in-item" data-i18n="projects.title" data-fade-delay="0">{t.projects.title}</h2>
   </header>
   <div class="projects-grid">
-    {projects.map((project: any, index: number) => (
-      <div 
-        class="project-card fade-in-item" 
-        data-project-index={index}
-        data-project-id={project.id}
-        data-fade-delay={ANIMATION_BASE_DELAY + index * ANIMATION_STAGGER_DELAY}
-        role="button"
-        tabindex="0"
-        aria-haspopup="dialog"
-        aria-label={`Open project details for ${project.name}`}
-        data-i18n-name={`projects.items.${index}.name`}
-        data-i18n-description={`projects.items.${index}.description`}
-        data-i18n-period={`projects.items.${index}.period`}
-      >
+    {projects.map((project: any, index: number) => {
+      const type = project.type === 'personal' ? 'personal' : 'work';
+      const detail = hasProjectDetail(project);
+      const bg = getCardBackgroundForProject(project, lang);
+      const size = project.size === 'feature' || project.size === 'wide' ? project.size : 'base';
+      return (
         <div
-          class="card-background"
+          class="project-card fade-in-item"
+          data-project-index={index}
           data-project-id={project.id}
-          style={getCardBackgroundForProject(project, lang)
-            ? `background-image: url('${escapeCssUrl(getCardBackgroundForProject(project, lang))}')`
-            : ''}
-        ></div>
-        <div class="card-content">
-          <h3 data-i18n={`projects.items.${index}.name`}>{project.name}</h3>
-          {project.problem ? (
-            <div class="project-metrics">
-              <div class="metric-row">
-                <span class="metric-label" data-i18n="projects.labels.problem">{labels.problem}</span>
-                <span class="metric-value" data-i18n={`projects.items.${index}.problem`}>{project.problem}</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-label" data-i18n="projects.labels.myRole">{labels.myRole}</span>
-                <span class="metric-value" data-i18n={`projects.items.${index}.myRole`}>{project.myRole}</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-label" data-i18n="projects.labels.impact">{labels.impact}</span>
-                <span class="metric-value" data-i18n={`projects.items.${index}.impact`}>{project.impact}</span>
+          data-type={type}
+          data-size={size}
+          data-has-detail={detail ? 'true' : 'false'}
+          data-fade-delay={ANIMATION_BASE_DELAY + Math.min(index, 5) * ANIMATION_STAGGER_DELAY}
+        >
+          <div
+            class="card-background"
+            data-project-id={project.id}
+            style={bg ? `background-image: url('${escapeCssUrl(bg)}')` : ''}
+          ></div>
+          {project.cardVideo && (
+            <video
+              class="card-video"
+              data-src={project.cardVideo}
+              muted
+              loop
+              playsinline
+              preload="none"
+              aria-hidden="true"
+              tabindex="-1"
+            ></video>
+          )}
+          <div class="card-shade" aria-hidden="true"></div>
+          <div class="card-content">
+            <h3 data-i18n={`projects.items.${index}.name`}>{project.name}</h3>
+            {project.highlight && (
+              <p class="highlight" data-i18n={`projects.items.${index}.highlight`}>{project.highlight}</p>
+            )}
+            <div class="card-more">
+              <div class="card-more-inner">
+              <p class="description" data-i18n={`projects.items.${index}.description`}>{project.description}</p>
               </div>
             </div>
-          ) : (
-            <p class="description" data-i18n={`projects.items.${index}.description`}>
-              {truncate(project.description, 120)}
-            </p>
-          )}
-          <div class="tools">
-            {project.tools && project.tools.map((tool: string) => (
-              <span class="tool-tag">{tool}</span>
-            ))}
+            <div class="project-actions">
+              {detail && (
+                <button type="button" class="project-detail-btn" aria-haspopup="dialog" data-i18n="projects.actions.viewDetail">
+                  {actions.viewDetail}
+                </button>
+              )}
+              {project.links?.demo && (
+                <a class="project-link" data-link="demo" href={project.links.demo} target="_blank" rel="noopener noreferrer" data-i18n="projects.actions.demo">
+                  {actions.demo}
+                </a>
+              )}
+              {project.links?.github && (
+                <a class="project-link" data-link="github" href={project.links.github} target="_blank" rel="noopener noreferrer" data-i18n="projects.actions.github">
+                  {actions.github}
+                </a>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    ))}
+      );
+    })}
   </div>
 </section>
+
+<script>
+  import { initProjectBrowser } from '../scripts/project-browser';
+  const root = document.querySelector<HTMLElement>('.projects-section');
+  if (root) initProjectBrowser(root);
+</script>
 
 <!-- Modal for project details -->
 <div id="project-modal" class="project-modal" aria-hidden="true">
@@ -745,12 +764,13 @@ function getCardBackgroundForProject(project: any, lang: string): string {
       if (id) openModal(id);
     }
 
-    // Event listeners
+    // Event listeners: the whole card is a mouse shortcut for its "detail"
+    // button (which is the keyboard-accessible control); links stay links.
     projectCards.forEach((card) => {
-      card.addEventListener('click', () => activateCard(card));
-      card.addEventListener('keydown', (event) => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
+      if (card.getAttribute('data-has-detail') !== 'true') return;
+      card.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest('.project-actions a')) return;
         activateCard(card);
       });
     });
@@ -892,6 +912,20 @@ function getCardBackgroundForProject(project: any, lang: string): string {
     margin-bottom: 2rem;
   }
 
+  .projects-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+
+  .project-detail-btn:focus-visible,
+  .project-link:focus-visible {
+    outline: 3px solid #38bdf8;
+    outline-offset: 2px;
+  }
+
   header h2 {
     margin-top: 0;
     font-size: clamp(2rem, 4vw, 2.8rem);
@@ -908,115 +942,250 @@ function getCardBackgroundForProject(project: any, lang: string): string {
     margin-top: 0.5rem;
   }
 
+  /* Bento grid: every project visible at once, one featured tile (2x2) and wide tiles (2x1). */
   .projects-grid {
+    --gap: 1rem;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    /* phones: compact single column, the featured tile spans two rows */
+    grid-auto-rows: 176px;
+    grid-auto-flow: row dense;
+    gap: var(--gap);
     width: 100%;
   }
 
-  @media (min-width: 768px) {
+  .projects-grid > .project-card {
+    min-width: 0;
+  }
+
+  .project-card[data-size='feature'] {
+    grid-row: span 2;
+  }
+
+  @media (min-width: 640px) {
     .projects-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 220px;
+    }
+
+    .project-card[data-size='feature'],
+    .project-card[data-size='wide'] {
+      grid-column: span 2;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      /* three rows fill the rest of the viewport under the header */
+      grid-auto-rows: clamp(150px, calc((100vh - 13rem) / 3), 260px);
     }
   }
 
   .project-card {
+    --mx: 50%;
+    --my: 50%;
     position: relative;
     border-radius: 20px;
     overflow: hidden;
+    isolation: isolate;
     background: #0f172a;
     border: 1px solid rgba(15, 23, 42, 0.08);
-    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.14);
     cursor: pointer;
-    min-height: 320px;
-    padding: 1.5rem;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 280ms ease;
+  }
+
+  /* display:flex above would otherwise override the [hidden] attribute */
+  .project-card[hidden] {
+    display: none;
+  }
+
+  .project-card[data-has-detail='false'] {
+    cursor: default;
+  }
+
+  .card-background,
+  .card-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .card-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background-size: cover;
     background-position: center;
-    filter: saturate(0.78) brightness(0.72) contrast(0.92);
-    z-index: 0;
-    transform: scale(1.02);
   }
 
-  .card-background::after {
-    content: '';
+  .card-video {
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 400ms ease, transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .card-video.playing {
+    opacity: 1;
+  }
+
+  /* Image stays visible: only the bottom is darkened for the text. */
+  .card-shade {
     position: absolute;
     inset: 0;
+    z-index: -1;
     background:
-      linear-gradient(180deg, rgba(15, 23, 42, 0.12) 0%, rgba(15, 23, 42, 0.24) 30%, rgba(15, 23, 42, 0.62) 62%, rgba(15, 23, 42, 0.92) 100%),
-      linear-gradient(135deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0) 42%);
+      radial-gradient(420px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.14), transparent 60%),
+      linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.2) 30%, rgba(15, 23, 42, 0.78) 62%, rgba(15, 23, 42, 0.96) 100%);
+    transition: background 300ms ease;
   }
 
   .card-content {
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    padding: 1rem 1.1rem 0.95rem;
-    flex: 1;
+    padding: 1rem 1.15rem 1.1rem;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    max-width: min(72%, 520px);
-    border-radius: 16px;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.38) 0%, rgba(15, 23, 42, 0.56) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    min-height: 0;
   }
 
   .card-content h3 {
-    margin: 0 0 0.9rem;
-    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    margin: 0;
+    font-size: clamp(1.1rem, 1.6vw, 1.3rem);
     color: #ffffff;
     font-weight: 700;
     text-align: left;
-    line-height: 1.2;
+    line-height: 1.25;
     text-wrap: balance;
-    text-shadow: 0 2px 12px rgba(15, 23, 42, 0.45);
+    text-shadow: 0 2px 12px rgba(15, 23, 42, 0.5);
   }
 
-  .card-content .description {
-    margin: 0 0 1.25rem;
-    color: rgba(255, 255, 255, 0.86);
-    line-height: 1.65;
-    flex: 1;
-    font-size: 0.95rem;
+  .project-card[data-size='feature'] h3 {
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+  }
+
+  .highlight {
+    margin: 0.3rem 0 0;
+    color: #fde68a;
+    font-size: 0.88rem;
+    font-weight: 600;
     text-align: left;
-    max-width: 56ch;
-    text-shadow: 0 1px 10px rgba(15, 23, 42, 0.4);
+    text-shadow: 0 1px 8px rgba(15, 23, 42, 0.6);
   }
 
-  .card-content .tools {
+  .project-card[data-type='work'] .highlight {
+    color: #bae6fd;
+  }
+
+  /* Description + tags: always on the featured tile, revealed on hover/focus elsewhere. */
+  .card-more {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 320ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease;
+  }
+
+  .card-more-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .project-card[data-size='feature'] .card-more,
+  .project-card:hover .card-more,
+  .project-card:focus-within .card-more {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .card-more .description {
+    margin: 0.55rem 0 0;
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.9rem;
+    text-align: left;
+    max-width: 60ch;
+  }
+
+  .project-card[data-size='feature'] .card-more .description {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .project-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: auto;
-    justify-content: flex-start;
+    margin-top: 0.75rem;
   }
 
-  .tool-tag {
+  .project-actions:empty {
+    display: none;
+  }
+
+  .project-detail-btn,
+  .project-link {
     display: inline-flex;
     align-items: center;
-    padding: 0.32rem 0.7rem;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 0.9rem;
+    line-height: 1;
     border-radius: 999px;
-    background: rgba(15, 23, 42, 0.32);
-    color: rgba(255, 255, 255, 0.94);
-    font-size: 0.78rem;
-    font-weight: 500;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    background: rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(4px);
+    transition: background 150ms ease;
+  }
+
+  /* One button style for every action. */
+  .project-detail-btn:hover,
+  .project-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (hover: hover) {
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 44px rgba(15, 23, 42, 0.28);
+    }
+
+    .project-card:hover .card-background,
+    .project-card:hover .card-video {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card,
+    .card-background,
+    .card-video,
+    .card-more {
+      transition: none;
+    }
+
+    .project-card:hover {
+      transform: none;
+    }
+
+    .project-card:hover .card-background,
+    .project-card:hover .card-video {
+      transform: none;
+    }
   }
 
   /* Modal Styles - Full Screen */
@@ -1243,20 +1412,9 @@ function getCardBackgroundForProject(project: any, lang: string): string {
   }
 
   @media (max-width: 767px) {
-    .project-card {
-      background: var(--bg);
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-      padding: 1.1rem;
-    }
-
     .card-content,
     .card-content h3,
-    .card-content .description,
-    .card-content .tools,
-    .tool-tag {
+    .card-content .description {
       min-width: 0;
       max-width: 100%;
       overflow-wrap: anywhere;
@@ -1269,14 +1427,18 @@ function getCardBackgroundForProject(project: any, lang: string): string {
       padding: 1.5rem 1rem;
     }
 
-    .project-card {
-      min-height: 280px;
+    header {
+      margin-bottom: 1.25rem;
     }
 
     .card-content {
-      max-width: 100%;
-      padding: 0.9rem 0.9rem 0.85rem;
+      padding: 0.85rem 1rem 0.95rem;
     }
+
+    .project-actions {
+      margin-top: 0.6rem;
+    }
+
 
     .modal-sheet {
       padding: 1.1rem;
@@ -1287,50 +1449,4 @@ function getCardBackgroundForProject(project: any, lang: string): string {
     }
   }
 
-  /* Project Metrics on Card */
-  .project-metrics {
-    margin-bottom: 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    flex: 1; /* Replace description flex:1 */
-    max-width: 60ch;
-  }
-
-  .metric-row {
-    display: flex;
-    align-items: baseline;
-    font-size: 0.9rem;
-    line-height: 1.55;
-  }
-
-  .metric-label {
-    font-weight: 700;
-    margin-right: 0.6rem;
-    color: rgba(125, 211, 252, 0.95);
-    flex-shrink: 0;
-    min-width: 70px;
-  }
-
-  .metric-value {
-    color: rgba(255, 255, 255, 0.9);
-    overflow: visible;
-    text-overflow: initial;
-    display: block;
-  }
-
-  .project-card[data-project-id="other-projects"] .card-content {
-    max-width: min(78%, 560px);
-  }
-
-  .project-card[data-project-id="other-projects"] .card-content h3,
-  .project-card[data-project-id="other-projects"] .card-content .description {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .project-card[data-project-id="other-projects"] .card-content .tools {
-    justify-content: center;
-  }
 </style>

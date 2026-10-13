@@ -39,7 +39,9 @@
     "actions": {
       "viewDetail": "Xem chi tiết",
       "close": "Đóng",
-      "backToProjects": "Quay lại dự án"
+      "backToProjects": "Quay lại dự án",
+      "demo": "Demo",
+      "github": "GitHub"
     },
     "sections": {
       "overview": "Tổng quan",
@@ -47,9 +49,116 @@
     },
     "items": [
       {
+        "id": "pyn-world",
+        "type": "personal",
+        "name": "Diorama 3D Tháp Nghinh Phong – Tuy Hòa",
+        "description": "Tái hiện Tuy Hòa và Tháp Nghinh Phong bằng Three.js, mang đến trải nghiệm khám phá thành phố trực quan, sống động và chân thực trong không gian 3D tương tác.",
+        "tools": [
+          "Three.js",
+          "JavaScript",
+          "Vite",
+          "Vitest",
+          "Playwright",
+          "OpenStreetMap"
+        ],
+        "cardBackground": "/pyn-world.webp",
+        "links": {
+          "demo": "https://www.thapnghinhphong.vn",
+          "github": "https://github.com/nguyenhoangtin1404/pyn-world"
+        },
+        "size": "feature",
+        "cardVideo": "/pyn-world.mp4"
+      },
+      {
+        "id": "dsf-hospital-suite",
+        "type": "work",
+        "name": "DSF Hospital Suite",
+        "description": "Bộ phần mềm y tế và doanh nghiệp của DSF Software: đặt lịch và điều phối giường cho spa/phòng khám, CRM chăm sóc khách hàng, báo cáo nguồn khách và hiệu suất nhân viên, chạy SaaS đa chi nhánh, chuẩn HL7/FHIR.",
+        "highlight": "Đặt lịch · điều phối giường · CRM",
+        "size": "wide",
+        "tools": [
+          "Angular",
+          "C#",
+          "PostgreSQL"
+        ],
+        "cardBackground": "/dsf-hospital-suite.webp",
+        "period": "8/2026 – NAY",
+        "role": "Technical Leadership",
+        "problem": "Spa và phòng khám nhiều chi nhánh cần một nền tảng duy nhất để đặt lịch, điều phối giường và chăm sóc khách hàng.",
+        "myRole": "Technical Leadership: quản trị kỹ thuật, Sprint Review và duyệt nghiệm thu chất lượng.",
+        "tasks": [
+          "Hoàn thiện xây dựng nền tảng kỹ thuật cho dự án trong 2 tháng đầu.",
+          "Review code, hỗ trợ các thành viên trong team và khách hàng.",
+          "Ứng dụng AI tối ưu quy trình làm việc, tự động hóa quy trình để nâng cao chất lượng."
+        ],
+        "impact": "Bảng điều khiển lễ tân theo thời gian thực (lịch hẹn, khách chờ, giường trống) và CRM báo cáo nguồn khách, tỉ lệ quay lại, hiệu suất nhân viên.",
+        "gallery": [
+          "/dsf1.webp",
+          "/dsf2.webp",
+          "/dsf3.webp"
+        ]
+      },
+      {
+        "id": "solo-cafe-order",
+        "type": "personal",
+        "name": "Vibe Cafe Order",
+        "description": "Đặt đồ uống qua QR cho quán cafe take-away: khách quét mã, chọn món, size, topping và theo dõi đơn realtime; chủ quán nhận đơn có âm báo trên dashboard 3 cột và bật/tắt món ngay trên điện thoại.",
+        "tools": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Supabase",
+          "Tailwind CSS",
+          "Vercel"
+        ],
+        "cardBackground": "/solo-cafe-order.webp",
+        "links": {
+          "demo": "https://solo-cafe-order.vercel.app/",
+          "github": "https://github.com/nguyenhoangtin1404/Solo-Cafe-Order"
+        },
+        "highlight": "Đặt món qua QR · đơn hàng realtime",
+        "role": "Fullstack Developer (tự xây dựng)",
+        "problem": "Giờ cao điểm, quán take-away vừa pha chế vừa nhận order miệng nên dễ nhầm món, sót đơn và mất khách.",
+        "myRole": "Tự thiết kế và phát triển toàn bộ: giao diện khách, dashboard chủ quán, cơ sở dữ liệu và realtime.",
+        "tasks": [
+          "Menu qua QR: khách chọn món, size, topping, ghi chú và đặt hàng không cần cài app.",
+          "Dashboard realtime có âm báo đơn mới, chia cột Đang chờ → Đang làm → Xong.",
+          "Khách theo dõi trạng thái đơn realtime và tự huỷ khi đơn còn đang chờ.",
+          "Chủ quán bật/tắt món, đổi giá, tải ảnh món ngay trên điện thoại."
+        ],
+        "impact": "Khách đặt món trong khoảng 30 giây; chủ quán nhận đơn đầy đủ mà không phải rời máy pha.",
+        "gallery": [
+          "/vibe-cafe-1.webp",
+          "/vibe-cafe-2.webp",
+          "/vibe-cafe-3.webp",
+          "/vibe-cafe-4.webp"
+        ]
+      },
+      {
+        "id": "to-lua-eakar",
+        "type": "personal",
+        "name": "Tơ Lụa Ea Kar",
+        "description": "Website bán hàng cho doanh nghiệp dâu tằm, kén tằm và vải tơ tằm: giới thiệu công ty, danh mục sản phẩm, giỏ hàng, đặt hàng online, thanh toán MoMo và chống spam bằng Cloudflare Turnstile.",
+        "tools": [
+          "Next.js",
+          "TypeScript",
+          "Prisma",
+          "PostgreSQL",
+          "MoMo",
+          "Docker",
+          "Railway"
+        ],
+        "cardBackground": "/to-lua-eakar.webp",
+        "links": {
+          "demo": "https://totam.up.railway.app/"
+        },
+        "highlight": "Giỏ hàng + thanh toán MoMo"
+      },
+      {
         "id": "igate",
+        "type": "work",
         "name": "Hệ thống Thông tin Giải quyết Thủ tục Hành chính",
-        "period": "2025 – NAY",
+        "period": "2025 – 4/2026",
         "cardBackground": "/igate3.webp",
         "description": "Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.",
         "problem": "Truy vấn báo cáo chậm trên dữ liệu toàn tỉnh.",
@@ -70,10 +179,12 @@
           "/igate1.jpg",
           "/igate2.png",
           "/igate3.jpg"
-        ]
+        ],
+        "highlight": "Báo cáo từ 3 phút xuống 60 giây"
       },
       {
         "id": "ecabinet",
+        "type": "work",
         "name": "VNPT eCabinet - Phòng họp không giấy tờ",
         "period": "2021 – 2025",
         "cardBackground": "/ecabinet3.webp",
@@ -97,10 +208,12 @@
           "/ecabinet1.jpg",
           "/ecabinet2.jpg",
           "/ecabinet3.jpg"
-        ]
+        ],
+        "highlight": "5 năm họp HĐND không sự cố CNTT"
       },
       {
         "id": "ioffice",
+        "type": "work",
         "name": "VNPT iOffice - Điều hành Văn bản",
         "period": "2017 – 2024",
         "cardBackground": "/ioffice3.webp",
@@ -124,10 +237,12 @@
           "/ioffice1.jpg",
           "/ioffice2.jpg",
           "/ioffice3.jpg"
-        ]
+        ],
+        "highlight": "10.000+ cán bộ sử dụng"
       },
       {
         "id": "other-projects",
+        "type": "work",
         "name": "Các dự án tiêu biểu khác",
         "period": "",
         "cardBackground": "/other-projects-bg.webp",
@@ -178,7 +293,8 @@
               "Oracle"
             ]
           }
-        ]
+        ],
+        "highlight": "Các dự án ngắn hạn tiêu biểu"
       }
     ],
     "galleryAlt": "Slide hình ảnh cho"

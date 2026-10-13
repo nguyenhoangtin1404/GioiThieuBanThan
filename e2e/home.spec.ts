@@ -108,6 +108,16 @@ test.describe('home page', () => {
     }
   });
 
+  test('element ids are unique', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    const dupes = await page.evaluate(() => {
+      const seen = new Map<string, number>();
+      document.querySelectorAll('[id]').forEach((el) => seen.set(el.id, (seen.get(el.id) || 0) + 1));
+      return [...seen].filter(([, n]) => n > 1).map(([id]) => id);
+    });
+    expect(dupes).toEqual([]);
+  });
+
   test('visual: hero', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     await expect(page.locator('[data-hero-message]')).toBeVisible({ timeout: 5_000 });

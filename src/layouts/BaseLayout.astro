@@ -1,5 +1,10 @@
 ---
 import { getLang, getTranslations } from '@i18n/utils';
+// Self-hosted font: no request to Google, same rendering everywhere (incl. CI)
+import '@fontsource/be-vietnam-pro/400.css';
+import '@fontsource/be-vietnam-pro/500.css';
+import '@fontsource/be-vietnam-pro/600.css';
+import '@fontsource/be-vietnam-pro/700.css';
 
 export interface Props {
   title?: string;
@@ -56,12 +61,6 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     
     <link rel="icon" href="/avatar-180.png" type="image/png" />
     <link rel="apple-touch-icon" href="/avatar-180.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap&subset=vietnamese"
-      rel="stylesheet"
-    />
 
     {import.meta.env.PROD && (
       <>

@@ -17,6 +17,7 @@
     "test:e2e:update": "playwright test --update-snapshots"
   },
   "dependencies": {
+    "@fontsource/be-vietnam-pro": "^5.3.0",
     "astro": "^6.0.7",
     "fullpage.js": "^4.0.40"
   },

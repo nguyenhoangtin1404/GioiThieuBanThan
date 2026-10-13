@@ -45,17 +45,20 @@ const highlights = [
       </div>
       <div class="avatar-wrapper">
         <span class="avatar-ring">
-          <img
-            class="avatar"
-            src="/avatar-512.png"
-            width="442"
-            height="512"
-            data-i18n-attr="alt:hero.avatarAlt"
-            alt={t.hero.avatarAlt}
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
+          <picture>
+            <source srcset="/avatar-512.webp" type="image/webp" />
+            <img
+              class="avatar"
+              src="/avatar-512.png"
+              width="442"
+              height="512"
+              data-i18n-attr="alt:hero.avatarAlt"
+              alt={t.hero.avatarAlt}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </picture>
         </span>
         <span class="online" aria-hidden="true"></span>
       </div>
@@ -106,6 +109,7 @@ const highlights = [
   .chat-bubble {
     position: relative;
     min-width: 240px;
+    max-width: 340px;
     padding: 14px 18px;
     background: var(--card, #fff);
     border: 1px solid var(--border, rgba(15, 23, 42, 0.08));
@@ -194,6 +198,10 @@ const highlights = [
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     transition: transform 0.25s ease;
+  }
+
+  .avatar-ring picture {
+    display: contents;
   }
 
   .avatar-wrapper:hover .avatar-ring {

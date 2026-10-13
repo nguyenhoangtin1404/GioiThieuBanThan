@@ -24,6 +24,7 @@ const GA_ID = 'G-C00KEFJSZR';
 const siteUrl = import.meta.env.SITE || 'https://profilio.local';
 const ogImageUrl = `${siteUrl}/og-image.png`;
 const pageUrl = Astro.url.href;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 ---
 
 <!doctype html>
@@ -33,6 +34,7 @@ const pageUrl = Astro.url.href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
     
     {/* Open Graph / Facebook */}
     <meta property="og:type" content="website" />
@@ -52,8 +54,8 @@ const pageUrl = Astro.url.href;
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={title} />
     
-    <link rel="icon" href="/avatar-512.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/avatar-512.png" />
+    <link rel="icon" href="/avatar-180.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/avatar-180.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

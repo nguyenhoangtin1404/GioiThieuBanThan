@@ -19,7 +19,14 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
 <section class="card" data-slide-in="right">
   <div class="contact-container">
     <div class="contact-image">
-      <img src="/contact-768.jpg" alt="Contact" width="768" height="768" loading="lazy" decoding="async" />
+      <picture>
+        <source
+          type="image/webp"
+          srcset="/contact-360.webp 360w, /contact-720.webp 720w"
+          sizes="(max-width: 767px) calc(100vw - 2rem), 360px"
+        />
+        <img src="/contact-768.jpg" alt="Contact" width="768" height="768" loading="lazy" decoding="async" />
+      </picture>
     </div>
     <div class="contact-content">
       <h2 class="fade-in-item" data-i18n="contact.title" data-fade-delay="0">{t.contact.title}</h2>
@@ -92,6 +99,10 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .contact-image picture {
+    display: contents;
   }
 
   .contact-image img {

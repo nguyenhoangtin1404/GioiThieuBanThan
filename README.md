@@ -98,6 +98,48 @@ docker run --rm --ipc=host -e CI=1 -v "$PWD":/work -w /work mcr.microsoft.com/pl
 
 Chạy `npm run test:e2e` trực tiếp trên máy vẫn được, nhưng các test so sánh ảnh có thể lệch nhẹ do khác môi trường. Khi nâng `@playwright/test`, nhớ đổi tag image trong lệnh trên và trong `.github/workflows/e2e.yml`. Workflow `.github/workflows/e2e.yml` chạy test cho mọi PR và push lên `main`.
 
+## Giọng đọc (Vbee)
+
+Nút 🔊 trên menu bật giọng đọc cho từng section (mặc định tắt, trình duyệt nhớ lựa chọn). File đặt trong `public/audio/`, tên theo section và ngôn ngữ:
+
+| Section | Tiếng Việt | Tiếng Anh |
+|---|---|---|
+| Trang chủ | `home-vi.mp3` | `home-en.mp3` |
+| Dự án | `du-an-vi.mp3` | `du-an-en.mp3` |
+| Kinh nghiệm | `kinh-nghiem-vi.mp3` | `kinh-nghiem-en.mp3` |
+| Liên hệ | `lien-he-vi.mp3` | `lien-he-en.mp3` |
+
+Thiếu file nào thì section đó im lặng, không báo lỗi. Code phát: `src/scripts/voice.ts`.
+
+### Tạo audio tự động bằng Vbee API
+
+Lời đọc nằm trong `src/voice/scripts.json`. Workflow **Generate voice** (`.github/workflows/voice.yml`) gọi Vbee Batch API, tải MP3 64 kbps về `public/audio/` và commit lên nhánh đang chạy. Cloudflare sẽ tự deploy lại.
+
+1. Tạo App trên Vbee AIVoice Studio để lấy App ID và token.
+2. Vào GitHub → Settings → Secrets and variables → Actions:
+   - **Secrets**: `VBEE_APP_ID`, `VBEE_TOKEN`.
+   - **Variables** (không bắt buộc): `VBEE_VOICE_VI` (mặc định là giọng nhân bản `c_daklak_male_nguyenhoangtin_education_vc`), `VBEE_VOICE_EN` (mặc định `en-US-Standard-D`, giọng Cole), `VBEE_SPEED` (mặc định `1`).
+3. Actions → Generate voice → Run workflow. Tick `list_voices` để xem danh sách mã giọng (giọng cá nhân và giọng en-US) mà không tốn credit.
+
+Workflow tự chạy khi `scripts.json` thay đổi trên `main`. `src/voice/manifest.json` lưu hash của từng đoạn (text, giọng, tốc độ), nên chỉ đoạn nào đổi mới bị tạo lại. Muốn tạo lại hết thì tick `force`, hoặc nhập `entries` (ví dụ `home-en du-an-en`) để chỉ tạo vài file.
+
+Chạy trên máy: `VBEE_APP_ID=… VBEE_TOKEN=… npm run generate:voice -- [--force] [home-vi …]`. Test: `npm run test:voice`.
+
+## Thêm dự án
+
+Thêm 1 mục vào `projects.items` trong cả `src/i18n/translations/vi.json` và `en.json` (cùng thứ tự):
+
+```json
+{ "id": "my-app", "type": "personal", "name": "…", "description": "…",
+  "highlight": "Một con số nổi bật", "size": "wide",
+  "tools": ["Astro"], "cardBackground": "/my-app.webp",
+  "links": { "demo": "https://…", "github": "https://github.com/…" } }
+```
+
+`type` là `work` hoặc `personal` (đổi màu dòng `highlight`; chưa có bộ lọc vì mọi dự án đã vừa một màn hình). Dự án có `tasks` hoặc `gallery` sẽ có nút "Xem chi tiết", popup và trang `/projects/<id>`; dự án chỉ có link thì không.
+
+Lưới bento (desktop 4 cột × 3 hàng, vừa một màn hình): `size` là `feature` (ô 2×2, luôn hiện mô tả), `wide` (ô 2×1), bỏ trống là ô 1×1. Hiện tại 1 `feature` + 1 `wide` + 6 ô thường lấp đủ 12 ô; thêm dự án thì cân lại `size` cho lưới kín. `highlight` là dòng ngắn dưới tên. `cardVideo` (ví dụ `/pyn-world.mp4`) là video lặp không tiếng, chỉ tải và phát khi section đang hiện, tắt khi người xem bật giảm chuyển động.
+
 ## Deploy (Cloudflare Workers)
 
 Site được deploy tự động bởi **Cloudflare Workers Builds**, kết nối trực tiếp với repo GitHub:

@@ -30,14 +30,16 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
               <li data-i18n={`timeline.items.${eventIndex}.tasks.${taskIndex}`}>{task}</li>
             ))}
           </ul>
-          <div class="achievements">
-            <strong data-i18n="timeline.achievements">{t.timeline.achievements}</strong>
-            <ul>
-              {event.achievements.map((achievement: string, achIndex: number) => (
-                <li data-i18n={`timeline.items.${eventIndex}.achievements.${achIndex}`}>{achievement}</li>
-              ))}
-            </ul>
-          </div>
+          {event.achievements?.length > 0 && (
+            <div class="achievements">
+              <strong data-i18n="timeline.achievements">{t.timeline.achievements}</strong>
+              <ul>
+                {event.achievements.map((achievement: string, achIndex: number) => (
+                  <li data-i18n={`timeline.items.${eventIndex}.achievements.${achIndex}`}>{achievement}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </article>
     ))}

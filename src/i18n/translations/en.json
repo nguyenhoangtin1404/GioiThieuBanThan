@@ -304,7 +304,20 @@
     "achievements": "Achievements:",
     "items": [
       {
-        "year": "2017 – PRESENT",
+        "year": "AUG 2026 – PRESENT",
+        "company": "DSF SOFTWARE",
+        "role": "TECHNICAL LEADERSHIP",
+        "tasks": [
+          "Enterprise software company (Healthcare IT, SaaS, AI multi-agent).",
+          "Lead engineering governance, run Sprint Reviews and sign off on quality acceptance.",
+          "Completed the project's technical foundation within the first 2 months.",
+          "Review code and support team members and customers.",
+          "Apply AI to streamline and automate workflows, raising quality."
+        ],
+        "achievements": []
+      },
+      {
+        "year": "2017 – APR 2026",
         "company": "VIETNAM POSTS AND TELECOMMUNICATIONS GROUP ( VNPT)",
         "role": "IT SOLUTION STAFF / SOFTWARE ENGINEER",
         "tasks": [

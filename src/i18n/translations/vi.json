@@ -304,7 +304,20 @@
     "achievements": "Thành tựu:",
     "items": [
       {
-        "year": "2017 – NAY",
+        "year": "8/2026 – NAY",
+        "company": "DSF SOFTWARE",
+        "role": "TECHNICAL LEADERSHIP",
+        "tasks": [
+          "Công ty phần mềm doanh nghiệp (Healthcare IT, SaaS, AI multi-agent).",
+          "Quản trị kỹ thuật, điều phối Sprint Review và duyệt nghiệm thu chất lượng.",
+          "Trong 2 tháng đầu, hoàn thiện xây dựng nền tảng kỹ thuật cho dự án.",
+          "Review code, hỗ trợ các thành viên trong team và khách hàng.",
+          "Ứng dụng AI tối ưu quy trình làm việc, tự động hóa quy trình để nâng cao chất lượng."
+        ],
+        "achievements": []
+      },
+      {
+        "year": "2017 – 4/2026",
         "company": "VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM",
         "role": "NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH",
         "tasks": [

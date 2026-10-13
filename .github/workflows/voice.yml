@@ -1,0 +1,78 @@
+name: Generate voice
+
+# Creates public/audio/<section>-<lang>.mp3 with Vbee from src/voice/scripts.json.
+# Needs repository secrets VBEE_APP_ID and VBEE_TOKEN; optional repository
+# variables VBEE_VOICE_VI / VBEE_VOICE_EN / VBEE_SPEED override the voices.
+on:
+  workflow_dispatch:
+    inputs:
+      entries:
+        description: 'Only these files, space separated (e.g. "home-vi du-an-en"). Empty = all changed.'
+        required: false
+        default: ''
+      force:
+        description: 'Regenerate even if the text did not change (spends credits)'
+        type: boolean
+        default: false
+      list_voices:
+        description: 'Only print available voices (personal + en-US), generate nothing'
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths: [src/voice/scripts.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-voice
+  cancel-in-progress: false
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VBEE_APP_ID: ${{ secrets.VBEE_APP_ID }}
+      VBEE_TOKEN: ${{ secrets.VBEE_TOKEN }}
+      VBEE_VOICE_VI: ${{ vars.VBEE_VOICE_VI }}
+      VBEE_VOICE_EN: ${{ vars.VBEE_VOICE_EN }}
+      VBEE_SPEED: ${{ vars.VBEE_SPEED }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: List voices
+        if: ${{ inputs.list_voices }}
+        run: |
+          for q in "voice_ownership=PERSONAL" "voice_ownership=VBEE&language_code=en-US"; do
+            echo "== $q"
+            curl -sf "https://vbee.vn/api/public/v1/voices?$q&limit=100" \
+              -H "Authorization: Bearer $VBEE_TOKEN" -H "App-Id: $VBEE_APP_ID" \
+              | jq -r '.result.voices[] | "\(.code)\t\(.language_code)\t\(.gender)\t\(.name)"'
+          done
+
+      - name: Generate audio
+        if: ${{ !inputs.list_voices }}
+        env:
+          ENTRIES: ${{ inputs.entries }}
+          FORCE: ${{ inputs.force && '--force' || '' }}
+        # ENTRIES is intentionally unquoted so it splits into separate args.
+        run: node scripts/generate-voice.mjs $FORCE $ENTRIES
+
+      - name: Commit audio
+        if: ${{ !inputs.list_voices }}
+        run: |
+          git add public/audio src/voice/manifest.json
+          if git diff --cached --quiet; then
+            echo "No audio changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(voice): regenerate narration audio with Vbee"
+          git push

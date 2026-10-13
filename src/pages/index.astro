@@ -32,6 +32,11 @@ import ContactCard from '@components/ContactCard.astro';
     </div>
   </div>
 
+  <script>
+    import { initVoice } from '../scripts/voice';
+    initVoice();
+  </script>
+
   <!-- Load script từ public folder - chỉ load trên desktop -->
   <script is:inline>
     const MOBILE_BREAKPOINT = 768;

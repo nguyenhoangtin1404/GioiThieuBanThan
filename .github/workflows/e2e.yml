@@ -26,6 +26,9 @@ jobs:
       - name: Type check
         run: npx astro check
 
+      - name: Unit tests (voice generator)
+        run: npm run test:voice
+
       - name: Run E2E tests (desktop + mobile)
         run: npm run test:e2e
 

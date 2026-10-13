@@ -64,8 +64,20 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 
     {import.meta.env.PROD && (
       <>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
         <script is:inline define:vars={{ GA_ID }}>
+          // Load gtag.js (~190 KB) only after the page has loaded and the
+          // browser is idle; calls made before that are queued in dataLayer.
+          function loadGtag() {
+            const s = document.createElement('script');
+            s.async = true;
+            s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+            document.head.appendChild(s);
+          }
+          window.addEventListener('load', () => {
+            if ('requestIdleCallback' in window) requestIdleCallback(loadGtag, { timeout: 3000 });
+            else setTimeout(loadGtag, 1500);
+          });
+
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           window.gtag = window.gtag || gtag;
@@ -1101,7 +1113,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
       <button
         id="lang-switcher"
         class="lang-switcher"
-        aria-label="Switch language"
+        aria-label="VI | EN – Switch language"
         title="Switch language"
       >
         <span class="globe-icon">

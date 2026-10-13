@@ -132,7 +132,24 @@ const highlights = [
     transform: translateX(-50%) rotate(45deg);
   }
 
+  /* Dots and message share one grid cell, so the bubble already has the
+     message's height while typing (no layout shift when it appears). */
+  .chat-bubble {
+    display: grid;
+  }
+
+  .typing,
+  .message {
+    grid-area: 1 / 1;
+  }
+
+  .message[hidden] {
+    display: block;
+    visibility: hidden;
+  }
+
   .typing {
+    align-self: center;
     height: 20px;
     display: flex;
     justify-content: center;
@@ -295,7 +312,7 @@ const highlights = [
     }
   }
 
-  .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: var(--accent); font-weight: 600; font-size: 0.9rem; margin: 0; }
+  .badge { display: inline-flex; padding: 0.4rem 1rem; border-radius: 999px; background: rgba(14, 165, 233, 0.15); color: #0369a1; font-weight: 600; font-size: 0.9rem; margin: 0; }
 
   .bio { text-align: left; background: var(--surface-weak); border-radius: 16px; padding: 1rem; border: 1px solid var(--border); margin-bottom: 0; }
   .bio p { margin: 0 0 0.5rem; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }

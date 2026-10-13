@@ -78,6 +78,18 @@ Field tuỳ chọn:
   - Project này lưu instance ở `window.vanillaFullpage`.
   - Có API `setWheelEnabled(boolean)` để khoá mở wheel khi cần (ví dụ mở modal).
 
+## E2E test (Playwright)
+
+Test chạy trên 2 viewport: `desktop` (1440×900) và `mobile` (Pixel 7). Kiểm tra hero, chat bubble, chuyển ngôn ngữ, layout mobile/desktop, không bị tràn ngang, trang dự án, robots.txt/sitemap/canonical và so sánh ảnh chụp giao diện.
+
+```bash
+npx playwright install chromium   # lần đầu
+npm run test:e2e                  # build + preview + chạy test
+npm run test:e2e:update           # cập nhật ảnh chuẩn khi đổi giao diện có chủ đích
+```
+
+Ảnh chuẩn nằm trong `e2e/*-snapshots/` (tạo trên Linux, khớp với CI). Workflow `.github/workflows/e2e.yml` chạy test cho mọi PR và push lên `main`.
+
 ## CI/CD với GitHub Actions + FTP
 
 Repo có workflow deploy qua FTP khi push lên nhánh `main`:

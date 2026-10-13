@@ -1381,9 +1381,12 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
         // Initialize on load - use server-rendered language
         const initialLang = document.documentElement.lang || 'vi';
         if (initialLang === 'vi' || initialLang === 'en') {
-          // Update from localStorage if different
+          // Prefer ?lang= from the URL, then localStorage
+          const urlLang = new URLSearchParams(window.location.search).get('lang');
           const storedLang = localStorage.getItem('lang');
-          const currentLang = (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
+          const currentLang = (urlLang === 'vi' || urlLang === 'en')
+            ? urlLang
+            : (storedLang === 'vi' || storedLang === 'en') ? storedLang : initialLang;
           if (currentLang !== initialLang) {
             updatePageContent(currentLang);
             // Dispatch langchange event so other components (like Projects) can update images

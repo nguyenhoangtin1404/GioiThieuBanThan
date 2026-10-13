@@ -121,6 +121,25 @@ test.describe('home page', () => {
     }
   });
 
+  test('active language option has readable contrast', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    const ratio = await page.locator('.lang-switcher .lang-option.active .text').filter({ visible: true }).first().evaluate((el) => {
+      const rgb = (c: string) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);
+      const lum = ([r, g, b]: number[]) => {
+        const f = (v: number) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+        return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+      };
+      // Background: the option's tint composited over the white nav.
+      const fg = rgb(getComputedStyle(el).color);
+      const bgCss = getComputedStyle(el.closest('.lang-option')!).backgroundColor;
+      const [br, bg, bb, ba = 1] = (bgCss.match(/[\d.]+/g) || []).map(Number);
+      const mix = [br, bg, bb].map((v) => v * ba + 255 * (1 - ba));
+      const [l1, l2] = [lum(fg), lum(mix)].sort((a, b) => b - a);
+      return (l1 + 0.05) / (l2 + 0.05);
+    });
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  });
+
   test('element ids are unique', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     const dupes = await page.evaluate(() => {

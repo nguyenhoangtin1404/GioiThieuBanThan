@@ -1,0 +1,50 @@
+{
+  "home-vi": {
+    "hash": "4a79e8a3e87b27ab",
+    "voice": "c_daklak_male_nguyenhoangtin_education_vc",
+    "speed": 1,
+    "bytes": 108525
+  },
+  "home-en": {
+    "hash": "a5facbbd47721d1c",
+    "voice": "en-US-Standard-D",
+    "speed": 1,
+    "bytes": 114669
+  },
+  "du-an-vi": {
+    "hash": "2d1c97439a19c97b",
+    "voice": "c_daklak_male_nguyenhoangtin_education_vc",
+    "speed": 1,
+    "bytes": 126957
+  },
+  "du-an-en": {
+    "hash": "4252dc9b8e32ad16",
+    "voice": "en-US-Standard-D",
+    "speed": 1,
+    "bytes": 138861
+  },
+  "kinh-nghiem-vi": {
+    "hash": "d10536fc39e2fc62",
+    "voice": "c_daklak_male_nguyenhoangtin_education_vc",
+    "speed": 1,
+    "bytes": 151533
+  },
+  "kinh-nghiem-en": {
+    "hash": "52b82fc8072ed19d",
+    "voice": "en-US-Standard-D",
+    "speed": 1,
+    "bytes": 151341
+  },
+  "lien-he-vi": {
+    "hash": "a8c0530f3c70dbdb",
+    "voice": "c_daklak_male_nguyenhoangtin_education_vc",
+    "speed": 1,
+    "bytes": 61677
+  },
+  "lien-he-en": {
+    "hash": "ffcace37d3fa384d",
+    "voice": "en-US-Standard-D",
+    "speed": 1,
+    "bytes": 59565
+  }
+}

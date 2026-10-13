@@ -14,7 +14,9 @@
     "astro": "astro",
     "generate:og-image": "node scripts/generate-og-image.js",
     "test:e2e": "playwright test",
-    "test:e2e:update": "playwright test --update-snapshots"
+    "test:e2e:update": "playwright test --update-snapshots",
+    "generate:voice": "node scripts/generate-voice.mjs",
+    "test:voice": "node --test scripts/generate-voice.test.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "^5.3.0",

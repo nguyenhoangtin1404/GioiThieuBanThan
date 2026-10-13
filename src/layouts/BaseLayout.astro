@@ -18,6 +18,7 @@ const {
 
 // Get initial language (server-side)
 const initialLang = getLang(Astro.url);
+const voiceLabel = initialLang === 'en' ? 'Turn voice on' : 'Bật giọng đọc';
 
 // Load translations for embedding
 const translationsVi = await getTranslations('vi');
@@ -738,6 +739,70 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         padding: 0;
       }
 
+      .voice-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        min-height: 32px;
+        padding: 0.25rem;
+        margin-left: 0.25rem;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: #0a0a0a;
+        cursor: pointer;
+      }
+
+      .voice-toggle:hover {
+        background: rgba(14, 165, 233, 0.1);
+        color: #0369a1;
+      }
+
+      .voice-toggle:focus-visible {
+        outline: 3px solid #38bdf8;
+        outline-offset: 2px;
+      }
+
+      .voice-toggle[aria-pressed='true'] {
+        color: #0369a1;
+        background: rgba(14, 165, 233, 0.15);
+      }
+
+      .voice-icon {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+
+      .voice-toggle .voice-on,
+      .voice-toggle[aria-pressed='true'] .voice-off {
+        display: none;
+      }
+
+      .voice-toggle[aria-pressed='true'] .voice-on {
+        display: inline;
+      }
+
+      .voice-toggle.is-playing .voice-wave-1 {
+        animation: voice-wave 1s ease-in-out infinite;
+      }
+
+      .voice-toggle.is-playing .voice-wave-2 {
+        animation: voice-wave 1s ease-in-out 0.25s infinite;
+      }
+
+      @keyframes voice-wave {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.25; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .voice-toggle.is-playing .voice-wave-1,
+        .voice-toggle.is-playing .voice-wave-2 {
+          animation: none;
+        }
+      }
+
       .sidebar-list button {
         background: transparent;
         border: none;
@@ -1128,6 +1193,15 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         <span class="lang-option" data-lang="en">
           <span class="text">EN</span>
         </span>
+      </button>
+      <!-- Voice narration toggle (behaviour: src/scripts/voice.ts) -->
+      <button type="button" class="voice-toggle" data-voice-toggle aria-pressed="false" aria-label={voiceLabel} title={voiceLabel}>
+        <svg class="voice-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M3 9v6h4l5 4V5L7 9H3z" fill="currentColor"></path>
+          <path class="voice-off" d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+          <path class="voice-on voice-wave-1" d="M15.5 9.5a3.5 3.5 0 0 1 0 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+          <path class="voice-on voice-wave-2" d="M18 7a7 7 0 0 1 0 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"></path>
+        </svg>
       </button>
     </div>
     <main>

@@ -132,13 +132,22 @@ export async function getTranslations(lang: Lang = DEFAULT_LANG) {
 }
 
 /**
- * All project ids across languages (used for static paths and the sitemap)
+ * A project has detail (modal, /projects/<id> page, sitemap entry) when it
+ * lists tasks or gallery images; link-only personal projects do not.
+ */
+export function hasProjectDetail(item: any): boolean {
+  return (Array.isArray(item?.tasks) && item.tasks.length > 0)
+    || (Array.isArray(item?.gallery) && item.gallery.length > 0);
+}
+
+/**
+ * Ids of projects with detail across languages (static paths and sitemap)
  */
 export async function getProjectIds(): Promise<string[]> {
   const ids = new Set<string>();
   for (const lang of ['vi', 'en'] as const) {
     const t = await getTranslations(lang);
-    (t.projects?.items || []).forEach((p: any) => p?.id && ids.add(p.id));
+    (t.projects?.items || []).forEach((p: any) => p?.id && hasProjectDetail(p) && ids.add(p.id));
   }
   return Array.from(ids);
 }

@@ -39,7 +39,9 @@
     "actions": {
       "viewDetail": "View details",
       "close": "Close",
-      "backToProjects": "Back to projects"
+      "backToProjects": "Back to projects",
+      "demo": "Demo",
+      "github": "GitHub"
     },
     "sections": {
       "overview": "Overview",
@@ -47,9 +49,116 @@
     },
     "items": [
       {
+        "id": "pyn-world",
+        "type": "personal",
+        "name": "3D Diorama of Nghinh Phong Tower – Tuy Hoa",
+        "description": "Tuy Hoa and Nghinh Phong Tower recreated in Three.js: a vivid, true-to-life way to explore the city in an interactive 3D space.",
+        "tools": [
+          "Three.js",
+          "JavaScript",
+          "Vite",
+          "Vitest",
+          "Playwright",
+          "OpenStreetMap"
+        ],
+        "cardBackground": "/pyn-world.webp",
+        "links": {
+          "demo": "https://www.thapnghinhphong.vn",
+          "github": "https://github.com/nguyenhoangtin1404/pyn-world"
+        },
+        "size": "feature",
+        "cardVideo": "/pyn-world.mp4"
+      },
+      {
+        "id": "dsf-hospital-suite",
+        "type": "work",
+        "name": "DSF Hospital Suite",
+        "description": "DSF Software's healthcare and enterprise suite: booking and bed scheduling for spas and clinics, customer-care CRM, lead-source and staff performance reports, delivered as multi-branch SaaS with HL7/FHIR support.",
+        "highlight": "Booking · bed scheduling · CRM",
+        "size": "wide",
+        "tools": [
+          "Angular",
+          "C#",
+          "PostgreSQL"
+        ],
+        "cardBackground": "/dsf-hospital-suite.webp",
+        "period": "AUG 2026 – PRESENT",
+        "role": "Technical Leadership",
+        "problem": "Multi-branch spas and clinics need one platform for booking, bed scheduling and customer care.",
+        "myRole": "Technical leadership: engineering governance, Sprint Reviews and quality sign-off.",
+        "tasks": [
+          "Completed the project's technical foundation within the first 2 months.",
+          "Review code and support team members and customers.",
+          "Apply AI to streamline and automate workflows, raising quality."
+        ],
+        "impact": "A real-time front-desk dashboard (appointments, waiting guests, free beds) and a CRM reporting lead sources, return rate and staff performance.",
+        "gallery": [
+          "/dsf1.webp",
+          "/dsf2.webp",
+          "/dsf3.webp"
+        ]
+      },
+      {
+        "id": "solo-cafe-order",
+        "type": "personal",
+        "name": "Vibe Cafe Order",
+        "description": "QR ordering for take-away coffee shops: customers scan, pick drinks, sizes and toppings and track their order in real time; the owner gets orders with a sound alert on a 3-column dashboard and toggles menu items from a phone.",
+        "tools": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Supabase",
+          "Tailwind CSS",
+          "Vercel"
+        ],
+        "cardBackground": "/solo-cafe-order.webp",
+        "links": {
+          "demo": "https://solo-cafe-order.vercel.app/",
+          "github": "https://github.com/nguyenhoangtin1404/Solo-Cafe-Order"
+        },
+        "highlight": "QR ordering · real-time orders",
+        "role": "Fullstack Developer (solo build)",
+        "problem": "At rush hour a take-away shop brews and takes verbal orders at once, so drinks get mixed up, orders get missed and customers leave.",
+        "myRole": "Designed and built everything: the customer app, the owner dashboard, the database and real-time sync.",
+        "tasks": [
+          "QR menu: customers pick drinks, size, toppings and notes and order without installing an app.",
+          "Real-time dashboard with a sound alert for new orders and Waiting → Brewing → Done columns.",
+          "Customers track their order live and can cancel while it is still waiting.",
+          "The owner toggles items, changes prices and uploads photos from a phone."
+        ],
+        "impact": "Customers order in about 30 seconds; the owner gets complete orders without leaving the espresso machine.",
+        "gallery": [
+          "/vibe-cafe-1.webp",
+          "/vibe-cafe-2.webp",
+          "/vibe-cafe-3.webp",
+          "/vibe-cafe-4.webp"
+        ]
+      },
+      {
+        "id": "to-lua-eakar",
+        "type": "personal",
+        "name": "To Lua Ea Kar (Ea Kar Silk)",
+        "description": "An online store for a mulberry, silkworm cocoon and silk fabric business: company profile, product catalogue, cart, online ordering, MoMo payments and Cloudflare Turnstile spam protection.",
+        "tools": [
+          "Next.js",
+          "TypeScript",
+          "Prisma",
+          "PostgreSQL",
+          "MoMo",
+          "Docker",
+          "Railway"
+        ],
+        "cardBackground": "/to-lua-eakar.webp",
+        "links": {
+          "demo": "https://totam.up.railway.app/"
+        },
+        "highlight": "Cart + MoMo payments"
+      },
+      {
         "id": "igate",
+        "type": "work",
         "name": "Administrative Procedure Resolution Information System",
-        "period": "2025 – PRESENT",
+        "period": "2025 – APR 2026",
         "cardBackground": "/igate3_en.webp",
         "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
         "problem": "Report queries were slow on province-wide data.",
@@ -70,10 +179,12 @@
           "/igate1.jpg",
           "/igate2_en.jpg",
           "/igate3_en.png"
-        ]
+        ],
+        "highlight": "Reports cut from 3 minutes to 60 seconds"
       },
       {
         "id": "ecabinet",
+        "type": "work",
         "name": "VNPT eCabinet - Paperless Meeting Room",
         "period": "2021 – 2025",
         "cardBackground": "/ecabinet3.webp",
@@ -97,10 +208,12 @@
           "/ecabinet1.jpg",
           "/ecabinet2.jpg",
           "/ecabinet3.jpg"
-        ]
+        ],
+        "highlight": "5 years of council meetings, zero IT incidents"
       },
       {
         "id": "ioffice",
+        "type": "work",
         "name": "VNPT iOffice - Document Management",
         "period": "2017 – 2024",
         "cardBackground": "/ioffice3.webp",
@@ -124,10 +237,12 @@
           "/ioffice1.jpg",
           "/ioffice2.jpg",
           "/ioffice3.jpg"
-        ]
+        ],
+        "highlight": "Used by 10,000+ staff"
       },
       {
         "id": "other-projects",
+        "type": "work",
         "name": "Other Highlight Projects",
         "period": "",
         "cardBackground": "/other-projects-bg.webp",
@@ -178,7 +293,8 @@
               "Oracle"
             ]
           }
-        ]
+        ],
+        "highlight": "Selected short-term projects"
       }
     ],
     "galleryAlt": "Image slide for"

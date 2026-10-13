@@ -18,9 +18,14 @@ test.describe('SEO files', () => {
     const res = await request.get('/sitemap.xml');
     expect(res.ok()).toBeTruthy();
     const body = await res.text();
-    for (const path of ['/', '/projects/igate/', '/projects/ecabinet/', '/projects/ioffice/', '/projects/other-projects/']) {
+    for (const path of ['/', '/projects/igate/', '/projects/ecabinet/', '/projects/ioffice/', '/projects/other-projects/', '/projects/dsf-hospital-suite/', '/projects/solo-cafe-order/']) {
       expect(body).toContain(`<loc>${SITE}${path}</loc>`);
     }
+  });
+
+  test('sitemap does not list personal projects without detail', async ({ request }) => {
+    const body = await (await request.get('/sitemap.xml')).text();
+    expect(body).not.toContain('/projects/pyn-world/');
   });
 
   test('pages have a canonical URL without query string', async ({ page }) => {

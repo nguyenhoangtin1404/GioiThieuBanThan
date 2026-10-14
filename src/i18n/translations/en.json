@@ -2,7 +2,7 @@
   "hero": {
     "name": "Tin Nguyen",
     "role": "Technical Lead · Full‑Stack Developer",
-    "summary": "9+ years building large systems for the public sector and healthcare. Now in a technical leadership role at DSF Software, owning architecture, code quality and AI-assisted development workflows.",
+    "summary": "9+ years building large systems for the public sector and healthcare. Now a full-stack Technical Lead at DSF Software, owning architecture, code quality and AI-assisted development workflows.",
     "badge": "Technical Lead",
     "buttons": {
       "viewProjects": "Projects",
@@ -73,7 +73,7 @@
         "id": "dsf-hospital-suite",
         "type": "work",
         "name": "DSF Hospital Suite",
-        "description": "DSF Software's healthcare and enterprise suite: booking and bed scheduling for spas and clinics, customer-care CRM, lead-source and staff performance reports, delivered as multi-branch SaaS.",
+        "description": "DSF Software's healthcare and enterprise suite for spa and clinic chains: booking and bed scheduling, Customer 360, Employee 360 and MISA AMIS accounting sync, run as multi-tenant SaaS.",
         "highlight": "Booking · bed scheduling · CRM",
         "size": "wide",
         "tools": [
@@ -83,15 +83,19 @@
         ],
         "cardBackground": "/dsf-hospital-suite.webp",
         "period": "AUG 2026 – PRESENT",
-        "role": "Technical Leadership",
+        "role": "Technical Lead · Full-stack",
         "problem": "Multi-branch spas and clinics need one platform for booking, bed scheduling and customer care.",
-        "myRole": "Technical leadership: engineering governance, Sprint Reviews and quality sign-off.",
+        "myRole": "Technical Lead · Full-stack: own the Spa domain end to end, built the technical foundation, review developers' pull requests against project standards, facilitate Sprint Reviews and sign off on quality.",
         "tasks": [
-          "Completed the project's technical foundation within the first 2 months.",
-          "Review code and support team members and customers.",
-          "Apply AI to streamline and automate workflows, raising quality."
+          "Built the foundation in the first month: RBAC, account lockout that ends active sessions immediately, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E.",
+          "Designed a multi-tenant MISA AMIS sync: a fault-tolerant queue with a monitoring screen, ledger mapping, inventory vouchers with unit-of-measure conversion, OAuth and webhooks.",
+          "Built the Spa modules: technician shifts synced with HRM and payroll, a 4-state bed map, consumables tracking (BOM), and treatment packages with before/after photos.",
+          "Customer 360 (18 REST endpoints, interaction timeline, VIP tiers, Zalo OA/ZNS reminders) and Employee 360 (title history, skills matrix, append-only commission ledger).",
+          "Booking system: a state-machine appointment lifecycle, staff and room calendars, a lobby queue and an online booking portal.",
+          "Review developers' pull requests for architecture, structure and project standards, resolving security issues weekly; stabilized multi-tenant migrations and the Docker/Linux CI pipeline.",
+          "Apply AI to streamline and automate workflows, raising product quality."
         ],
-        "impact": "A real-time front-desk dashboard (appointments, waiting guests, free beds) and a CRM reporting lead sources, return rate and staff performance.",
+        "impact": "A real-time Front Desk Dashboard (appointments, waiting guests, free beds) and a CRM reporting lead sources, return rate and staff performance.",
         "gallery": [
           "/dsf1.webp",
           "/dsf2.webp",
@@ -306,13 +310,15 @@
       {
         "year": "AUG 2026 – PRESENT",
         "company": "DSF SOFTWARE",
-        "role": "TECHNICAL LEADERSHIP",
+        "role": "TECHNICAL LEAD · FULL-STACK",
         "tasks": [
-          "Enterprise software company (Healthcare IT, SaaS, AI multi-agent).",
-          "Lead engineering governance, run Sprint Reviews and sign off on quality acceptance.",
-          "Completed the project's technical foundation within the first 2 months.",
-          "Review code and support team members and customers.",
-          "Apply AI to streamline and automate workflows, raising quality."
+          "Enterprise software company in Healthcare IT, SaaS and multi-agent AI.",
+          "Lead engineering governance, facilitate Sprint Reviews, sign off on quality and support customers.",
+          "Review developers' pull requests for architecture, structure and adherence to project standards; resolve the security issues surfaced in weekly reviews.",
+          "Built the technical foundation in the first month: RBAC, account security, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E.",
+          "Designed a multi-tenant MISA AMIS accounting sync with a fault-tolerant queue, OAuth and webhooks.",
+          "Own the Spa domain end to end across Angular and .NET: Customer 360, Employee 360, a state-machine booking system, a real-time Front Desk Dashboard and Zalo OA/ZNS reminders.",
+          "Apply AI to streamline and automate workflows, raising product quality."
         ],
         "achievements": []
       },

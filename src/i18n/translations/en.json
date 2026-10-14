@@ -1,9 +1,9 @@
 {
   "hero": {
-    "name": "Tin NGUYEN HOANG",
-    "role": "Full‑Stack Developer",
-    "summary": "Backend/Fullstack Developer specializing in large-scale systems, proficient in .NET, Java/Spring Boot, Microservices, SQL/NoSQL, focused on complex projects and professional environments.",
-    "badge": "Software Engineer",
+    "name": "Tin Nguyen",
+    "role": "Technical Lead · Full‑Stack Developer",
+    "summary": "9+ years building large systems for the public sector and healthcare. Now in a technical leadership role at DSF Software, owning architecture, code quality and AI-assisted development workflows.",
+    "badge": "Technical Lead",
     "buttons": {
       "viewProjects": "Projects",
       "github": "GitHub",
@@ -12,18 +12,18 @@
     },
     "highlights": {
       "frontend": "Frontend:",
-      "frontendContent": "Angular, Bootstrap, HTML/CSS/JS",
+      "frontendContent": "Angular, React/Next.js, TypeScript, Three.js",
       "backend": "Backend:",
-      "backendContent": ".NET, Java, Spring Boot, Microservices, Oracle, MongoDB",
+      "backendContent": "C#/.NET, Java Spring Boot, Microservices, PostgreSQL, Oracle, MongoDB",
       "devops": "DevOps & Tools:",
-      "devopsContent": "Git, Jira, Docker",
+      "devopsContent": "Git, Docker, Cloudflare, GitHub Actions, AI tools (Claude Code…)",
       "english": "English:",
       "englishContent": "Technical documentation reading, basic work communication",
       "other": "Other:",
       "otherContent": "Presentation, Internal Trainer, Scrum"
     },
-    "avatarAlt": "Profile photo of Nguyễn Hoàng Tín",
-    "greeting": "Making pixels pretty and products powerful, I love engineering experiences that look as sharp as they perform."
+    "avatarAlt": "Profile photo of Tin Nguyen",
+    "greeting": "I enjoy turning complex business problems into systems that run reliably, are easy to use and scale well."
   },
   "projects": {
     "title": "Projects",
@@ -73,7 +73,7 @@
         "id": "dsf-hospital-suite",
         "type": "work",
         "name": "DSF Hospital Suite",
-        "description": "DSF Software's healthcare and enterprise suite: booking and bed scheduling for spas and clinics, customer-care CRM, lead-source and staff performance reports, delivered as multi-branch SaaS with HL7/FHIR support.",
+        "description": "DSF Software's healthcare and enterprise suite: booking and bed scheduling for spas and clinics, customer-care CRM, lead-source and staff performance reports, delivered as multi-branch SaaS.",
         "highlight": "Booking · bed scheduling · CRM",
         "size": "wide",
         "tools": [
@@ -126,7 +126,7 @@
           "Customers track their order live and can cancel while it is still waiting.",
           "The owner toggles items, changes prices and uploads photos from a phone."
         ],
-        "impact": "Customers order in about 30 seconds; the owner gets complete orders without leaving the espresso machine.",
+        "impact": "Customers order quickly from their phone with no app to install; the owner gets complete orders without leaving the espresso machine.",
         "gallery": [
           "/vibe-cafe-1.webp",
           "/vibe-cafe-2.webp",
@@ -162,7 +162,7 @@
         "cardBackground": "/igate3_en.webp",
         "description": "Provincial-scale public service platform on microservices architecture, integrated with National Public Service Portal.",
         "problem": "Report queries were slow on province-wide data.",
-        "myRole": "Backend engineer focusing on query optimization.",
+        "myRole": "Fullstack Developer focused on report query optimization.",
         "role": "Fullstack Developer",
         "tasks": [
           "Optimize reports and support system operations.",
@@ -185,7 +185,7 @@
       {
         "id": "ecabinet",
         "type": "work",
-        "name": "VNPT eCabinet - Paperless Meeting Room",
+        "name": "VNPT eCabinet – Paperless Meeting Room",
         "period": "2021 – 2025",
         "cardBackground": "/ecabinet3.webp",
         "description": "Provincial-level paperless meeting solution, integrating IoT hardware with management software.",
@@ -194,7 +194,7 @@
         "role": "Deployment Team Lead",
         "tasks": [
           "Deploy and operate the system (hardware + software).",
-          "Coordinate a team of 5 technicians, setup 1–2 meetings/month.",
+          "Coordinate a team of 5 technicians, set up 1–2 meetings/month.",
           "Provide on-site technical support, ensure stable system operation."
         ],
         "impact": "Ensured stable People's Council meetings, no IT incidents for 5 years. Maintained long-term provincial service contracts.",
@@ -214,7 +214,7 @@
       {
         "id": "ioffice",
         "type": "work",
-        "name": "VNPT iOffice - Document Management",
+        "name": "VNPT iOffice – Document Management",
         "period": "2017 – 2024",
         "cardBackground": "/ioffice3.webp",
         "description": "Large-scale document management and execution system, integrated with internal management and collaboration.",
@@ -226,7 +226,7 @@
           "Optimize performance for queries and business processing at scale.",
           "Collaborate on requirement analysis, bug fixing, and operational support during deployment."
         ],
-        "impact": "Increased management efficiency for 10,000+ staff. Developed and upgraded core features.",
+        "impact": "Increased management efficiency for 10,000+ staff.",
         "tools": [
           "ASP.NET",
           "C#",
@@ -246,7 +246,7 @@
         "name": "Other Highlight Projects",
         "period": "",
         "cardBackground": "/other-projects-bg.webp",
-        "description": "A short list of projects I joined briefly or for a limited time.",
+        "description": "Projects I joined for a short time.",
         "role": "",
         "tasks": [],
         "impact": "",
@@ -318,13 +318,13 @@
       },
       {
         "year": "2017 – APR 2026",
-        "company": "VIETNAM POSTS AND TELECOMMUNICATIONS GROUP ( VNPT)",
+        "company": "VNPT PHU YEN – VIETNAM POSTS AND TELECOMMUNICATIONS GROUP",
         "role": "IT SOLUTION STAFF / SOFTWARE ENGINEER",
         "tasks": [
-          "Participate in development and operation of provincial/city-scale software systems.",
-          "Take main role in backend development, performance optimization and business support.",
-          "Participate in major projects: Public Service System, Document Management, E-Invoice, Paperless Meeting,...",
-          "Apply AI tools to development process, reducing coding time by 20–30%. Improve code quality, detect potential errors and ensure project rule compliance."
+          "Participated in building and running provincial and city-scale software systems.",
+          "Led backend development, performance optimization and business support.",
+          "Worked on major projects: Public Service System, Document Management, E-Invoice, Paperless Meeting and more.",
+          "Applied AI tools to the development process, cutting coding time by 20–30%, improving code quality, catching latent bugs and keeping to project rules."
         ],
         "achievements": [
           "Achieved \"Emulation Fighter\" title for multiple years",
@@ -335,7 +335,7 @@
   },
   "contact": {
     "title": "Collaboration",
-    "description": "Feel free to contact me if you have any questions.",
+    "description": "Have an idea or a project that needs a hand? Message me on any channel below.",
     "channels": {
       "phone": "Phone",
       "telegram": "Telegram",
@@ -344,7 +344,7 @@
     }
   },
   "layout": {
-    "title": "Nguyễn Hoàng Tín — Full‑Stack Developer",
-    "description": "Portfolio & CV online of Nguyễn Hoàng Tín"
+    "title": "Tin Nguyen — Technical Lead · Full‑Stack Developer",
+    "description": "Online portfolio and CV of Tin Nguyen"
   }
 }

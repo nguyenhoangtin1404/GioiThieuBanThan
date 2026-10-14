@@ -1,15 +1,15 @@
 {
   "home-vi": {
-    "hash": "4a79e8a3e87b27ab",
+    "hash": "13b1e2328dcc240b",
     "voice": "c_daklak_male_nguyenhoangtin_education_vc",
     "speed": 1,
-    "bytes": 108525
+    "bytes": 144045
   },
   "home-en": {
-    "hash": "a5facbbd47721d1c",
+    "hash": "c51eb1714db2d48b",
     "voice": "en-US-Standard-D",
     "speed": 1,
-    "bytes": 114669
+    "bytes": 150765
   },
   "du-an-vi": {
     "hash": "2d1c97439a19c97b",

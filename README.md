@@ -77,6 +77,7 @@ Field tuỳ chọn:
   - Class global là `VanillaFullpage` (sau khi load script).
   - Project này lưu instance ở `window.vanillaFullpage`.
   - Có API `setWheelEnabled(boolean)` để khoá mở wheel khi cần (ví dụ mở modal).
+  - Section cao hơn màn hình (ví dụ Kinh nghiệm trên tablet ngang): lăn chuột, vuốt và phím lên/xuống cuộn hết nội dung bên trong trước rồi mới chuyển section. Test: `e2e/scroll.spec.ts`.
 
 ## E2E test (Playwright)
 

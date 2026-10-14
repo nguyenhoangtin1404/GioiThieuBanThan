@@ -1,9 +1,9 @@
 {
   "hero": {
     "name": "Nguyễn Hoàng Tín",
-    "role": "Full‑Stack Developer",
-    "summary": "Backend/Fullstack Developer chuyên phát triển hệ thống lớn, thành thạo .NET, Java/Spring Boot, Microservices, SQL/NoSQL, hướng đến dự án phức tạp và môi trường chuyên nghiệp.",
-    "badge": "Kỹ sư lập trình",
+    "role": "Technical Lead · Full‑Stack Developer",
+    "summary": "Hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế. Hiện là Technical Leadership tại DSF Software, phụ trách kiến trúc, chất lượng code và ứng dụng AI vào quy trình phát triển.",
+    "badge": "Technical Lead",
     "buttons": {
       "viewProjects": "Dự án",
       "github": "GitHub",
@@ -12,18 +12,18 @@
     },
     "highlights": {
       "frontend": "Frontend:",
-      "frontendContent": "Angular, Bootstrap, HTML/CSS/JS",
+      "frontendContent": "Angular, React/Next.js, TypeScript, Three.js",
       "backend": "Backend:",
-      "backendContent": ".NET, Java, Spring Boot, Microservices, Oracle, MongoDB",
-      "devops": "DevOps & Tools:",
-      "devopsContent": "Git, Jira, Docker",
+      "backendContent": "C#/.NET, Java Spring Boot, Microservices, PostgreSQL, Oracle, MongoDB",
+      "devops": "DevOps & Công cụ:",
+      "devopsContent": "Git, Docker, Cloudflare, GitHub Actions, công cụ AI (Claude Code…)",
       "english": "Tiếng Anh:",
       "englishContent": "Đọc tài liệu kỹ thuật, giao tiếp công việc cơ bản",
       "other": "Khác:",
       "otherContent": "Thuyết trình, Giảng viên nội bộ, Scrum"
     },
     "avatarAlt": "Ảnh hồ sơ của Nguyễn Hoàng Tín",
-    "greeting": "Chăm chút từng điểm ảnh, tiếp sức cho từng sản phẩm, mình yêu việc xây dựng những trải nghiệm vừa đẹp mắt vừa vận hành mượt mà."
+    "greeting": "Mình thích biến những bài toán nghiệp vụ phức tạp thành hệ thống chạy ổn định, dễ dùng và dễ mở rộng."
   },
   "projects": {
     "title": "Dự án",
@@ -73,7 +73,7 @@
         "id": "dsf-hospital-suite",
         "type": "work",
         "name": "DSF Hospital Suite",
-        "description": "Bộ phần mềm y tế và doanh nghiệp của DSF Software: đặt lịch và điều phối giường cho spa/phòng khám, CRM chăm sóc khách hàng, báo cáo nguồn khách và hiệu suất nhân viên, chạy SaaS đa chi nhánh, chuẩn HL7/FHIR.",
+        "description": "Bộ phần mềm y tế và doanh nghiệp của DSF Software: đặt lịch và điều phối giường cho spa/phòng khám, CRM chăm sóc khách hàng, báo cáo nguồn khách và hiệu suất nhân viên, chạy SaaS đa chi nhánh.",
         "highlight": "Đặt lịch · điều phối giường · CRM",
         "size": "wide",
         "tools": [
@@ -126,7 +126,7 @@
           "Khách theo dõi trạng thái đơn realtime và tự huỷ khi đơn còn đang chờ.",
           "Chủ quán bật/tắt món, đổi giá, tải ảnh món ngay trên điện thoại."
         ],
-        "impact": "Khách đặt món trong khoảng 30 giây; chủ quán nhận đơn đầy đủ mà không phải rời máy pha.",
+        "impact": "Khách đặt món nhanh trên điện thoại, không cần cài app; chủ quán nhận đơn đầy đủ mà không phải rời máy pha.",
         "gallery": [
           "/vibe-cafe-1.webp",
           "/vibe-cafe-2.webp",
@@ -162,11 +162,11 @@
         "cardBackground": "/igate3.webp",
         "description": "Nền tảng dịch vụ công quy mô tỉnh trên kiến trúc microservices, tích hợp Cổng DVCQG.",
         "problem": "Truy vấn báo cáo chậm trên dữ liệu toàn tỉnh.",
-        "myRole": "Backend engineer tập trung tối ưu truy vấn.",
+        "myRole": "Fullstack Developer, tập trung tối ưu truy vấn báo cáo.",
         "role": "Fullstack Developer",
         "tasks": [
           "Tối ưu báo cáo và hỗ trợ vận hành hệ thống.",
-          "Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 02 cấp."
+          "Hướng dẫn cán bộ, xử lý sự cố trong giai đoạn chuyển đổi mô hình chính quyền 2 cấp."
         ],
         "impact": "Tối ưu thời gian lấy dữ liệu báo cáo từ 3 phút xuống 60 giây.",
         "tools": [
@@ -185,7 +185,7 @@
       {
         "id": "ecabinet",
         "type": "work",
-        "name": "VNPT eCabinet - Phòng họp không giấy tờ",
+        "name": "VNPT eCabinet – Phòng họp không giấy tờ",
         "period": "2021 – 2025",
         "cardBackground": "/ecabinet3.webp",
         "description": "Giải pháp phòng họp không giấy cấp tỉnh, tích hợp phần cứng IoT với phần mềm quản lý.",
@@ -214,7 +214,7 @@
       {
         "id": "ioffice",
         "type": "work",
-        "name": "VNPT iOffice - Điều hành Văn bản",
+        "name": "VNPT iOffice – Điều hành Văn bản",
         "period": "2017 – 2024",
         "cardBackground": "/ioffice3.webp",
         "description": "Hệ thống quản lý và điều hành văn bản quy mô lớn, tích hợp quản lý và cộng tác nội bộ.",
@@ -226,7 +226,7 @@
           "Tối ưu hiệu năng truy vấn và xử lý nghiệp vụ trên hệ thống quy mô lớn.",
           "Phối hợp phân tích yêu cầu, sửa lỗi và hỗ trợ vận hành trong quá trình triển khai."
         ],
-        "impact": "Tăng hiệu suất quản lý cho 10.000+ cán bộ. Phát triển và nâng cấp các chức năng core.",
+        "impact": "Tăng hiệu suất quản lý cho 10.000+ cán bộ.",
         "tools": [
           "ASP.NET",
           "C#",
@@ -246,7 +246,7 @@
         "name": "Các dự án tiêu biểu khác",
         "period": "",
         "cardBackground": "/other-projects-bg.webp",
-        "description": "Tổng hợp các dự án tham gia ngắn hạn hoặc thời gian ngắn.",
+        "description": "Các dự án mình tham gia trong thời gian ngắn.",
         "role": "",
         "tasks": [],
         "impact": "",
@@ -318,7 +318,7 @@
       },
       {
         "year": "2017 – 4/2026",
-        "company": "VNPT PHÚ YÊN - TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM",
+        "company": "VNPT PHÚ YÊN – TẬP ĐOÀN BƯU CHÍNH VIỄN THÔNG VIỆT NAM",
         "role": "NHÂN VIÊN GIẢI PHÁP CNTT / KỸ SƯ LẬP TRÌNH",
         "tasks": [
           "Tham gia phát triển và vận hành các hệ thống phần mềm quy mô tỉnh/thành.",
@@ -327,7 +327,7 @@
           "Áp dụng các công cụ AI vào quy trình phát triển giúp rút ngắn thời gian coding 20–30%. Nâng cao chất lượng code, phát hiện lỗi tiềm ẩn và đảm bảo tuân thủ các quy tắc của dự án."
         ],
         "achievements": [
-          "Đạt danh hiệu \"Chiến sỹ thi đua\" trong nhiều năm",
+          "Đạt danh hiệu \"Chiến sĩ thi đua\" trong nhiều năm",
           "Người lao động tiêu biểu năm 2021"
         ]
       }
@@ -335,7 +335,7 @@
   },
   "contact": {
     "title": "Hợp tác",
-    "description": "Cứ thoải mái liên hệ với tôi nếu bạn có bất kỳ câu hỏi nào.",
+    "description": "Bạn có ý tưởng hay dự án cần hỗ trợ? Nhắn mình qua bất kỳ kênh nào bên dưới.",
     "channels": {
       "phone": "SĐT",
       "telegram": "Telegram",
@@ -344,7 +344,7 @@
     }
   },
   "layout": {
-    "title": "Nguyễn Hoàng Tín — Full‑Stack Developer",
-    "description": "Portfolio & CV online của Nguyễn Hoàng Tín"
+    "title": "Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer",
+    "description": "Portfolio và CV online của Nguyễn Hoàng Tín"
   }
 }

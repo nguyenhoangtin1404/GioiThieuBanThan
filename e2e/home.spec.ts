@@ -1,8 +1,12 @@
 import { test, expect, gotoReady, expectNoHorizontalScroll } from './fixtures';
 
+import vi from '../src/i18n/translations/vi.json' with { type: 'json' };
+import en from '../src/i18n/translations/en.json' with { type: 'json' };
+
+// The hero types its greeting out; the first words are enough to tell the language.
 const GREETING = {
-  vi: 'Chăm chút từng điểm ảnh',
-  en: 'Making pixels pretty and products powerful'
+  vi: vi.hero.greeting.split(' ').slice(0, 5).join(' '),
+  en: en.hero.greeting.split(' ').slice(0, 5).join(' ')
 };
 
 test.describe('home page', () => {

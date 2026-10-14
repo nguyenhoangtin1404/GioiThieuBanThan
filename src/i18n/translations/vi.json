@@ -2,7 +2,7 @@
   "hero": {
     "name": "Nguyễn Hoàng Tín",
     "role": "Technical Lead · Full‑Stack Developer",
-    "summary": "Hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế. Hiện là Technical Leadership tại DSF Software, phụ trách kiến trúc, chất lượng code và ứng dụng AI vào quy trình phát triển.",
+    "summary": "Hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế. Hiện là Technical Lead (Full-stack) tại DSF Software, phụ trách kiến trúc, chất lượng code và ứng dụng AI vào quy trình phát triển.",
     "badge": "Technical Lead",
     "buttons": {
       "viewProjects": "Dự án",
@@ -73,7 +73,7 @@
         "id": "dsf-hospital-suite",
         "type": "work",
         "name": "DSF Hospital Suite",
-        "description": "Bộ phần mềm y tế và doanh nghiệp của DSF Software: đặt lịch và điều phối giường cho spa/phòng khám, CRM chăm sóc khách hàng, báo cáo nguồn khách và hiệu suất nhân viên, chạy SaaS đa chi nhánh.",
+        "description": "Bộ giải pháp y tế và doanh nghiệp của DSF Software dành cho chuỗi spa, phòng khám: đặt lịch và điều phối giường, Customer 360, Employee 360, đồng bộ kế toán MISA AMIS, vận hành theo mô hình SaaS đa tenant.",
         "highlight": "Đặt lịch · điều phối giường · CRM",
         "size": "wide",
         "tools": [
@@ -83,15 +83,19 @@
         ],
         "cardBackground": "/dsf-hospital-suite.webp",
         "period": "8/2026 – NAY",
-        "role": "Technical Leadership",
+        "role": "Technical Lead · Full-stack",
         "problem": "Spa và phòng khám nhiều chi nhánh cần một nền tảng duy nhất để đặt lịch, điều phối giường và chăm sóc khách hàng.",
-        "myRole": "Technical Leadership: quản trị kỹ thuật, Sprint Review và duyệt nghiệm thu chất lượng.",
+        "myRole": "Technical Lead · Full-stack: phụ trách trọn vẹn mảng Spa, xây dựng nền tảng kỹ thuật, review PR của đội dev theo quy chuẩn dự án, điều phối Sprint Review và nghiệm thu chất lượng.",
         "tasks": [
-          "Hoàn thiện xây dựng nền tảng kỹ thuật cho dự án trong 2 tháng đầu.",
-          "Review code, hỗ trợ các thành viên trong team và khách hàng.",
-          "Ứng dụng AI tối ưu quy trình làm việc, tự động hóa quy trình để nâng cao chất lượng."
+          "Xây dựng nền tảng ngay tháng đầu: phân quyền RBAC, khóa tài khoản và ngắt ngay các phiên đang đăng nhập, kiến trúc tầng Service, Design System cùng bảng dữ liệu dùng chung, đa ngôn ngữ vi/en, kiểm thử tự động với xUnit và Playwright E2E.",
+          "Thiết kế luồng đồng bộ MISA AMIS đa tenant: hàng đợi chịu lỗi kèm màn hình giám sát, ánh xạ tài khoản kế toán, chứng từ kho có quy đổi đơn vị tính, xác thực OAuth và webhook.",
+          "Phát triển các module Spa: ca làm của kỹ thuật viên đồng bộ với HRM và bảng lương, sơ đồ giường 4 trạng thái, định mức vật tư tiêu hao (BOM), gói liệu trình kèm ảnh trước/sau.",
+          "Customer 360 (18 REST API, dòng thời gian tương tác, hạng thành viên VIP, nhắc lịch qua Zalo OA/ZNS) và Employee 360 (lịch sử chức danh, ma trận kỹ năng, sổ hoa hồng chỉ ghi thêm, không sửa xóa).",
+          "Hệ thống đặt lịch: vòng đời lịch hẹn quản lý bằng state machine, lịch theo nhân viên và phòng, hàng chờ tại sảnh, cổng đặt lịch trực tuyến.",
+          "Review PR của đội dev về kiến trúc, cấu trúc và quy chuẩn dự án, khắc phục lỗ hổng bảo mật hằng tuần; ổn định migration đa tenant và pipeline CI trên Docker/Linux.",
+          "Ứng dụng AI để tối ưu và tự động hóa quy trình làm việc, nâng cao chất lượng sản phẩm."
         ],
-        "impact": "Bảng điều khiển lễ tân theo thời gian thực (lịch hẹn, khách chờ, giường trống) và CRM báo cáo nguồn khách, tỉ lệ quay lại, hiệu suất nhân viên.",
+        "impact": "Front Desk Dashboard cập nhật thời gian thực (lịch hẹn, khách đang chờ, giường trống) cùng CRM báo cáo nguồn khách, tỉ lệ quay lại và hiệu suất nhân viên.",
         "gallery": [
           "/dsf1.webp",
           "/dsf2.webp",
@@ -306,13 +310,15 @@
       {
         "year": "8/2026 – NAY",
         "company": "DSF SOFTWARE",
-        "role": "TECHNICAL LEADERSHIP",
+        "role": "TECHNICAL LEAD · FULL-STACK",
         "tasks": [
-          "Công ty phần mềm doanh nghiệp (Healthcare IT, SaaS, AI multi-agent).",
-          "Quản trị kỹ thuật, điều phối Sprint Review và duyệt nghiệm thu chất lượng.",
-          "Trong 2 tháng đầu, hoàn thiện xây dựng nền tảng kỹ thuật cho dự án.",
-          "Review code, hỗ trợ các thành viên trong team và khách hàng.",
-          "Ứng dụng AI tối ưu quy trình làm việc, tự động hóa quy trình để nâng cao chất lượng."
+          "Công ty phần mềm doanh nghiệp trong lĩnh vực Healthcare IT, SaaS và AI multi-agent.",
+          "Quản trị kỹ thuật, điều phối Sprint Review, nghiệm thu chất lượng và hỗ trợ khách hàng.",
+          "Review kỹ thuật PR của đội dev về kiến trúc, cấu trúc và tuân thủ quy chuẩn dự án; khắc phục các lỗ hổng bảo mật phát hiện qua review hằng tuần.",
+          "Xây dựng nền tảng kỹ thuật ngay tháng đầu: phân quyền RBAC, bảo mật tài khoản, kiến trúc tầng Service, Design System cùng bảng dữ liệu dùng chung, đa ngôn ngữ vi/en và kiểm thử tự động với xUnit, Playwright E2E.",
+          "Thiết kế luồng đồng bộ kế toán MISA AMIS cho mô hình đa tenant, với hàng đợi chịu lỗi, xác thực OAuth và webhook.",
+          "Phụ trách trọn vẹn mảng Spa trên cả Angular và .NET: Customer 360, Employee 360, hệ thống đặt lịch vận hành theo state machine, Front Desk Dashboard thời gian thực và nhắc lịch qua Zalo OA/ZNS.",
+          "Ứng dụng AI để tối ưu và tự động hóa quy trình làm việc, nâng cao chất lượng sản phẩm."
         ],
         "achievements": []
       },

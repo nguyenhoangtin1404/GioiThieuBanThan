@@ -34,6 +34,7 @@ class VanillaFullpage {
     // Trạng thái hiện tại
     this.currentIndex = 0; // Index của section đang active
     this.isScrolling = false; // Flag để tránh scroll quá nhanh
+    this.lastInnerScroll = 0; // Lần cuối nội dung bên trong section được cuộn (ms)
     this.wheelEnabled = true; // Cho phép/khóa xử lý wheel (trackpad/mouse)
     this.navHideTimeout = null; // Timeout để ẩn navigation sau khi không scroll
     this.hideTimeout = null; // Timeout để ẩn section sau khi animation hoàn tất
@@ -69,6 +70,12 @@ class VanillaFullpage {
     this.setupSections();
     this.setupNavigation();
     this.setupKeyboard();
+    this.sections.forEach((section) => {
+      section.addEventListener('scroll', () => { this.lastInnerScroll = Date.now(); }, { passive: true });
+    });
+    this.markOverflow();
+    window.addEventListener('load', () => this.markOverflow());
+    window.addEventListener('resize', () => this.markOverflow());
     this.setupWheel();
     this.setupTouch();
     this.updateNavigation();
@@ -170,6 +177,20 @@ class VanillaFullpage {
       // Nếu đang scroll, bỏ qua
       if (this.isScrolling) return;
 
+      // Section dài: phím lên/xuống cuộn nội dung bên trong trước
+      const step = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 }[e.key];
+      if (step && this.canScrollInside(step)) {
+        e.preventDefault();
+        const section = this.sections[this.currentIndex];
+        const distance = e.key.startsWith('Page') ? section.clientHeight * 0.9 : 80;
+        section.scrollBy({ top: step * distance, behavior: 'smooth' });
+        return;
+      }
+      if (step && this.isHoldingAtEdge()) {
+        e.preventDefault();
+        return;
+      }
+
       switch(e.key) {
         case 'ArrowDown':
         case 'PageDown':
@@ -208,11 +229,23 @@ class VanillaFullpage {
    */
   setupWheel() {
     let wheelTimeout;
+    let lastWheel = 0;
     document.addEventListener('wheel', (e) => {
+      // Khoảng cách tới lần wheel trước: nhỏ nghĩa là cùng một cú lăn (hoặc quán tính trackpad)
+      const now = Date.now();
+      const gap = now - lastWheel;
+      lastWheel = now;
       // Nếu wheel đang bị khóa, bỏ qua (không đổi section)
       if (!this.wheelEnabled) return;
       // Nếu đang scroll, bỏ qua
       if (this.isScrolling) return;
+      // Section dài hơn màn hình: cuộn hết nội dung bên trong trước rồi mới đổi section.
+      if (this.canScrollInside(e.deltaY)) {
+        this.lastInnerScroll = now;
+        return;
+      }
+      // Vừa chạm cuối nội dung: đứng lại, cần ngừng tay rồi lăn một cú mới mới sang section kế
+      if (this.isOverflowing() && (gap < VanillaFullpage.GESTURE_GAP || this.isHoldingAtEdge())) return;
 
       // Hiển thị navigation khi scroll
       this.showNavigation();
@@ -220,6 +253,9 @@ class VanillaFullpage {
       // Debounce: đợi 50ms trước khi xử lý scroll tiếp theo
       clearTimeout(wheelTimeout);
       wheelTimeout = setTimeout(() => {
+        // Listener passive nên trình duyệt có thể đã cuộn nội dung trước khi handler chạy;
+        // tới đây sự kiện scroll đã cập nhật lastInnerScroll nên kiểm tra lại.
+        if (this.isHoldingAtEdge()) return;
         const delta = e.deltaY;
         if (delta > 0) {
           // Scroll xuống
@@ -242,10 +278,15 @@ class VanillaFullpage {
   setupTouch() {
     let touchStartY = 0;
     let touchEndY = 0;
+    // Section dài có thể cuộn tiếp theo hướng nào, đo lúc bắt đầu chạm (trước khi trình duyệt cuộn nội dung)
+    let couldScrollDown = false;
+    let couldScrollUp = false;
 
     // Lưu vị trí bắt đầu touch
     document.addEventListener('touchstart', (e) => {
       touchStartY = e.touches[0].clientY;
+      couldScrollDown = this.canScrollInside(1);
+      couldScrollUp = this.canScrollInside(-1);
     }, { passive: true });
 
     // Xử lý khi kết thúc touch
@@ -256,6 +297,10 @@ class VanillaFullpage {
 
       // Vertical: xử lý theo trục Y
       const diff = touchStartY - touchEndY;
+      // Vuốt bên trong section dài: để trình duyệt cuộn nội dung, chưa đổi section
+      if ((diff > 0 && couldScrollDown) || (diff < 0 && couldScrollUp)) return;
+      // Vừa cuộn tới cuối nội dung: cần dừng một chút rồi vuốt lần nữa mới đổi section
+      if (this.isHoldingAtEdge()) return;
       if (Math.abs(diff) > 50) {
         // Hiển thị navigation khi swipe
         this.showNavigation();
@@ -272,6 +317,45 @@ class VanillaFullpage {
         this.hideNavigation();
       }
     }, { passive: true });
+  }
+
+  /**
+   * Section đang hiện có dài hơn màn hình không
+   * @private
+   */
+  isOverflowing(section = this.sections[this.currentIndex]) {
+    return !!section && section.scrollHeight > section.clientHeight + 1;
+  }
+
+  /**
+   * Vừa cuộn nội dung section dài trong EDGE_PAUSE ms: giữ nguyên section để người dùng kịp đọc/bấm
+   * @private
+   */
+  isHoldingAtEdge() {
+    return this.isOverflowing() && Date.now() - this.lastInnerScroll < VanillaFullpage.EDGE_PAUSE;
+  }
+
+  /**
+   * Đánh dấu `fp-overflow` cho section dài hơn màn hình (CSS thêm khoảng trống phía dưới)
+   * @private
+   */
+  markOverflow() {
+    this.sections.forEach((section) => {
+      section.classList.remove('fp-overflow');
+      section.classList.toggle('fp-overflow', this.isOverflowing(section));
+    });
+  }
+
+  /**
+   * Section đang hiện còn nội dung để cuộn theo hướng `delta` (>0 xuống, <0 lên) không
+   * @private
+   */
+  canScrollInside(delta) {
+    const section = this.sections[this.currentIndex];
+    if (!this.isOverflowing(section)) return false;
+    if (delta > 0) return section.scrollTop + section.clientHeight < section.scrollHeight - 1;
+    if (delta < 0) return section.scrollTop > 1;
+    return false;
   }
 
   /**
@@ -315,6 +399,10 @@ class VanillaFullpage {
 
     // Bắt đầu scroll animation
     this.isScrolling = true;
+    // Vào section từ dưới lên thì đứng ở cuối nội dung, từ trên xuống thì ở đầu
+    this.markOverflow();
+    const target = this.sections[index];
+    if (target) target.scrollTop = index < this.currentIndex ? target.scrollHeight : 0;
     this.currentIndex = index;
     const totalSections = this.sections.length;
     const transitionStr = `transform ${this.scrollingSpeed}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${this.scrollingSpeed}ms ease, visibility ${this.scrollingSpeed}ms ease`;
@@ -551,6 +639,11 @@ class VanillaFullpage {
     }
   }
 }
+
+// Section dài: thời gian (ms) giữ nguyên ở cuối nội dung sau lần cuộn cuối, để người dùng kịp đọc/bấm
+VanillaFullpage.EDGE_PAUSE = 800;
+// Hai lần wheel cách nhau ít hơn mức này (ms) được coi là cùng một cú lăn / quán tính trackpad
+VanillaFullpage.GESTURE_GAP = 250;
 
 // Expose class ra window để có thể sử dụng mà không cần import
 if (typeof window !== 'undefined') {

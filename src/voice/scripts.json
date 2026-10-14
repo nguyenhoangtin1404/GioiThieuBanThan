@@ -1,15 +1,15 @@
 {
   "home": {
-    "vi": "Xin chào, mình là Nguyễn Hoàng Tín, kỹ sư phần mềm Backend và Fullstack, hiện đảm nhận vai trò Technical Leadership tại DSF Software. Mình có hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế, với .NET, C#, Java Spring Boot và Angular. Mời bạn xem các dự án của mình.",
-    "en": "Hi, I'm Tin Nguyen, a backend and fullstack software engineer, now in a technical leadership role at DSF Software. I've spent over 9 years building large systems for the public sector and healthcare with .NET, C#, Java Spring Boot and Angular. Take a look at my projects."
+    "vi": "Xin chào, mình là Nguyễn Hoàng Tín, Technical Lead kiêm lập trình viên Fullstack tại DSF Software. Mình có hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế, với .NET, C#, Java Spring Boot và Angular. Mời bạn xem các dự án của mình.",
+    "en": "Hi, I'm Tin Nguyen, a full-stack Technical Lead at DSF Software. I've spent over 9 years building large systems for the public sector and healthcare with .NET, C#, Java Spring Boot and Angular. Take a look at my projects."
   },
   "du-an": {
     "vi": "Đây là các dự án của mình. Nổi bật là diorama 3D Tháp Nghinh Phong, và bộ phần mềm DSF Hospital Suite mình đang làm tại DSF Software, cùng các hệ thống khu vực công như iGate, eCabinet và iOffice. Bấm vào từng dự án để xem demo hoặc chi tiết.",
     "en": "Here are my projects. Highlights include a 3D diorama of Nghinh Phong Tower, and DSF Hospital Suite, which I'm building at DSF Software, plus public-sector systems such as iGate, eCabinet and iOffice. Open any project to see a demo or the details."
   },
   "kinh-nghiem": {
-    "vi": "Hiện tại mình đảm nhận vai trò Technical Leadership tại DSF Software, phụ trách quản trị kỹ thuật, review code và ứng dụng AI tự động hóa quy trình. Trước đó, từ năm 2017 đến tháng 4 năm 2026, mình là kỹ sư lập trình tại VNPT Phú Yên, phát triển các hệ thống lớn cho khu vực công.",
-    "en": "I'm currently in a technical leadership role at DSF Software, leading engineering, code reviews and AI-driven workflow automation. Before that, from 2017 to April 2026, I was a software engineer at VNPT Phu Yen, building large public-sector systems."
+    "vi": "Hiện tại mình là Technical Lead kiêm lập trình viên Fullstack tại DSF Software. Mình xây dựng nền tảng kỹ thuật cho dự án, phụ trách trọn vẹn mảng Spa, review code của đội dev và ứng dụng AI để tự động hóa quy trình. Trước đó, từ năm 2017 đến tháng 4 năm 2026, mình là kỹ sư lập trình tại VNPT Phú Yên, phát triển các hệ thống lớn cho khu vực công.",
+    "en": "I'm currently a full-stack Technical Lead at DSF Software. I built the project's technical foundation, own the Spa domain end to end, review the developers' code and use AI to automate our workflows. Before that, from 2017 to April 2026, I was a software engineer at VNPT Phu Yen, building large public-sector systems."
   },
   "lien-he": {
     "vi": "Cảm ơn bạn đã xem hết trang. Nếu muốn hợp tác, hãy liên hệ với mình qua email, GitHub, điện thoại hoặc Telegram ngay bên cạnh.",

@@ -344,6 +344,12 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         height: auto !important;
       }
 
+      /* Section dài hơn màn hình (vanilla-fullpage gắn .fp-overflow): chừa khoảng trống dưới cùng
+         để hàng cuối không dính mép màn hình */
+      body:not(.mobile-layout) #fullpage .section.fp-overflow > * {
+        padding-bottom: 5rem !important;
+      }
+
       #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section,
       #fullpage .section[data-anchor="kinh-nghiem"] .timeline-section.alt {
         background: rgba(255, 255, 255, 0.85) !important;

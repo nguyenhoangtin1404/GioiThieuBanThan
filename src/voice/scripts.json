@@ -1,7 +1,7 @@
 {
   "home": {
-    "vi": "Xin chào, mình là Nguyễn Hoàng Tín, kỹ sư phần mềm Backend và Fullstack. Mình làm việc với .NET, Java Spring Boot và kiến trúc microservices, chuyên xây dựng các hệ thống lớn cho khu vực công. Mời bạn xem các dự án của mình.",
-    "en": "Hi, I'm Tin Nguyen Hoang, a backend and fullstack software engineer. I work with .NET, Java Spring Boot and microservices, building large-scale systems for the public sector. Take a look at my projects."
+    "vi": "Xin chào, mình là Nguyễn Hoàng Tín, kỹ sư phần mềm Backend và Fullstack, hiện đảm nhận vai trò Technical Leadership tại DSF Software. Mình có hơn 9 năm xây dựng hệ thống lớn cho khu vực công và y tế, với .NET, C#, Java Spring Boot và Angular. Mời bạn xem các dự án của mình.",
+    "en": "Hi, I'm Tin Nguyen, a backend and fullstack software engineer, now in a technical leadership role at DSF Software. I've spent over 9 years building large systems for the public sector and healthcare with .NET, C#, Java Spring Boot and Angular. Take a look at my projects."
   },
   "du-an": {
     "vi": "Đây là các dự án của mình. Nổi bật là diorama 3D Tháp Nghinh Phong, và bộ phần mềm DSF Hospital Suite mình đang làm tại DSF Software, cùng các hệ thống khu vực công như iGate, eCabinet và iOffice. Bấm vào từng dự án để xem demo hoặc chi tiết.",

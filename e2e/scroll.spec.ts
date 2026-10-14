@@ -3,7 +3,8 @@ import { test, expect, gotoReady } from './fixtures';
 
 // On tablet and desktop the page is a fullpage scroller: each section is one screen high.
 // A section taller than the screen (Experience on a landscape tablet) must scroll its own
-// content to the end before the wheel, a swipe or the arrow keys move to the next section.
+// content to the end before the wheel, a swipe or the arrow keys move to the next section,
+// then hold there briefly so the reader can click before a new gesture moves on.
 test.describe('long sections in fullpage mode', () => {
   test.use({ viewport: { width: 1133, height: 744 }, hasTouch: true });
 
@@ -30,9 +31,32 @@ test.describe('long sections in fullpage mode', () => {
     await expect(experience(page)).toHaveClass(/active/);
     await expect(lastTask(page)).toBeInViewport();
 
-    await page.waitForTimeout(600);
+    // A pause at the end, then a fresh scroll moves on.
+    await page.waitForTimeout(1000);
     await page.mouse.wheel(0, 300);
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
+  });
+
+  test('reaching the end holds the section: trackpad momentum does not jump', async ({ page }) => {
+    // Scroll to the end, then a trackpad's momentum keeps firing wheel events every frame
+    // for a second. Synthetic events: Playwright's own wheel is too slow to mimic momentum.
+    await experience(page).evaluate((s) => { s.scrollTop = s.scrollHeight; });
+    await page.evaluate(async () => {
+      for (let i = 0; i < 60; i++) {
+        document.dispatchEvent(new WheelEvent('wheel', { deltaY: 40, bubbles: true }));
+        await new Promise((r) => setTimeout(r, 16));
+      }
+    });
+    await page.waitForTimeout(300);
+    await expect(experience(page)).toHaveClass(/active/);
+    await expect(lastTask(page)).toBeInViewport();
+  });
+
+  test('a long section leaves room under its last row', async ({ page }) => {
+    await expect(experience(page)).toHaveClass(/fp-overflow/);
+    await experience(page).evaluate((s) => { s.scrollTop = s.scrollHeight; });
+    const gap = await page.evaluate(() => window.innerHeight - document.querySelector('#kinh-nghiem .timeline-item:last-child')!.getBoundingClientRect().bottom);
+    expect(gap).toBeGreaterThanOrEqual(48);
   });
 
   test('arrow keys scroll the content before moving to the next section', async ({ page }) => {
@@ -43,13 +67,14 @@ test.describe('long sections in fullpage mode', () => {
     }
     await expect(experience(page)).toHaveClass(/active/);
     await expect(lastTask(page)).toBeInViewport();
+    await page.waitForTimeout(1000);
     await page.keyboard.press('PageDown');
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
   });
 
   test('coming back up from the next section lands at the end of the content', async ({ page }) => {
     await page.locator('#kinh-nghiem').evaluate((s) => { s.scrollTop = s.scrollHeight; });
-    await page.waitForTimeout(600);
+    await page.waitForTimeout(1000);
     await page.keyboard.press('PageDown');
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
     await page.waitForTimeout(1200);

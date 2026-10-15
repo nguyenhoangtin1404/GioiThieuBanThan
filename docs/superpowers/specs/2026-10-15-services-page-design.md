@@ -79,7 +79,7 @@ Prices, durations and all text live in the translation JSON, so the owner can ed
 - **`src/i18n/translations/{vi,en}.json`** gets a new top-level `services` key:
   - `meta { title, description }`
   - `hero { title, subtitle, primaryCta, secondaryCta }`
-  - `labels { benefits, from, duration, example }`
+  - `labels { benefits, duration, example, floatingZalo }`
   - `items[] { id, title, benefits[], price, duration, exampleProjectId? }`
   - `process { title, steps[] }`
   - `whyMe { title, points[] }`

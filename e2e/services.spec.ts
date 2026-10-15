@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
-import { test, expect, gotoReady } from './fixtures';
+import type { Page } from '@playwright/test';
+import { test, expect, gotoReady, expectNoHorizontalScroll } from './fixtures';
 
 const load = (lang: string) => JSON.parse(readFileSync(`src/i18n/translations/${lang}.json`, 'utf8'));
 
@@ -38,5 +39,82 @@ test.describe('translations', () => {
     expect(vi.services.faq.items).toHaveLength(5);
     expect(vi.layout.nav.services).toBe('Dịch vụ');
     expect(en.layout.nav.services).toBe('Services');
+  });
+});
+
+test.describe('services page', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+  const en = (p: Page) => p.locator('[data-lang-block="en"]');
+
+  test('three services with prices (vi)', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('.svc-card')).toHaveCount(3);
+    await expect(vi(page).locator('.svc-price')).toHaveText(['Từ 5 triệu', 'Từ 15 triệu', 'Từ 5 triệu']);
+    await expect(vi(page).locator('h1')).toBeVisible();
+  });
+
+  test('?lang=en shows English', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=en');
+    await expect(en(page).locator('h1')).toBeVisible();
+    await expect(vi(page).locator('h1')).toBeHidden();
+  });
+
+  // Sub pages have no language switcher (BaseLayout hides the sidebar there): the
+  // language chosen on the home page is saved and must carry over.
+  test('language saved on the home page carries over, title included', async ({ page }) => {
+    await gotoReady(page, '/');
+    await page.locator('.lang-switcher .lang-option[data-lang="en"]').filter({ visible: true }).first().click();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await gotoReady(page, '/dich-vu/');
+    await expect(en(page).locator('h1')).toBeVisible();
+    await expect(vi(page).locator('h1')).toBeHidden();
+    await expect(page).toHaveTitle(load('en').services.meta.title);
+  });
+
+  test('Zalo and phone links', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const zalo = vi(page).locator('a.svc-zalo');
+    await expect(zalo).toHaveCount(2);
+    for (const href of await zalo.evaluateAll((as) => as.map((a) => a.getAttribute('href')))) {
+      expect(href).toBe('https://zalo.me/84856694766');
+    }
+    await expect(zalo.first()).toHaveAttribute('rel', 'noopener noreferrer');
+    await expect(vi(page).locator('a.svc-phone')).toHaveAttribute('href', 'tel:+84856694766');
+  });
+
+  test('example link only for a project with a detail page', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('.svc-example')).toHaveCount(1);
+    await expect(vi(page).locator('[data-service-id="management"] .svc-example')).toHaveAttribute('href', '/projects/solo-cafe-order/');
+  });
+
+  test('no fullpage script', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/');
+    await page.waitForTimeout(500);
+    expect(await page.evaluate(() => typeof (window as any).VanillaFullpage)).toBe('undefined');
+  });
+
+  test('no horizontal scroll at 360px', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('h1')).toBeVisible();
+    await expectNoHorizontalScroll(page);
+  });
+
+  test('floating Zalo: visible on mobile, hidden on desktop', async ({ page, isMobile }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const floating = page.locator('a.svc-zalo-float');
+    await expect(floating).toHaveAttribute('href', 'https://zalo.me/84856694766');
+    if (isMobile) await expect(floating).toBeVisible();
+    else await expect(floating).toBeHidden();
+  });
+
+  test('final CTA is clickable at page bottom on mobile', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'floating button is mobile-only');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const phone = vi(page).locator('.svc-cta a.svc-phone');
+    await phone.scrollIntoViewIfNeeded();
+    // trial: fails if another element (the floating button) would receive the click
+    await phone.click({ trial: true, timeout: 3000 });
   });
 });

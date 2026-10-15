@@ -471,12 +471,13 @@ class VanillaFullpage {
     // Cập nhật URL
     this.updateURL();
 
-    // Sau khi animation hoàn tất, cho phép scroll tiếp
+    // Khóa input trong scrollingSpeed ms kể cả khi giảm chuyển động: đây cũng là thời gian chờ
+    // giữa hai lần đổi section, để một cú lăn chuột/giữ phím không lướt qua mọi section
     clearTimeout(this.scrollTimeout);
     this.scrollTimeout = setTimeout(() => {
       this.isScrolling = false;
       this.scrollTimeout = null;
-    }, this.animationDuration());
+    }, this.scrollingSpeed);
   }
 
   /**

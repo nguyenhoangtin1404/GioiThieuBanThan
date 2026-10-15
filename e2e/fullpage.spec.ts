@@ -120,4 +120,40 @@ test.describe('desktop fullpage', () => {
     expect(await card.evaluate((c) => getComputedStyle(c).opacity)).toBe('1');
     expect(await page.locator('.chat-bubble').first().evaluate((b) => getComputedStyle(b).animationName)).toBe('none');
   });
+
+  test('reduced motion keeps the input cooldown: one wheel spin moves one section', async ({ page }) => {
+    // Tall enough that no section overflows, so only the cooldown throttles input.
+    await page.setViewportSize({ width: 1920, height: 1200 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await gotoReady(page, '/?lang=vi#lien-he');
+    await expect(page.locator('#lien-he')).toHaveClass(/active/);
+    await page.waitForTimeout(1000);
+    const moves = await page.evaluate(async () => {
+      const w = window as any;
+      const seen: number[] = [];
+      const orig = w.VanillaFullpage.prototype.goToSection;
+      w.VanillaFullpage.prototype.goToSection = function (i: number) {
+        const before = this.currentIndex;
+        orig.call(this, i);
+        if (this.currentIndex !== before) seen.push(this.currentIndex);
+      };
+      for (let i = 0; i < 6; i++) {
+        document.dispatchEvent(new WheelEvent('wheel', { deltaY: 100, bubbles: true }));
+        await new Promise((r) => setTimeout(r, 80));
+      }
+      await new Promise((r) => setTimeout(r, 300));
+      return seen;
+    });
+    // loopBottom: the last section wraps to the first, and no further.
+    expect(moves).toEqual([0]);
+  });
+
+  test('starting narrow then widening shows a section', async ({ page }) => {
+    await page.setViewportSize({ width: 600, height: 900 });
+    await gotoReady(page, '/?lang=vi');
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForFunction(() => (window as any).vanillaFullpage);
+    await expect(page.locator('#fullpage > .section.active')).toHaveCount(1);
+    await expect(page.locator('#home')).toBeInViewport();
+  });
 });

@@ -30,5 +30,8 @@ roadmap items 1 and 3. Images, inline-script bundling and i18n routing get their
 - Section changes update the hash with `history.replaceState`. Loading `/#<anchor>` opens that section.
 - Under `prefers-reduced-motion: reduce`, section changes, `.fade-in-item` and the Hero animations run
   with no transition or animation. The content is visible immediately.
-- `npm audit --omit=dev` reports no critical vulnerability. `fullpage.js` and `tslib` are removed.
+- The `define:vars` advisory is cleared (astro ≥ 6.4.8). `fullpage.js` and `tslib` are removed.
+  Amended during execution: `npm audit --omit=dev` still reports 1 critical (astro ≤ 7.2.7, spread-attribute
+  XSS) and 1 high (sharp), and both are fixed only in Astro 7. They are deferred to the Astro 7 upgrade plan.
+  The site renders only self-authored content.
 - Mobile (<768px) behavior and existing screenshot baselines are unchanged.

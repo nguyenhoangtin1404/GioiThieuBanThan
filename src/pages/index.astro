@@ -834,7 +834,10 @@ import ContactCard from '@components/ContactCard.astro';
         if (wasMobile && !nowMobile) {
           // Resized from mobile to desktop
           destroyMobileLayout();
-          if (typeof VanillaFullpage !== 'undefined' && !window.vanillaFullpage) {
+          if (typeof VanillaFullpage === 'undefined') {
+            // Loaded on mobile: the fullpage script was never fetched
+            loadFullpageScript();
+          } else if (!window.vanillaFullpage) {
             initFullpage();
           }
         } else if (!wasMobile && nowMobile) {
@@ -844,6 +847,19 @@ import ContactCard from '@components/ContactCard.astro';
       }, 150);
     }
 
+    // Fetch the desktop fullpage script once, then initialise it
+    function loadFullpageScript() {
+      if (document.querySelector('script[src="/js/vanilla-fullpage.js"]')) return;
+      const script = document.createElement('script');
+      script.src = '/js/vanilla-fullpage.js';
+      script.async = true;
+      script.onload = function() {
+        // Wait a bit for script to fully initialize
+        setTimeout(initFullpage, 100);
+      };
+      document.head.appendChild(script);
+    }
+
     // Khởi tạo khi DOM ready
     function init() {
       // Check mobile first and setup immediately
@@ -851,14 +867,7 @@ import ContactCard from '@components/ContactCard.astro';
         setupMobileLayout();
       } else {
         // Chỉ load fullpage.js script trên desktop
-        const script = document.createElement('script');
-        script.src = '/js/vanilla-fullpage.js';
-        script.async = true;
-        script.onload = function() {
-          // Wait a bit for script to fully initialize
-          setTimeout(initFullpage, 100);
-        };
-        document.head.appendChild(script);
+        loadFullpageScript();
       }
       window.addEventListener('resize', handleResize);
     }

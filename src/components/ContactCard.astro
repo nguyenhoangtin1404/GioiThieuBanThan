@@ -64,11 +64,30 @@ const ANIMATION_STAGGER_DELAY = 200; // Delay increment between each item
           </a>
         ))}
       </div>
+
+      <a
+        class="contact-services-link fade-in-item"
+        href="/dich-vu/"
+        data-i18n="contact.servicesLink"
+        data-fade-delay={ANIMATION_BASE_DELAY + channels.length * ANIMATION_STAGGER_DELAY}
+      >{t.contact.servicesLink}</a>
     </div>
   </div>
 </section>
 
 <style>
+  .contact-services-link {
+    display: inline-block;
+    margin-top: 1.25rem;
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .contact-services-link:hover {
+    text-decoration: underline;
+  }
+
   .card {
     margin-top: 0 !important;
     padding: 2rem;

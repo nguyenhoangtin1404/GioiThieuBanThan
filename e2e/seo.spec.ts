@@ -14,11 +14,11 @@ test.describe('SEO files', () => {
     expect(body).toContain(`Sitemap: ${SITE}/sitemap.xml`);
   });
 
-  test('sitemap.xml lists home and project pages', async ({ request }) => {
+  test('sitemap.xml lists home, services and project pages', async ({ request }) => {
     const res = await request.get('/sitemap.xml');
     expect(res.ok()).toBeTruthy();
     const body = await res.text();
-    for (const path of ['/', '/projects/igate/', '/projects/ecabinet/', '/projects/ioffice/', '/projects/other-projects/', '/projects/dsf-hospital-suite/', '/projects/solo-cafe-order/']) {
+    for (const path of ['/', '/dich-vu/', '/projects/igate/', '/projects/ecabinet/', '/projects/ioffice/', '/projects/other-projects/', '/projects/dsf-hospital-suite/', '/projects/solo-cafe-order/']) {
       expect(body).toContain(`<loc>${SITE}${path}</loc>`);
     }
   });

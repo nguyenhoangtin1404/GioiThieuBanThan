@@ -118,3 +118,38 @@ test.describe('services page', () => {
     await phone.click({ trial: true, timeout: 3000 });
   });
 });
+
+test.describe('site links', () => {
+  test('sidebar Dịch vụ link opens /dich-vu/', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop sidebar; the mobile bottom bar has no room (see mobile bottom bar)');
+    await gotoReady(page, '/?lang=vi');
+    const link = page.locator('#sidebar a[href="/dich-vu/"]');
+    await expect(link).toHaveAttribute('aria-label', 'Dịch vụ');
+    await link.click();
+    await expect(page).toHaveURL(/\/dich-vu\/$/);
+  });
+
+  test('Contact section links to services', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await expect(page.locator('#lien-he a.contact-services-link')).toHaveAttribute('href', '/dich-vu/');
+  });
+});
+
+test.describe('mobile bottom bar', () => {
+  for (const width of [360, 390]) {
+    test(`fits at ${width}px: language and sound controls do not overlap`, async ({ page, isMobile }) => {
+      test.skip(!isMobile, 'mobile bottom bar');
+      await page.setViewportSize({ width, height: 800 });
+      await gotoReady(page, '/?lang=vi');
+      const bar = page.locator('.sidebar-nav-mobile');
+      // Kept off the bottom bar: a fifth icon pushes the sound button off a 360px screen
+      await expect(bar.locator('a[href="/dich-vu/"]')).toBeHidden();
+      const box = async (sel: string) => (await bar.locator(sel).first().boundingBox())!;
+      const lang = await box('.lang-switcher');
+      const voice = await box('.voice-toggle');
+      const barBox = await box(':scope');
+      expect(lang.x + lang.width, 'language switcher ends before the sound button').toBeLessThanOrEqual(voice.x);
+      expect(voice.x + voice.width, 'sound button inside the bar').toBeLessThanOrEqual(barBox.x + barBox.width);
+    });
+  }
+});

@@ -451,6 +451,11 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           flex: 1;
         }
 
+        /* No room for a fifth icon on a 360px bar; mobile reaches /dich-vu/ from Contact */
+        .sidebar-nav-mobile .sidebar-list li.sidebar-link {
+          display: none;
+        }
+
         .sidebar-nav-mobile .sidebar-list li {
           margin: 0;
           padding: 0;
@@ -459,7 +464,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           justify-content: center;
         }
 
-        .sidebar-nav-mobile .sidebar-list button {
+        .sidebar-nav-mobile .sidebar-list button, .sidebar-nav-mobile .sidebar-list a {
           background: transparent;
           border: none;
           padding: 0.5rem;
@@ -482,7 +487,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           gap: 0.25rem;
         }
 
-        .sidebar-nav-mobile .sidebar-list button:active {
+        .sidebar-nav-mobile .sidebar-list button:active, .sidebar-nav-mobile .sidebar-list a:active {
           transform: scale(0.95);
         }
 
@@ -595,7 +600,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           height: 0.9rem;
         }
 
-        .sidebar-list button {
+        .sidebar-list button, .sidebar-list a {
           padding: 0.2rem 0.4rem;
         }
       }
@@ -809,7 +814,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         }
       }
 
-      .sidebar-list button {
+      .sidebar-list button, .sidebar-list a {
         background: transparent;
         border: none;
         padding: 0.25rem 0.5rem;
@@ -826,7 +831,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         font-weight: 600;
       }
 
-      .sidebar-list button:hover {
+      .sidebar-list button:hover, .sidebar-list a:hover {
         background: rgba(14, 165, 233, 0.1);
         color: var(--accent) !important;
         opacity: 1 !important;
@@ -874,7 +879,7 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
         scale: 1 !important;
       }
 
-      .sidebar-list li button {
+      .sidebar-list li button, .sidebar-list li a {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -1191,6 +1196,14 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
               <path fill="currentColor" d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48L48 64zM0 176L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"></path>
             </svg>
           </button>
+        </li>
+        <!-- A real link, not a section: no data-menuanchor, so the fullpage handlers ignore it -->
+        <li class="sidebar-link">
+          <a href="/dich-vu/" aria-label="Dịch vụ" data-i18n-attr="aria-label:layout.nav.services">
+            <svg aria-hidden="true" focusable="false" data-icon="briefcase" class="sidebar-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path fill="currentColor" d="M184 48l144 0c4.4 0 8 3.6 8 8l0 40L176 96l0-40c0-4.4 3.6-8 8-8zm-56 8l0 40L64 96C28.7 96 0 124.7 0 160l0 96 192 0 128 0 192 0 0-96c0-35.3-28.7-64-64-64l-64 0 0-40c0-30.9-25.1-56-56-56L184 0c-30.9 0-56 25.1-56 56zM512 288l-192 0 0 32c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32-14.3-32-32l0-32L0 288 0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-128z"></path>
+            </svg>
+          </a>
         </li>
       </ul>
       <!-- Language Switcher -->

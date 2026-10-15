@@ -347,7 +347,8 @@
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"
-    }
+    },
+    "servicesLink": "Need a website or software? See services →"
   },
   "layout": {
     "title": "Tin Nguyen — Technical Lead · Full‑Stack Developer",

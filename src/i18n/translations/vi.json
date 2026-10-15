@@ -347,7 +347,8 @@
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"
-    }
+    },
+    "servicesLink": "Cần làm website/phần mềm? Xem dịch vụ →"
   },
   "layout": {
     "title": "Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer",

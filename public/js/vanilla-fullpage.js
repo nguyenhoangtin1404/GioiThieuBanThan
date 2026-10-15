@@ -35,7 +35,7 @@ class VanillaFullpage {
     this.currentIndex = 0; // Index của section đang active
     this.isScrolling = false; // Flag để tránh scroll quá nhanh
     this.lastInnerScroll = 0; // Lần cuối nội dung bên trong section được cuộn (ms)
-    this.wheelEnabled = true; // Cho phép/khóa xử lý wheel (trackpad/mouse)
+    this.inputEnabled = true; // Cho phép/khóa phím, wheel và vuốt (ví dụ khi mở modal)
     this.navHideTimeout = null; // Timeout để ẩn navigation sau khi không scroll
     this.hideTimeout = null; // Timeout để ẩn section sau khi animation hoàn tất
     
@@ -53,12 +53,22 @@ class VanillaFullpage {
   }
 
   /**
-   * Bật/tắt xử lý wheel để tránh đổi section (ví dụ khi mở modal)
+   * Bật/tắt mọi thao tác đổi section (phím, wheel, vuốt), ví dụ khi mở modal.
+   * Khi tắt, các handler bỏ qua sự kiện hoàn toàn (không preventDefault) để modal tự cuộn.
+   * @public
+   * @param {boolean} enabled
+   */
+  setAllowScrolling(enabled) {
+    this.inputEnabled = !!enabled;
+  }
+
+  /**
+   * Tên cũ của setAllowScrolling
    * @public
    * @param {boolean} enabled
    */
   setWheelEnabled(enabled) {
-    this.wheelEnabled = !!enabled;
+    this.setAllowScrolling(enabled);
   }
 
   /**
@@ -174,8 +184,8 @@ class VanillaFullpage {
    */
   setupKeyboard() {
     document.addEventListener('keydown', (e) => {
-      // Nếu đang scroll, bỏ qua
-      if (this.isScrolling) return;
+      // Đang khóa (modal mở) hoặc đang scroll: bỏ qua
+      if (!this.inputEnabled || this.isScrolling) return;
 
       // Section dài: phím lên/xuống cuộn nội dung bên trong trước
       const step = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 }[e.key];
@@ -235,8 +245,8 @@ class VanillaFullpage {
       const now = Date.now();
       const gap = now - lastWheel;
       lastWheel = now;
-      // Nếu wheel đang bị khóa, bỏ qua (không đổi section)
-      if (!this.wheelEnabled) return;
+      // Nếu đang bị khóa (modal mở), bỏ qua (không đổi section)
+      if (!this.inputEnabled) return;
       // Nếu đang scroll, bỏ qua
       if (this.isScrolling) return;
       // Section dài hơn màn hình: cuộn hết nội dung bên trong trước rồi mới đổi section.
@@ -291,7 +301,7 @@ class VanillaFullpage {
 
     // Xử lý khi kết thúc touch
     document.addEventListener('touchend', (e) => {
-      if (this.isScrolling) return;
+      if (!this.inputEnabled || this.isScrolling) return;
       
       touchEndY = e.changedTouches[0].clientY;
 

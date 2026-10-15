@@ -669,11 +669,10 @@ function getCardBackgroundForProject(project: any, lang: string): string {
       lastFocusedEl = document.activeElement;
       renderProjectToModal(project);
 
-      // Desktop fullpage: disable wheel/trackpad section switching while modal is open
+      // Desktop fullpage: no key, wheel or swipe changes the section while the modal is open
       try {
-        if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
-          window.vanillaFullpage.setWheelEnabled(false);
-          window.vanillaFullpage.setAllowScrolling(false); // Also disable scrolling
+        if (window.vanillaFullpage && typeof window.vanillaFullpage.setAllowScrolling === 'function') {
+          window.vanillaFullpage.setAllowScrolling(false);
         }
       } catch (e) {
         // ignore
@@ -712,10 +711,9 @@ function getCardBackgroundForProject(project: any, lang: string): string {
       document.body.style.overflow = '';
       document.removeEventListener('keydown', trapFocus);
 
-      // Desktop fullpage: re-enable wheel/trackpad section switching
+      // Desktop fullpage: re-enable section switching
       try {
-        if (window.vanillaFullpage && typeof window.vanillaFullpage.setWheelEnabled === 'function') {
-          window.vanillaFullpage.setWheelEnabled(true);
+        if (window.vanillaFullpage && typeof window.vanillaFullpage.setAllowScrolling === 'function') {
           window.vanillaFullpage.setAllowScrolling(true);
         }
       } catch (e) {

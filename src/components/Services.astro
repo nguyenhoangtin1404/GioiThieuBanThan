@@ -10,6 +10,8 @@ interface ServiceItem {
   price: string;
   duration: string;
   exampleProjectId?: string;
+  fit?: string;
+  featured?: boolean;
 }
 
 interface Props {
@@ -67,14 +69,23 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
 
   <section class="svc-list">
     {items.map((item) => (
-      <article class="svc-card" data-service-id={item.id}>
+      <article class={item.featured ? 'svc-card svc-card--popular' : 'svc-card'} data-service-id={item.id}>
+        {item.featured && <span class="svc-popular">{s.labels.popular}</span>}
         <span class="svc-glyph">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={GLYPHS[item.id] || GLYPHS.website} />
         </span>
         <h2>{item.title}</h2>
+        {item.fit && <p class="svc-fit"><strong>{s.labels.fit}:</strong> {item.fit}</p>}
         <p class="svc-label">{s.labels.benefits}</p>
         <ul class="svc-benefits">
-          {item.benefits.map((b) => <li>{b}</li>)}
+          {item.benefits.map((b) => (
+            <li>
+              <span class="svc-glyph svc-glyph--sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CHECK} />
+              </span>
+              <span>{b}</span>
+            </li>
+          ))}
         </ul>
         <div class="svc-meta">
           <span class="svc-price">{item.price}</span>
@@ -83,6 +94,7 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
         {item.exampleProjectId && projectIdsWithDetail.includes(item.exampleProjectId) && (
           <a class="svc-example" href={`/projects/${item.exampleProjectId}/`}>{s.labels.example} →</a>
         )}
+        <a class="svc-btn svc-btn--ghost svc-ask" href={CONTACT.zaloHref} {...external}>{s.labels.askCard}</a>
       </article>
     ))}
   </section>
@@ -400,10 +412,70 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     color: var(--text);
   }
 
-  .svc-benefits {
+  .svc-card {
+    position: relative;
+  }
+
+  .svc-fit {
     margin: 0;
-    padding-left: 1.2rem;
+    font-size: 0.95rem;
+  }
+
+  .svc-fit strong {
+    color: var(--text);
+  }
+
+  .svc-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
     flex: 1;
+  }
+
+  .svc-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .svc-benefits .svc-glyph--sm {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
+    margin-top: 0.1rem;
+  }
+
+  .svc-benefits .svc-glyph--sm svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .svc-ask {
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  /* Popular card: gradient border, same padding-box/border-box technique as the photo ring */
+  .svc-card--popular {
+    border: 2px solid transparent;
+    background:
+      linear-gradient(#f5f6f8, #f5f6f8) padding-box,
+      linear-gradient(135deg, var(--accent), #6366f1) border-box;
+  }
+
+  .svc-popular {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #010409;
+    font-size: 0.8rem;
+    font-weight: 700;
   }
 
   .svc-meta {

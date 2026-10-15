@@ -253,7 +253,7 @@ test.describe('services page matches the home style', () => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     const vi = page.locator('[data-lang-block="vi"]');
     await expect(vi.locator('.svc-hero .svc-badge')).toHaveText(load('vi').services.labels.badge);
-    await expect(vi.locator('.svc-card .svc-glyph svg')).toHaveCount(3);
+    await expect(vi.locator('.svc-card > .svc-glyph svg')).toHaveCount(3);
   });
 });
 
@@ -412,5 +412,39 @@ test.describe('polish: featured', () => {
     );
     expect(out.map((o) => o.id)).toEqual(['igate']);
     expect(out[0]).toMatchObject({ href: '/projects/igate/', external: false, image: '/igate.webp' });
+  });
+});
+
+test.describe('polish: cards', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('fit line, check glyphs and ask button on every card', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('.svc-card .svc-fit')).toHaveCount(3);
+    await expect(vi(page).locator('[data-service-id="website"] .svc-fit')).toContainText('cửa hàng, quán, doanh nghiệp cần có mặt trên Google');
+    await expect(vi(page).locator('.svc-card .svc-benefits .svc-glyph')).toHaveCount(11);
+    const ask = vi(page).locator('.svc-card a.svc-ask');
+    await expect(ask).toHaveCount(3);
+    for (const a of await ask.all()) {
+      await expect(a).toHaveAttribute('href', 'https://zalo.me/84856694766');
+      await expect(a).toHaveText('Hỏi giá gói này qua Zalo');
+    }
+  });
+
+  test('management is marked popular', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('.svc-card--popular')).toHaveCount(1);
+    await expect(vi(page).locator('[data-service-id="management"] .svc-popular')).toHaveText('Phổ biến');
+  });
+
+  test('English switch covers the new copy', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop pill switch');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await page.locator('.sidebar-nav .lang-option[data-lang="en"]').click();
+    const en = page.locator('[data-lang-block="en"]');
+    await expect(en.locator('.svc-trust-value').first()).toHaveText('9+ years');
+    await expect(en.locator('[data-service-id="management"] .svc-popular')).toHaveText('Popular');
+    await expect(en.locator('h2.svc-title', { hasText: 'Featured work' })).toBeVisible();
+    await expect(en.locator('.svc-card a.svc-ask').first()).toHaveText('Ask about this on Zalo');
   });
 });

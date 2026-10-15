@@ -334,3 +334,38 @@ test.describe('home parity details', () => {
     expect(await vi.locator('.svc-cta h2').evaluate((h) => getComputedStyle(h).fontSize)).toBe(homeTitle);
   });
 });
+
+test.describe('polish: hero', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('photo with reserved size and high priority', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const img = vi(page).locator('.svc-hero .svc-photo');
+    await expect(img).toBeVisible();
+    await expect(img).toHaveAttribute('width', '768');
+    await expect(img).toHaveAttribute('height', '768');
+    await expect(img).toHaveAttribute('fetchpriority', 'high');
+    await expect(img).toHaveAttribute('alt', 'Nguyễn Hoàng Tín');
+  });
+
+  test('title fits on two lines at 1440px', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop width');
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const lines = await vi(page).locator('h1').evaluate((h) => Math.round(h.getBoundingClientRect().height / parseFloat(getComputedStyle(h).lineHeight)));
+    expect(lines).toBeLessThanOrEqual(2);
+  });
+
+  test('trust row shows the three stats', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('.svc-trust .svc-trust-value')).toHaveText(['9+ năm', '10.000+', '3 phút → 60 giây']);
+  });
+
+  test('photo is beside the text on desktop', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop layout');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const text = (await vi(page).locator('.svc-hero-text').boundingBox())!;
+    const media = (await vi(page).locator('.svc-hero-media').boundingBox())!;
+    expect(media.x).toBeGreaterThan(text.x + text.width - 1);
+  });
+});

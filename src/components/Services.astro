@@ -34,12 +34,28 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   <a class="svc-back" href={`/?lang=${lang}`}>← {s.labels.back}</a>
 
   <section class="svc-hero">
-    <span class="svc-badge">{s.labels.badge}</span>
-    <h1>{s.hero.title}</h1>
-    <p class="svc-subtitle">{s.hero.subtitle}</p>
-    <div class="svc-actions">
-      <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.hero.primaryCta}</a>
-      <a class="svc-btn svc-btn--ghost svc-projects" href={`/?lang=${lang}#du-an`}>{s.hero.secondaryCta}</a>
+    <div class="svc-hero-text">
+      <span class="svc-badge">{s.labels.badge}</span>
+      <h1>{s.hero.title}</h1>
+      <p class="svc-subtitle">{s.hero.subtitle}</p>
+      <div class="svc-actions">
+        <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.hero.primaryCta}</a>
+        <a class="svc-btn svc-btn--ghost svc-projects" href={`/?lang=${lang}#du-an`}>{s.hero.secondaryCta}</a>
+      </div>
+      <ul class="svc-trust">
+        {(s.trust || []).map((t: { value: string; label: string }) => (
+          <li>
+            <strong class="svc-trust-value">{t.value}</strong>
+            <span class="svc-trust-label">{t.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="svc-hero-media">
+      <picture>
+        <source type="image/webp" srcset="/contact-360.webp 360w, /contact-720.webp 720w" sizes="(max-width: 767px) 96px, 420px" />
+        <img class="svc-photo" src="/contact-768.jpg" width="768" height="768" fetchpriority="high" decoding="async" alt={s.labels.photoAlt} />
+      </picture>
     </div>
   </section>
 
@@ -150,12 +166,100 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     margin-bottom: 1rem;
   }
 
+  /* Two columns like the home Hero: text left, the owner's photo right */
+  .svc-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
   .svc-hero h1 {
-    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
     line-height: 1.15;
     margin: 0 0 1rem;
-    max-width: 52rem;
+    max-width: 22ch;
     overflow-wrap: anywhere;
+  }
+
+  /* Gradient ring, same technique as the home avatar */
+  .svc-hero-media {
+    justify-self: end;
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1;
+    border: 4px solid transparent;
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(var(--card), var(--card)) padding-box,
+      linear-gradient(135deg, var(--accent), #6366f1) border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .svc-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .svc-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .svc-trust li {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+
+  .svc-trust-value {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .svc-trust-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 767px) {
+    .svc-hero {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .svc-hero-media {
+      order: -1;
+      justify-self: start;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+    }
+
+    .svc-hero h1 {
+      font-size: clamp(1.6rem, 7vw, 2rem);
+    }
+
+    /* One line that scrolls inside itself, never the page */
+    .svc-trust {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .svc-trust li {
+      flex: 0 0 auto;
+    }
   }
 
   .svc-subtitle {

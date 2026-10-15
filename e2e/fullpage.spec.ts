@@ -45,4 +45,39 @@ test.describe('desktop fullpage', () => {
     await page.keyboard.press('End');
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
   });
+
+  // Tablet rotation / window resize: desktop → mobile layout → desktop.
+  async function crossBreakpoint(page: Page) {
+    // The fullpage script loads async; cross only once it is running.
+    await page.waitForFunction(() => (window as any).vanillaFullpage);
+    await page.setViewportSize({ width: 600, height: 900 });
+    await page.waitForTimeout(400);
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.waitForFunction(() => (window as any).vanillaFullpage);
+    await page.waitForTimeout(300);
+  }
+
+  test('one instance after crossing the breakpoint', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await crossBreakpoint(page);
+    // Count section moves across every live instance.
+    await page.evaluate(() => {
+      const w = window as any;
+      w.__moves = 0;
+      const orig = w.VanillaFullpage.prototype.goToSection;
+      w.VanillaFullpage.prototype.goToSection = function (i: number) { w.__moves++; return orig.call(this, i); };
+    });
+    await page.keyboard.press('PageDown');
+    await expect(page.locator('#du-an')).toHaveClass(/active/);
+    expect(await page.evaluate(() => (window as any).__moves)).toBe(1);
+  });
+
+  test('sidebar click after resize changes history once', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await crossBreakpoint(page);
+    const before = await page.evaluate(() => history.length);
+    await page.locator('#sidebar li[data-menuanchor="lien-he"] button').click();
+    await expect(page.locator('#lien-he')).toHaveClass(/active/);
+    expect((await page.evaluate(() => history.length)) - before).toBeLessThanOrEqual(1);
+  });
 });

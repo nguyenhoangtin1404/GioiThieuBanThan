@@ -2,12 +2,12 @@
  * VanillaFullpage - Full page scrolling library không phụ thuộc thư viện bên ngoài
  * @class
  * @description Tạo hiệu ứng full page scrolling tương tự fullpage.js nhưng hoàn toàn tự code.
- * Hỗ trợ navigation dots, keyboard navigation, mouse wheel, touch/swipe, và URL hash anchors.
+ * Hỗ trợ keyboard navigation, mouse wheel, touch/swipe, và URL hash anchors.
+ * Gọi destroy() để gỡ mọi listener (ví dụ khi chuyển sang layout mobile).
  * 
  * @example
  * const fullpage = new VanillaFullpage('#fullpage', {
  *   anchors: ['home', 'about', 'contact'],
- *   navigation: true,
  *   scrollingSpeed: 1000,
  *   loopBottom: true
  * });
@@ -19,7 +19,6 @@ class VanillaFullpage {
    * @param {Object} [options={}] - Cấu hình options
    * @param {number} [options.scrollingSpeed=1000] - Tốc độ scroll animation (milliseconds)
    * @param {boolean} [options.loopBottom=false] - Cho phép loop từ section cuối về section đầu
-   * @param {boolean} [options.navigation=true] - Bật/tắt navigation dots bên phải màn hình
    * @param {string[]} [options.anchors=[]] - Mảng anchors cho URL hash (ví dụ: ['home', 'about', 'contact'])
    */
   constructor(container, options = {}) {
@@ -36,13 +35,14 @@ class VanillaFullpage {
     this.isScrolling = false; // Flag để tránh scroll quá nhanh
     this.lastInnerScroll = 0; // Lần cuối nội dung bên trong section được cuộn (ms)
     this.inputEnabled = true; // Cho phép/khóa phím, wheel và vuốt (ví dụ khi mở modal)
-    this.navHideTimeout = null; // Timeout để ẩn navigation sau khi không scroll
     this.hideTimeout = null; // Timeout để ẩn section sau khi animation hoàn tất
+    this.scrollTimeout = null; // Timeout mở khóa isScrolling sau khi animation hoàn tất
+    // Mọi listener gắn với signal này để destroy() gỡ hết một lần
+    this.abort = new AbortController();
     
     // Cấu hình từ options với giá trị mặc định
     this.scrollingSpeed = options.scrollingSpeed || 1000;
     this.loopBottom = options.loopBottom || false;
-    this.navigation = options.navigation !== false; // Mặc định là true
     this.anchors = options.anchors || [];
     
     // Áp dụng vertical class cho container
@@ -73,25 +73,38 @@ class VanillaFullpage {
 
   /**
    * Khởi tạo tất cả các components và event listeners
-   * @description Thiết lập sections, navigation, keyboard, wheel, và touch events
+   * @description Thiết lập sections, keyboard, wheel, và touch events
    * @private
    */
   init() {
+    const { signal } = this.abort;
     this.setupSections();
-    this.setupNavigation();
     this.setupKeyboard();
     this.sections.forEach((section) => {
-      section.addEventListener('scroll', () => { this.lastInnerScroll = Date.now(); }, { passive: true });
+      section.addEventListener('scroll', () => { this.lastInnerScroll = Date.now(); }, { passive: true, signal });
     });
     this.markOverflow();
-    window.addEventListener('load', () => this.markOverflow());
-    window.addEventListener('resize', () => this.markOverflow());
+    window.addEventListener('load', () => this.markOverflow(), { signal });
+    window.addEventListener('resize', () => this.markOverflow(), { signal });
     this.setupWheel();
     this.setupTouch();
-    this.updateNavigation();
     this.updateURL();
-    // Đảm bảo navigation ẩn mặc định khi init
-    this.ensureNavigationHidden();
+  }
+
+  /**
+   * Gỡ mọi listener và timer của instance này
+   * @description Không reset style của sections: layout mobile tự ghi đè
+   * @public
+   */
+  destroy() {
+    this.abort.abort();
+    clearTimeout(this.hideTimeout);
+    clearTimeout(this.scrollTimeout);
+    this.hideTimeout = null;
+    this.scrollTimeout = null;
+    this.isScrolling = false;
+    this.container.classList.remove('fp-vertical');
+    this.sections.forEach((section) => section.classList.remove('fp-overflow'));
   }
 
   /**
@@ -137,47 +150,6 @@ class VanillaFullpage {
   }
 
   /**
-   * Thiết lập navigation dots (các chấm bên phải màn hình)
-   * @description Thêm event listeners cho các navigation links
-   * @private
-   */
-  setupNavigation() {
-    // Nếu navigation bị tắt, không làm gì
-    if (!this.navigation) return;
-
-    const nav = document.querySelector('.fp-nav');
-    const navLinks = document.querySelectorAll('.fp-nav a');
-    
-    // Thêm hover event cho navigation
-    if (nav) {
-      nav.addEventListener('mouseenter', () => {
-        // Khi hover vào navigation, hiện rõ và không ẩn
-        this.showNavigation();
-        // Clear timeout ẩn nếu có
-        if (this.navHideTimeout) {
-          clearTimeout(this.navHideTimeout);
-          this.navHideTimeout = null;
-        }
-      });
-      
-      nav.addEventListener('mouseleave', () => {
-        // Khi rời chuột, bắt đầu lại timeout ẩn sau 1s
-        this.hideNavigation();
-      });
-    }
-    
-    navLinks.forEach((link, index) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Hiển thị navigation khi người dùng click vào dot
-        this.showNavigation();
-        this.hideNavigation();
-        this.goToSection(index);
-      });
-    });
-  }
-
-  /**
    * Thiết lập keyboard navigation
    * @description Hỗ trợ các phím: Arrow Up/Down, Page Up/Down, Home, End
    * @private
@@ -205,31 +177,23 @@ class VanillaFullpage {
         case 'ArrowDown':
         case 'PageDown':
           e.preventDefault();
-          this.showNavigation();
           this.moveDown();
-          this.hideNavigation();
           break;
         case 'ArrowUp':
         case 'PageUp':
           e.preventDefault();
-          this.showNavigation();
           this.moveUp();
-          this.hideNavigation();
           break;
         case 'Home':
           e.preventDefault();
-          this.showNavigation();
           this.goToSection(0);
-          this.hideNavigation();
           break;
         case 'End':
           e.preventDefault();
-          this.showNavigation();
           this.goToSection(this.sections.length - 1);
-          this.hideNavigation();
           break;
       }
-    });
+    }, { signal: this.abort.signal });
   }
 
   /**
@@ -257,9 +221,6 @@ class VanillaFullpage {
       // Vừa chạm cuối nội dung: đứng lại, cần ngừng tay rồi lăn một cú mới mới sang section kế
       if (this.isOverflowing() && (gap < VanillaFullpage.GESTURE_GAP || this.isHoldingAtEdge())) return;
 
-      // Hiển thị navigation khi scroll
-      this.showNavigation();
-
       // Debounce: đợi 50ms trước khi xử lý scroll tiếp theo
       clearTimeout(wheelTimeout);
       wheelTimeout = setTimeout(() => {
@@ -274,10 +235,8 @@ class VanillaFullpage {
           // Scroll lên
           this.moveUp();
         }
-        // Sau khi scroll xong, reset timer ẩn (1s sau khi không scroll)
-        this.hideNavigation();
       }, 50);
-    }, { passive: true }); // passive: true để tăng performance
+    }, { passive: true, signal: this.abort.signal }); // passive: true để tăng performance
   }
 
   /**
@@ -297,7 +256,7 @@ class VanillaFullpage {
       touchStartY = e.touches[0].clientY;
       couldScrollDown = this.canScrollInside(1);
       couldScrollUp = this.canScrollInside(-1);
-    }, { passive: true });
+    }, { passive: true, signal: this.abort.signal });
 
     // Xử lý khi kết thúc touch
     document.addEventListener('touchend', (e) => {
@@ -312,9 +271,6 @@ class VanillaFullpage {
       // Vừa cuộn tới cuối nội dung: cần dừng một chút rồi vuốt lần nữa mới đổi section
       if (this.isHoldingAtEdge()) return;
       if (Math.abs(diff) > 50) {
-        // Hiển thị navigation khi swipe
-        this.showNavigation();
-        
         if (diff > 0) {
           // Swipe lên -> di chuyển xuống
           this.moveDown();
@@ -322,11 +278,8 @@ class VanillaFullpage {
           // Swipe xuống -> di chuyển lên
           this.moveUp();
         }
-        
-        // Sau khi swipe xong, reset timer ẩn (1s sau khi không swipe)
-        this.hideNavigation();
       }
-    }, { passive: true });
+    }, { passive: true, signal: this.abort.signal });
   }
 
   /**
@@ -489,144 +442,15 @@ class VanillaFullpage {
       this.hideTimeout = null;
     }, this.scrollingSpeed);
 
-    // Cập nhật navigation dots và URL
-    this.updateNavigation();
+    // Cập nhật URL
     this.updateURL();
 
     // Sau khi animation hoàn tất, cho phép scroll tiếp
-    setTimeout(() => {
+    clearTimeout(this.scrollTimeout);
+    this.scrollTimeout = setTimeout(() => {
       this.isScrolling = false;
+      this.scrollTimeout = null;
     }, this.scrollingSpeed);
-  }
-
-  /**
-   * Cập nhật trạng thái navigation dots
-   * @description Thêm class 'active' cho navigation dot tương ứng với section hiện tại
-   * @private
-   */
-  updateNavigation() {
-    // Nếu navigation bị tắt, không làm gì
-    if (!this.navigation) return;
-    
-    const navLinks = document.querySelectorAll('.fp-nav a');
-    navLinks.forEach((link, index) => {
-      if (index === this.currentIndex) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  }
-
-  /**
-   * Hiển thị navigation dots
-   * @description Thêm class 'fp-nav-visible' để hiện navigation và clear timeout ẩn
-   * @private
-   */
-  showNavigation() {
-    // Nếu navigation bị tắt, không làm gì
-    if (!this.navigation) return;
-    
-    const nav = document.querySelector('.fp-nav');
-    
-    if (nav) {
-      // Clear timeout ẩn navigation nếu có
-      if (this.navHideTimeout) {
-        clearTimeout(this.navHideTimeout);
-        this.navHideTimeout = null;
-      }
-      
-      // Đảm bảo transition được set
-      nav.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-      
-      // Dùng requestAnimationFrame để đảm bảo browser render đúng
-      requestAnimationFrame(() => {
-        // Force reflow để đảm bảo initial state được apply
-        void nav.offsetHeight;
-        
-        // Set inline style để hiện navigation với transition (thay vì dùng class)
-        nav.style.opacity = '1';
-        nav.style.transform = 'translateY(-50%) scale(1)';
-        nav.style.pointerEvents = 'auto';
-        
-        // Thêm class để đánh dấu (cho CSS khác nếu cần)
-        nav.classList.add('fp-nav-visible');
-      });
-    }
-  }
-
-  /**
-   * Đảm bảo navigation ẩn mặc định
-   * @description Xóa class 'fp-nav-visible' ngay lập tức để ẩn navigation
-   * @private
-   */
-  ensureNavigationHidden() {
-    // Nếu navigation bị tắt, không làm gì
-    if (!this.navigation) return;
-    
-    // Clear timeout cũ nếu có
-    if (this.navHideTimeout) {
-      clearTimeout(this.navHideTimeout);
-      this.navHideTimeout = null;
-    }
-    
-    // Ẩn navigation - force set initial state
-    const nav = document.querySelector('.fp-nav');
-    if (nav) {
-      // Xóa class trước
-      nav.classList.remove('fp-nav-visible');
-      
-      // Force set initial state để đảm bảo mờ và thu nhỏ (không ẩn hoàn toàn)
-      nav.style.transition = 'none'; // Tắt transition khi set initial state
-      nav.style.opacity = '0.3';
-      nav.style.pointerEvents = 'auto'; // Vẫn cho phép click khi mờ
-      nav.style.transform = 'translateY(-50%) scale(0.8)';
-      
-      // Sau đó enable transition lại
-      requestAnimationFrame(() => {
-        nav.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-      });
-    }
-  }
-
-  /**
-   * Ẩn navigation dots sau delay
-   * @description Xóa class 'fp-nav-visible' sau 1s để ẩn navigation với transition mượt
-   * @private
-   */
-  hideNavigation() {
-    // Nếu navigation bị tắt, không làm gì
-    if (!this.navigation) return;
-    
-    // Clear timeout cũ nếu có
-    if (this.navHideTimeout) {
-      clearTimeout(this.navHideTimeout);
-    }
-    
-    // Set timeout mới để ẩn navigation sau 1s
-    this.navHideTimeout = setTimeout(() => {
-      const nav = document.querySelector('.fp-nav');
-      
-      if (nav) {
-        // Đảm bảo transition được set
-        nav.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-        
-        // Dùng requestAnimationFrame để đảm bảo browser render đúng
-        requestAnimationFrame(() => {
-          // Force reflow
-          void nav.offsetHeight;
-          
-          // Set inline style để làm mờ và thu nhỏ navigation với transition (không ẩn hoàn toàn)
-          nav.style.opacity = '0.3';
-          nav.style.transform = 'translateY(-50%) scale(0.8)';
-          nav.style.pointerEvents = 'auto'; // Vẫn cho phép click khi mờ
-          
-          // Xóa class để đánh dấu
-          nav.classList.remove('fp-nav-visible');
-        });
-      }
-      this.navHideTimeout = null;
-    }, 1000);
   }
 
   /**

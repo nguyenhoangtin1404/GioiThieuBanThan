@@ -72,17 +72,8 @@ import ContactCard from '@components/ContactCard.astro';
       document.documentElement.classList.add('mobile-layout');
 
 
-      // Disable any fullpage.js event listeners
-      if (window.vanillaFullpage) {
-        try {
-          if (window.vanillaFullpage.destroy) {
-            window.vanillaFullpage.destroy();
-          }
-        } catch (e) {
-          console.warn('Error destroying fullpage:', e);
-        }
-        window.vanillaFullpage = null;
-      }
+      // Remove every desktop fullpage listener, observer and timer
+      teardownFullpage();
 
       // Remove fullpage classes that might interfere
       fullpage.classList.remove('fp-enabled', 'fp-vertical', 'fp-responsive');
@@ -105,6 +96,8 @@ import ContactCard from '@components/ContactCard.astro';
           if (link.hasAttribute('data-mobile-link-handled')) return;
           link.setAttribute('data-mobile-link-handled', 'true');
           link.addEventListener('click', (e) => {
+            // Listener stays after resizing to desktop; there the fullpage handler owns the click
+            if (!document.body.classList.contains('mobile-layout')) return;
             const href = link.getAttribute('href') || '';
             const target = href.replace('#', '');
             if (anchors.includes(target)) {
@@ -133,6 +126,7 @@ import ContactCard from '@components/ContactCard.astro';
           if (button.hasAttribute('data-mobile-sidebar-handled')) return;
           button.setAttribute('data-mobile-sidebar-handled', 'true');
           button.addEventListener('click', (e) => {
+            if (!document.body.classList.contains('mobile-layout')) return;
             e.preventDefault();
             const targetElement = document.getElementById(anchor);
             if (targetElement) {
@@ -336,6 +330,21 @@ import ContactCard from '@components/ContactCard.astro';
       // The listeners will still work, and the attributes prevent accumulation
     }
 
+    // Undoes everything initFullpage() adds: the instance, its click listeners and observers
+    let fullpageCleanup = null;
+    function teardownFullpage() {
+      try {
+        window.vanillaFullpage?.destroy();
+      } catch (e) {
+        console.warn('Error destroying fullpage:', e);
+      }
+      window.vanillaFullpage = null;
+      if (fullpageCleanup) {
+        fullpageCleanup();
+        fullpageCleanup = null;
+      }
+    }
+
     // Khởi tạo VanillaFullpage khi DOM ready và script đã load
     function initFullpage() {
       // Check if mobile - don't initialize fullpagejs on mobile
@@ -353,7 +362,13 @@ import ContactCard from '@components/ContactCard.astro';
 
       try {
         // Khởi tạo VanillaFullpage
+        teardownFullpage();
         window.vanillaFullpage = new VanillaFullpage('#fullpage', initOptions);
+        // Crossed the breakpoint with the project modal open: start locked like the old instance
+        if (document.querySelector('#project-modal.active')) {
+          window.vanillaFullpage.setAllowScrolling(false);
+        }
+        const listeners = new AbortController();
 
         // Gắn handler cho các anchor CTA để cuộn đúng section
         const anchorLinks = document.querySelectorAll('a[href^="#"]');
@@ -368,7 +383,7 @@ import ContactCard from '@components/ContactCard.astro';
               // Update active state
               updateSidebarActive(target);
             }
-          });
+          }, { signal: listeners.signal });
         });
 
         // Handle sidebar navigation clicks
@@ -385,7 +400,7 @@ import ContactCard from '@components/ContactCard.astro';
                 // Update active state immediately
                 updateSidebarActive(anchor);
               }
-            });
+            }, { signal: listeners.signal });
           }
         });
 
@@ -419,9 +434,6 @@ import ContactCard from '@components/ContactCard.astro';
             attributeFilter: ['class']
           });
         });
-
-        // Also check periodically as fallback
-        setInterval(checkActiveSection, 500);
 
         // Initial check
         setTimeout(checkActiveSection, 200);
@@ -562,6 +574,12 @@ import ContactCard from '@components/ContactCard.astro';
             attributeOldValue: true
           });
         });
+
+        fullpageCleanup = () => {
+          listeners.abort();
+          observer.disconnect();
+          sectionObserver.disconnect();
+        };
       } catch (error) {
         console.error('Error initializing VanillaFullpage:', error);
         return;
@@ -820,14 +838,7 @@ import ContactCard from '@components/ContactCard.astro';
             initFullpage();
           }
         } else if (!wasMobile && nowMobile) {
-          // Resized from desktop to mobile
-          if (window.vanillaFullpage) {
-            // Destroy fullpagejs instance if possible
-            if (window.vanillaFullpage.destroy) {
-              window.vanillaFullpage.destroy();
-            }
-            window.vanillaFullpage = null;
-          }
+          // Resized from desktop to mobile (setupMobileLayout tears fullpage down)
           setupMobileLayout();
         }
       }, 150);

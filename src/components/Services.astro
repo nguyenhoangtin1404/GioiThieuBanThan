@@ -20,10 +20,21 @@ interface Props {
 const { services: s, lang, projectIdsWithDetail } = Astro.props;
 const items: ServiceItem[] = s.items || [];
 const external = { target: '_blank', rel: 'noopener noreferrer' };
+
+// Stroke icons in the style of the home Contact glyphs, one per service
+const GLYPHS: Record<string, string> = {
+  website: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  management: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/>',
+  automation: '<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 17h5"/>'
+};
+const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
 ---
 
 <article class="services" data-lang={lang}>
+  <a class="svc-back" href={`/?lang=${lang}`}>← {s.labels.back}</a>
+
   <section class="svc-hero">
+    <span class="svc-badge">{s.labels.badge}</span>
     <h1>{s.hero.title}</h1>
     <p class="svc-subtitle">{s.hero.subtitle}</p>
     <div class="svc-actions">
@@ -35,6 +46,9 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   <section class="svc-list">
     {items.map((item) => (
       <article class="svc-card" data-service-id={item.id}>
+        <span class="svc-glyph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={GLYPHS[item.id] || GLYPHS.website} />
+        </span>
         <h2>{item.title}</h2>
         <p class="svc-label">{s.labels.benefits}</p>
         <ul class="svc-benefits">
@@ -52,7 +66,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   </section>
 
   <section class="svc-process">
-    <h2>{s.process.title}</h2>
+    <h2 class="svc-title">{s.process.title}</h2>
     <ol>
       {s.process.steps.map((step: { title: string; text: string }) => (
         <li>
@@ -64,14 +78,21 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   </section>
 
   <section class="svc-why">
-    <h2>{s.whyMe.title}</h2>
+    <h2 class="svc-title">{s.whyMe.title}</h2>
     <ul>
-      {s.whyMe.points.map((p: string) => <li>{p}</li>)}
+      {s.whyMe.points.map((p: string) => (
+        <li>
+          <span class="svc-glyph svc-glyph--sm">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CHECK} />
+          </span>
+          <span>{p}</span>
+        </li>
+      ))}
     </ul>
   </section>
 
   <section class="svc-faq">
-    <h2>{s.faq.title}</h2>
+    <h2 class="svc-title">{s.faq.title}</h2>
     {s.faq.items.map((f: { q: string; a: string }) => (
       <details>
         <summary>{f.q}</summary>
@@ -81,11 +102,11 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   </section>
 
   <section class="svc-cta">
-    <h2>{s.cta.title}</h2>
+    <h2 class="svc-title">{s.cta.title}</h2>
     <p>{s.cta.text}</p>
     <div class="svc-actions">
       <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.cta.zalo}</a>
-      <a class="svc-btn svc-btn--ghost svc-phone" href={CONTACT.phoneHref}>{s.cta.phone} · {CONTACT.phone}</a>
+      <a class="svc-btn svc-btn--ghost svc-phone" href={CONTACT.phoneHref}>{s.cta.phone} · <span class="svc-phone-number">{CONTACT.phone}</span></a>
     </div>
   </section>
 </article>
@@ -94,43 +115,59 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   .services {
     display: flex;
     flex-direction: column;
-    gap: clamp(2.5rem, 6vw, 4rem);
-  }
-
-  h1 {
-    font-size: clamp(1.75rem, 4.5vw, 2.75rem);
-    line-height: 1.2;
-    margin: 0 0 1rem;
-    overflow-wrap: anywhere;
-  }
-
-  h2 {
-    font-size: clamp(1.3rem, 3vw, 1.6rem);
-    margin: 0 0 1rem;
-  }
-
-  h3 {
-    font-size: 1.05rem;
-    margin: 0 0 0.35rem;
+    gap: clamp(3rem, 7vw, 5rem);
   }
 
   p,
   li {
     color: var(--muted);
-    line-height: 1.6;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  /* Back link: same as the project detail pages */
+  .svc-back {
+    align-self: flex-start;
+    margin-bottom: calc(-1 * clamp(2rem, 5vw, 3.5rem));
+    color: var(--muted);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .svc-back:hover {
+    color: var(--text);
+  }
+
+  /* Hero: badge, big title, muted subtitle, pill buttons (home Hero) */
+  .svc-badge {
+    display: inline-flex;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    background: rgba(14, 165, 233, 0.15);
+    color: #0369a1;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .svc-hero h1 {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.15;
+    margin: 0 0 1rem;
+    max-width: 52rem;
     overflow-wrap: anywhere;
   }
 
   .svc-subtitle {
     font-size: 1.1rem;
     max-width: 46rem;
-    margin: 0 0 1.5rem;
+    margin: 0 0 1.75rem;
   }
 
   .svc-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .svc-btn {
@@ -138,25 +175,74 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
     align-items: center;
     justify-content: center;
     min-height: 48px;
-    padding: 0.75rem 1.4rem;
+    padding: 0.85rem 1.75rem;
     border-radius: 999px;
-    font-weight: 700;
+    border: 1px solid transparent;
+    font-weight: 600;
     text-decoration: none;
     text-align: center;
+    transition: transform 150ms ease, filter 150ms ease, background 150ms ease;
+  }
+
+  .svc-btn:hover {
+    transform: translateY(-2px);
   }
 
   .svc-btn--primary {
-    background: var(--accent);
-    color: #ffffff;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #010409;
   }
 
   .svc-btn--primary:hover {
-    background: #0284c7;
+    filter: brightness(0.97);
   }
 
   .svc-btn--ghost {
     background: var(--surface-weak);
     color: var(--text);
+  }
+
+  /* Section titles: home size and the short accent bar (Projects, Timeline, Contact) */
+  .svc-title {
+    margin: 0 0 1.75rem;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+  }
+
+  .svc-title::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--accent);
+    margin-top: 0.5rem;
+  }
+
+  /* Round glyph backdrop, as on the home Contact channels */
+  .svc-glyph {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    padding: 11px;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(14, 165, 233, 0.12);
+    box-sizing: border-box;
+    color: var(--accent);
+  }
+
+  .svc-glyph svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .svc-glyph--sm {
+    width: 32px;
+    height: 32px;
+    padding: 7px;
   }
 
   .svc-list {
@@ -174,15 +260,20 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   .svc-card {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.5rem;
+    gap: 0.6rem;
+    padding: 1.75rem;
     border-radius: var(--radius-lg);
     background: var(--surface-weak);
+    transition: transform 150ms ease;
+  }
+
+  .svc-card:hover {
+    transform: translateY(-2px);
   }
 
   .svc-card h2 {
-    font-size: 1.25rem;
-    margin: 0;
+    font-size: 1.3rem;
+    margin: 0.4rem 0 0;
   }
 
   .svc-label {
@@ -206,9 +297,9 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   }
 
   .svc-price {
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 800;
-    color: #075985;
+    color: #0369a1;
   }
 
   .svc-duration {
@@ -217,9 +308,13 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   }
 
   .svc-example {
-    color: var(--accent);
+    color: #0369a1;
     font-weight: 700;
     text-decoration: none;
+  }
+
+  .svc-example:hover {
+    text-decoration: underline;
   }
 
   .svc-process ol {
@@ -236,7 +331,7 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
     counter-increment: step;
     padding: 1.25rem;
     border-radius: var(--radius-md);
-    background: var(--surface-softer);
+    background: var(--surface-weak);
   }
 
   .svc-process li::before {
@@ -246,11 +341,17 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
     justify-content: center;
     width: 2rem;
     height: 2rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
     border-radius: 999px;
-    background: rgba(14, 165, 233, 0.12);
-    color: #075985;
-    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #010409;
+    font-weight: 700;
+  }
+
+  .svc-process h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.35rem;
+    color: var(--text);
   }
 
   .svc-process p {
@@ -260,23 +361,29 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   .svc-why ul {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
-    gap: 0.75rem;
+    gap: 1rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .svc-why li {
-    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1rem;
     border-radius: var(--radius-md);
-    background: var(--surface-softer);
+    background: var(--surface-weak);
     color: var(--text);
     font-weight: 600;
+    line-height: 1.5;
   }
 
   .svc-faq details {
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(2, 6, 23, 0.08);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-md);
+    background: var(--surface-weak);
   }
 
   .svc-faq summary {
@@ -286,21 +393,22 @@ const external = { target: '_blank', rel: 'noopener noreferrer' };
   }
 
   .svc-faq details p {
-    margin: 0.5rem 0 0;
+    margin: 0.6rem 0 0;
   }
 
+  /* Closing call to action: the home Contact card background */
   .svc-cta {
-    padding: clamp(1.5rem, 4vw, 2.5rem);
+    padding: clamp(1.75rem, 4vw, 2.75rem);
     border-radius: var(--radius-lg);
-    background: rgba(14, 165, 233, 0.08);
-    text-align: center;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(14, 165, 233, 0.08));
+  }
+
+  .svc-phone-number {
+    white-space: nowrap;
   }
 
   .svc-cta p {
-    margin: 0 0 1.25rem;
-  }
-
-  .svc-cta .svc-actions {
-    justify-content: center;
+    margin: 0 0 1.5rem;
+    font-size: 1.05rem;
   }
 </style>

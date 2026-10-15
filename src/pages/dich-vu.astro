@@ -43,6 +43,21 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
   </a>
 
   <script is:inline>
+    // The home navigation pill is shown here too (desktop): services is the active item
+    // and the section buttons lead back to that section of the home page.
+    (function() {
+      document.querySelectorAll('#sidebar li').forEach((li) => {
+        li.classList.toggle('active', li.classList.contains('sidebar-link'));
+      });
+      document.querySelectorAll('#sidebar li[data-menuanchor] button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
+          const anchor = button.closest('li')?.getAttribute('data-menuanchor');
+          window.location.href = `/?lang=${lang}#${anchor}`;
+        });
+      });
+    })();
+
     // Show the page title for the displayed language
     (function() {
       const main = document.querySelector('.services-page');
@@ -62,13 +77,21 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
     html:not([lang='en']) [data-lang-block='en'] {
       display: none;
     }
+
+    /* BaseLayout hides the navigation pill on non-fullpage pages; this page keeps it (desktop) */
+    @media (min-width: 768px) {
+      body:not(:has(#fullpage)):has(.services-page) .sidebar-nav {
+        display: flex !important;
+      }
+    }
   </style>
 
   <style>
     .services-page {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 2.5rem clamp(1rem, 4vw, 3rem) 4rem;
+      /* Top room for the fixed navigation pill */
+      padding: 6.5rem clamp(1rem, 4vw, 3rem) 5rem;
     }
 
     .svc-zalo-float {
@@ -92,8 +115,8 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
         width: 56px;
         height: 56px;
         border-radius: 999px;
-        background: var(--accent);
-        color: #ffffff;
+        background: linear-gradient(135deg, var(--accent), #6366f1);
+        color: #010409;
         box-shadow: 0 6px 20px rgba(2, 6, 23, 0.2);
       }
     }

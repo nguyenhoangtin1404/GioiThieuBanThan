@@ -37,6 +37,27 @@ test.describe('translations', () => {
     expect(vi.services.process.steps).toHaveLength(4);
     expect(vi.services.whyMe.points).toHaveLength(4);
     expect(vi.services.faq.items).toHaveLength(5);
+    // Copy fixed by the spec, verbatim
+    expect(vi.services.process.steps.map((st: any) => st.title)).toEqual([
+      'Trao đổi miễn phí', 'Báo giá & đề xuất rõ ràng', 'Làm & cập nhật tiến độ hằng tuần', 'Bàn giao, hướng dẫn sử dụng, bảo hành'
+    ]);
+    expect(vi.services.items.map((i: any) => i.benefits)).toEqual([
+      ['Giao diện đẹp trên điện thoại', 'Khách tìm thấy trên Google', 'Nút gọi / Zalo / bản đồ', 'Tự sửa nội dung được'],
+      ['Quản lý đơn, kho, khách hàng tại một chỗ', 'Dùng trên điện thoại và máy tính', 'Báo cáo doanh thu', 'Phân quyền nhân viên'],
+      ['Chatbot trả lời khách 24/7', 'Tự động hóa việc lặp lại (nhập liệu, báo cáo, nhắc việc)', 'Kết nối các công cụ đang dùng']
+    ]);
+    expect(vi.services.whyMe.points).toEqual([
+      '9+ năm, hệ thống lớn cho khu vực công & y tế', 'Làm việc trực tiếp, không qua trung gian', 'Giá rõ ràng trước khi bắt đầu', 'Hỗ trợ sau bàn giao'
+    ]);
+    // Commercial terms the owner has not approved must not appear
+    const viText = JSON.stringify(vi.services);
+    for (const claim of ['tên miền', 'máy chủ', 'đặt cọc', 'bảo hành miễn phí', 'sửa lỗi miễn phí', 'báo giá miễn phí']) {
+      expect(viText, claim).not.toContain(claim);
+    }
+    const enText = JSON.stringify(en.services).toLowerCase();
+    for (const claim of ['domain', 'hosting', 'deposit', 'free 3-month', 'for free during', 'quote are free']) {
+      expect(enText, claim).not.toContain(claim);
+    }
     expect(vi.layout.nav.services).toBe('Dịch vụ');
     expect(en.layout.nav.services).toBe('Services');
   });
@@ -112,10 +133,21 @@ test.describe('services page', () => {
   test('final CTA is clickable at page bottom on mobile', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'floating button is mobile-only');
     await gotoReady(page, '/dich-vu/?lang=vi');
-    const phone = vi(page).locator('.svc-cta a.svc-phone');
-    await phone.scrollIntoViewIfNeeded();
-    // trial: fails if another element (the floating button) would receive the click
-    await phone.click({ trial: true, timeout: 3000 });
+    // Jump to the real end (the site scrolls smoothly, which would still be animating)
+    await page.evaluate(() => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, document.documentElement.scrollHeight);
+    });
+    await page.waitForTimeout(200);
+    const atEnd = (await vi(page).locator('.svc-cta').boundingBox())!;
+    expect(atEnd.y + atEnd.height, 'scrolled to the end').toBeLessThanOrEqual(page.viewportSize()!.height);
+    const floating = (await page.locator('a.svc-zalo-float').boundingBox())!;
+    for (const button of await vi(page).locator('.svc-cta a').all()) {
+      const box = (await button.boundingBox())!;
+      const overlap = box.x < floating.x + floating.width && floating.x < box.x + box.width &&
+        box.y < floating.y + floating.height && floating.y < box.y + box.height;
+      expect(overlap, 'final CTA button under the floating Zalo button').toBe(false);
+    }
   });
 });
 
@@ -152,4 +184,81 @@ test.describe('mobile bottom bar', () => {
       expect(voice.x + voice.width, 'sound button inside the bar').toBeLessThanOrEqual(barBox.x + barBox.width);
     });
   }
+});
+
+// Same look as the home page: navigation pill, section titles, gradient buttons, glyphs.
+test.describe('services page matches the home style', () => {
+  test('desktop shows the home navigation pill with services active and a working language switch', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop pill');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(page.locator('.sidebar-nav')).toBeVisible();
+    await expect(page.locator('#sidebar li.sidebar-link')).toHaveClass(/active/);
+    await page.locator('.sidebar-nav .lang-option[data-lang="en"]').click();
+    await expect(page.locator('[data-lang-block="en"] h1')).toBeVisible();
+    await expect(page).toHaveTitle(load('en').services.meta.title);
+  });
+
+  test('section buttons in the pill go to that home section', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop pill');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await page.locator('#sidebar li[data-menuanchor="du-an"] button').click();
+    await expect(page).toHaveURL(/\/\?lang=vi#du-an$/);
+  });
+
+  test('back link to the home page', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const back = page.locator('[data-lang-block="vi"] a.svc-back');
+    await expect(back).toBeVisible();
+    await expect(back).toHaveAttribute('href', '/?lang=vi');
+  });
+
+  test('section titles carry the home underline bar', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const bar = await page.locator('[data-lang-block="vi"] .svc-process h2').evaluate((h) => {
+      const s = getComputedStyle(h, '::after');
+      return { w: s.width, h: s.height, content: s.content };
+    });
+    expect(bar).toEqual({ w: '56px', h: '4px', content: '""' });
+  });
+
+  test('primary buttons use the home gradient', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const bg = await page.locator('[data-lang-block="vi"] .svc-hero a.svc-zalo').evaluate((a) => getComputedStyle(a).backgroundImage);
+    expect(bg).toContain('linear-gradient');
+    expect(bg).toContain('rgb(99, 102, 241)');
+  });
+
+  test('hero badge and a glyph on every service card', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const vi = page.locator('[data-lang-block="vi"]');
+    await expect(vi.locator('.svc-hero .svc-badge')).toHaveText(load('vi').services.labels.badge);
+    await expect(vi.locator('.svc-card .svc-glyph svg')).toHaveCount(3);
+  });
+});
+
+test.describe('readability', () => {
+  // WCAG relative luminance contrast of a CSS rgb() colour against white
+  const contrastOnWhite = (rgb: string) => {
+    const [r, g, b] = rgb.match(/\d+/g)!.slice(0, 3).map((v) => {
+      const c = Number(v) / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    });
+    return 1.05 / (0.2126 * r + 0.7152 * g + 0.0722 * b + 0.05);
+  };
+
+  test('text links meet 4.5:1 on white', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const example = await page.locator('[data-lang-block="vi"] .svc-example').evaluate((a) => getComputedStyle(a).color);
+    expect(contrastOnWhite(example)).toBeGreaterThanOrEqual(4.5);
+    await gotoReady(page, '/?lang=vi');
+    const contact = await page.locator('#lien-he a.contact-services-link').evaluate((a) => getComputedStyle(a).color);
+    expect(contrastOnWhite(contact)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  test('the phone number never breaks across lines', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const lines = await page.locator('[data-lang-block="vi"] .svc-cta .svc-phone-number').evaluate((el) => el.getClientRects().length);
+    expect(lines).toBe(1);
+  });
 });

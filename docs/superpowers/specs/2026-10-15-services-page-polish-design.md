@@ -66,7 +66,7 @@ The page should look as professional as the home page and earn an SME owner's tr
   - management: "quán cà phê, cửa hàng, cơ sở dịch vụ có đơn hàng mỗi ngày"
   - automation: "đội ngũ đang mất thời gian cho việc lặp lại"
   - en translations follow the same meaning.
-- **Per-card call to action:** a full-width secondary button "Hỏi giá gói này" / "Ask about this service", linking to Zalo.
+- **Per-card call to action:** a full-width secondary button "Hỏi giá gói này qua Zalo" / "Ask about this on Zalo", linking to Zalo.
 - **Highlighted card:** `management` gets a 2px gradient border (the home avatar ring technique) and a "Phổ biến" / "Popular" chip. The highlight is set by `items[].featured: true`.
 
 ### 4. Mobile layout and contact bar

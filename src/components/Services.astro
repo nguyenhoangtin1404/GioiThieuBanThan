@@ -1,5 +1,7 @@
 ---
 import { CONTACT } from '../config/contact';
+import ServicesFeatured from './ServicesFeatured.astro';
+import { resolveFeatured } from './servicesFeatured';
 
 interface ServiceItem {
   id: string;
@@ -15,11 +17,15 @@ interface Props {
   lang: 'vi' | 'en';
   // Projects that have a /projects/<id>/ page; an example link is shown only for these
   projectIdsWithDetail: string[];
+  // projects.items in the same language, for featured work
+  projects: any[];
 }
 
-const { services: s, lang, projectIdsWithDetail } = Astro.props;
+const { services: s, lang, projectIdsWithDetail, projects } = Astro.props;
 const items: ServiceItem[] = s.items || [];
 const external = { target: '_blank', rel: 'noopener noreferrer' };
+const featured = resolveFeatured(s.featured || [], projects, projectIdsWithDetail);
+const serviceTitles = Object.fromEntries(items.map((i) => [i.id, i.title]));
 
 // Stroke icons in the style of the home Contact glyphs, one per service
 const GLYPHS: Record<string, string> = {
@@ -80,6 +86,8 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       </article>
     ))}
   </section>
+
+  <ServicesFeatured items={featured} title={s.labels.featuredTitle} serviceTitles={serviceTitles} />
 
   <section class="svc-process">
     <h2 class="svc-title">{s.process.title}</h2>

@@ -9,11 +9,15 @@ import { CONTACT } from '../config/contact';
 const LANGS = ['vi', 'en'] as const;
 const viServices = (await getTranslations('vi')).services;
 const versions = await Promise.all(
-  LANGS.map(async (lang) => ({
-    lang,
-    // A language without `services` falls back to the Vietnamese content
-    services: (await getTranslations(lang)).services || viServices
-  }))
+  LANGS.map(async (lang) => {
+    const t = await getTranslations(lang);
+    return {
+      lang,
+      // A language without `services` falls back to the Vietnamese content
+      services: t.services || viServices,
+      projects: t.projects?.items || []
+    };
+  })
 );
 const projectIdsWithDetail = await getProjectIds();
 const vi = versions[0].services;
@@ -24,7 +28,7 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
   <main class="services-page" data-titles={JSON.stringify(titles)}>
     {versions.map((v) => (
       <div data-lang-block={v.lang}>
-        <Services services={v.services} lang={v.lang} projectIdsWithDetail={projectIdsWithDetail} />
+        <Services services={v.services} lang={v.lang} projectIdsWithDetail={projectIdsWithDetail} projects={v.projects} />
       </div>
     ))}
   </main>

@@ -369,3 +369,48 @@ test.describe('polish: hero', () => {
     expect(media.x).toBeGreaterThan(text.x + text.width - 1);
   });
 });
+
+test.describe('polish: featured', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('four cards in order with the right links', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const cards = vi(page).locator('a.svc-featured-card');
+    await expect(cards).toHaveCount(4);
+    expect(await cards.evaluateAll((as) => as.map((a) => a.getAttribute('data-project-id')))).toEqual(['to-lua-eakar', 'solo-cafe-order', 'dsf-hospital-suite', 'igate']);
+    expect(await cards.evaluateAll((as) => as.map((a) => a.getAttribute('href')))).toEqual(['https://totam.up.railway.app/', '/projects/solo-cafe-order/', '/projects/dsf-hospital-suite/', '/projects/igate/']);
+    await expect(cards.first()).toHaveAttribute('rel', 'noopener noreferrer');
+    await expect(cards.first()).toHaveAttribute('target', '_blank');
+    await expect(cards.nth(1)).not.toHaveAttribute('target', '_blank');
+  });
+
+  test('images are lazy, described and size-reserved', async ({ page }) => {
+    await page.route(/\.webp$/, async (r) => { await new Promise((res) => setTimeout(res, 1500)); await r.continue(); });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const imgs = vi(page).locator('.svc-featured-card img');
+    await expect(imgs).toHaveCount(4);
+    for (const img of await imgs.all()) {
+      await expect(img).toHaveAttribute('loading', 'lazy');
+      expect(await img.getAttribute('alt')).toBeTruthy();
+      await img.scrollIntoViewIfNeeded();
+      expect((await img.boundingBox())!.height, 'height reserved before the image loads').toBeGreaterThan(100);
+    }
+  });
+
+  test('each featured card is a single focusable link', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(vi(page).locator('a.svc-featured-card')).toHaveCount(4);
+    await expect(vi(page).locator('a.svc-featured-card a, a.svc-featured-card button')).toHaveCount(0);
+  });
+
+  test('unknown featured id is skipped', async () => {
+    const { resolveFeatured } = await import('../src/components/servicesFeatured');
+    const out = resolveFeatured(
+      [{ projectId: 'nope', serviceId: 'website' }, { projectId: 'igate', serviceId: 'automation' }, { projectId: 'nolink', serviceId: 'website' }],
+      [{ id: 'igate', name: 'iGate', highlight: 'x', cardBackground: '/igate.webp', links: {} }, { id: 'nolink', name: 'n', highlight: '', cardBackground: '/n.webp', links: {} }],
+      ['igate']
+    );
+    expect(out.map((o) => o.id)).toEqual(['igate']);
+    expect(out[0]).toMatchObject({ href: '/projects/igate/', external: false, image: '/igate.webp' });
+  });
+});

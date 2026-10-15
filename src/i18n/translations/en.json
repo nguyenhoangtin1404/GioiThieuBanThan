@@ -347,15 +347,11 @@
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"
-    },
-    "servicesLink": "Need a website or software? See services →"
+    }
   },
   "layout": {
     "title": "Tin Nguyen — Technical Lead · Full‑Stack Developer",
-    "description": "Online portfolio and CV of Tin Nguyen",
-    "nav": {
-      "services": "Services"
-    }
+    "description": "Online portfolio and CV of Tin Nguyen"
   },
   "services": {
     "meta": {
@@ -374,13 +370,13 @@
       "example": "See an example",
       "floatingZalo": "Message on Zalo",
       "badge": "Freelance services",
-      "back": "Home",
       "featuredTitle": "Featured work",
       "fit": "Good for",
       "askCard": "Ask about this on Zalo",
       "popular": "Popular",
       "call": "Call",
-      "photoAlt": "Nguyen Hoang Tin"
+      "photoAlt": "Nguyen Hoang Tin",
+      "cv": "View profile"
     },
     "items": [
       {

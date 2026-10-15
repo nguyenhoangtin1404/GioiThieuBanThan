@@ -26,6 +26,14 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
 
 <BaseLayout title={vi.meta.title} description={vi.meta.description}>
   <main class="services-page" data-titles={JSON.stringify(titles)}>
+    <!-- This page is for clients; its only way to the profile (the home page, hồ sơ năng lực) is this link -->
+    <header class="svc-topbar">
+      <a class="svc-cv" href="/?lang=vi" data-i18n="services.labels.cv">{vi.labels.cv}</a>
+      <div class="svc-langs" role="group" aria-label="Language">
+        <button type="button" class="svc-lang" data-lang="vi" aria-pressed="true">VI</button>
+        <button type="button" class="svc-lang" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </header>
     {versions.map((v) => (
       <div data-lang-block={v.lang}>
         <Services services={v.services} lang={v.lang} projectIdsWithDetail={projectIdsWithDetail} projects={v.projects} />
@@ -40,20 +48,26 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
   </nav>
 
   <script is:inline>
-    // The home navigation pill is shown here too (desktop): services is the active item
-    // and the section buttons lead back to that section of the home page.
+    // Own language toggle (the home navigation pill is not used on this page).
+    // Same contract as BaseLayout's switcher: save the choice, then announce it.
     (function() {
-      document.querySelectorAll('#sidebar li').forEach((li) => {
-        li.classList.toggle('active', li.classList.contains('sidebar-link'));
-      });
-      document.querySelector('#sidebar li.sidebar-link a')?.setAttribute('aria-current', 'page');
-      document.querySelectorAll('#sidebar li[data-menuanchor] button').forEach((button) => {
+      const current = () => (document.documentElement.lang === 'en' ? 'en' : 'vi');
+      const sync = () => {
+        const lang = current();
+        document.querySelectorAll('.svc-lang').forEach((b) => b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)));
+        const cv = document.querySelector('.svc-cv');
+        if (cv) cv.setAttribute('href', `/?lang=${lang}`);
+      };
+      document.querySelectorAll('.svc-lang').forEach((button) => {
         button.addEventListener('click', () => {
-          const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
-          const anchor = button.closest('li')?.getAttribute('data-menuanchor');
-          window.location.href = `/?lang=${lang}#${anchor}`;
+          const lang = button.getAttribute('data-lang');
+          if (lang === current()) return;
+          try { localStorage.setItem('lang', lang); } catch {}
+          window.dispatchEvent(new CustomEvent('langchange', { detail: { lang }, bubbles: true, cancelable: true }));
         });
       });
+      window.addEventListener('langchange', () => setTimeout(sync, 0));
+      sync();
     })();
 
     // Show the page title for the displayed language
@@ -75,26 +89,71 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
     html:not([lang='en']) [data-lang-block='en'] {
       display: none;
     }
-
-    /* BaseLayout hides the navigation pill on non-fullpage pages; this page keeps it (desktop) */
-    @media (min-width: 768px) {
-      body:not(:has(#fullpage)):has(.services-page) .sidebar-nav {
-        display: flex !important;
-      }
-
-      /* Narration exists only on the home page; no dead voice button here */
-      body:has(.services-page) .sidebar-nav [data-voice-toggle] {
-        display: none !important;
-      }
-    }
   </style>
 
   <style>
     .services-page {
       max-width: 1100px;
       margin: 0 auto;
-      /* Top room for the fixed navigation pill */
-      padding: 6.5rem clamp(1rem, 4vw, 3rem) 5rem;
+      padding: 1.25rem clamp(1rem, 4vw, 3rem) 5rem;
+    }
+
+    .svc-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .svc-cv {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: #0369a1;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Arrow in CSS: data-i18n replaces the text on a language switch */
+    .svc-cv::after {
+      content: ' →';
+      white-space: pre;
+    }
+
+    .svc-cv:hover {
+      text-decoration: underline;
+    }
+
+    .svc-langs {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--surface-weak);
+    }
+
+    .svc-lang {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .svc-lang[aria-pressed='true'] {
+      background: rgba(14, 165, 233, 0.15);
+      color: #0369a1;
+    }
+
+    .svc-cv:focus-visible,
+    .svc-lang:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
     }
 
     .svc-contact-bar {
@@ -104,7 +163,7 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
     @media (max-width: 767px) {
       .services-page {
         /* Room for the contact bar so it never covers the final call to action */
-        padding: 1.5rem 1rem calc(64px + 16px + env(safe-area-inset-bottom));
+        padding: 0.75rem 1rem calc(64px + 16px + env(safe-area-inset-bottom));
       }
 
       .svc-contact-bar {

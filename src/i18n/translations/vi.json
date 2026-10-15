@@ -347,15 +347,11 @@
       "telegram": "Telegram",
       "email": "Email",
       "github": "GitHub"
-    },
-    "servicesLink": "Cần làm website/phần mềm? Xem dịch vụ →"
+    }
   },
   "layout": {
     "title": "Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer",
-    "description": "Portfolio và CV online của Nguyễn Hoàng Tín",
-    "nav": {
-      "services": "Dịch vụ"
-    }
+    "description": "Portfolio và CV online của Nguyễn Hoàng Tín"
   },
   "services": {
     "meta": {
@@ -374,13 +370,13 @@
       "example": "Xem ví dụ đã làm",
       "floatingZalo": "Nhắn Zalo",
       "badge": "Dịch vụ freelance",
-      "back": "Trang chủ",
       "featuredTitle": "Dự án tiêu biểu",
       "fit": "Phù hợp với",
       "askCard": "Hỏi giá gói này qua Zalo",
       "popular": "Phổ biến",
       "call": "Gọi",
-      "photoAlt": "Nguyễn Hoàng Tín"
+      "photoAlt": "Nguyễn Hoàng Tín",
+      "cv": "Xem hồ sơ năng lực"
     },
     "items": [
       {

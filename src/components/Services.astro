@@ -39,8 +39,6 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
 ---
 
 <article class="services" data-lang={lang}>
-  <a class="svc-back" href={`/?lang=${lang}`}>← {s.labels.back}</a>
-
   <section class="svc-hero">
     <div class="svc-hero-text">
       <span class="svc-badge">{s.labels.badge}</span>
@@ -48,7 +46,7 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       <p class="svc-subtitle">{s.hero.subtitle}</p>
       <div class="svc-actions">
         <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.hero.primaryCta}</a>
-        <a class="svc-btn svc-btn--ghost svc-projects" href={`/?lang=${lang}#du-an`}>{s.hero.secondaryCta}</a>
+        <a class="svc-btn svc-btn--ghost svc-projects" href="#du-an-tieu-bieu">{s.hero.secondaryCta}</a>
       </div>
       <ul class="svc-trust">
         {(s.trust || []).map((t: { value: string; label: string }) => (
@@ -164,24 +162,6 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     overflow-wrap: anywhere;
   }
 
-  /* Back link: same as the project detail pages */
-  .svc-back {
-    align-self: flex-start;
-    /* 44px tap target; the negative margins keep the layout as if it were 26px tall */
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin-top: -9px;
-    margin-bottom: calc(-1 * clamp(2rem, 5vw, 3.5rem) - 9px);
-    color: var(--muted);
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .svc-back:hover {
-    color: var(--text);
-  }
-
   /* Hero: badge, big title, muted subtitle, pill buttons (home Hero) */
   .svc-badge {
     display: inline-flex;
@@ -261,7 +241,8 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
 
   @media (max-width: 767px) {
     .svc-hero {
-      grid-template-columns: 1fr;
+      /* minmax(0, …): the scrolling trust row must not widen the column */
+      grid-template-columns: minmax(0, 1fr);
       gap: 1rem;
     }
 

@@ -79,8 +79,11 @@ test.describe('translations', () => {
     expect(vi.services.items.map((i: any) => !!i.featured)).toEqual([false, true, false]);
     expect(vi.services.labels).toMatchObject({ featuredTitle: 'Dự án tiêu biểu', fit: 'Phù hợp với', askCard: 'Hỏi giá gói này qua Zalo', popular: 'Phổ biến', call: 'Gọi', photoAlt: 'Nguyễn Hoàng Tín' });
     expect(en.services.labels).toMatchObject({ featuredTitle: 'Featured work', fit: 'Good for', askCard: 'Ask about this on Zalo', popular: 'Popular', call: 'Call', photoAlt: 'Nguyen Hoang Tin' });
-    expect(vi.layout.nav.services).toBe('Dịch vụ');
-    expect(en.layout.nav.services).toBe('Services');
+    expect(vi.services.labels.cv).toBe('Xem hồ sơ năng lực');
+    expect(en.services.labels.cv).toBe('View profile');
+    // The home page (the CV) carries nothing about the services page
+    expect(vi.layout.nav).toBeUndefined();
+    expect(vi.contact.servicesLink).toBeUndefined();
   });
 });
 
@@ -145,67 +148,8 @@ test.describe('services page', () => {
 
 });
 
-test.describe('site links', () => {
-  test('sidebar Dịch vụ link opens /dich-vu/', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop sidebar; the mobile bottom bar has no room (see mobile bottom bar)');
-    await gotoReady(page, '/?lang=vi');
-    const link = page.locator('#sidebar a[href="/dich-vu/"]');
-    await expect(link).toHaveAttribute('aria-label', 'Dịch vụ');
-    await link.click();
-    await expect(page).toHaveURL(/\/dich-vu\/$/);
-  });
-
-  test('Contact section links to services', async ({ page }) => {
-    await gotoReady(page, '/?lang=vi');
-    await expect(page.locator('#lien-he a.contact-services-link')).toHaveAttribute('href', '/dich-vu/');
-  });
-});
-
-test.describe('mobile bottom bar', () => {
-  for (const width of [360, 390]) {
-    test(`fits at ${width}px: language and sound controls do not overlap`, async ({ page, isMobile }) => {
-      test.skip(!isMobile, 'mobile bottom bar');
-      await page.setViewportSize({ width, height: 800 });
-      await gotoReady(page, '/?lang=vi');
-      const bar = page.locator('.sidebar-nav-mobile');
-      // Kept off the bottom bar: a fifth icon pushes the sound button off a 360px screen
-      await expect(bar.locator('a[href="/dich-vu/"]')).toBeHidden();
-      const box = async (sel: string) => (await bar.locator(sel).first().boundingBox())!;
-      const lang = await box('.lang-switcher');
-      const voice = await box('.voice-toggle');
-      const barBox = await box(':scope');
-      expect(lang.x + lang.width, 'language switcher ends before the sound button').toBeLessThanOrEqual(voice.x);
-      expect(voice.x + voice.width, 'sound button inside the bar').toBeLessThanOrEqual(barBox.x + barBox.width);
-    });
-  }
-});
-
 // Same look as the home page: navigation pill, section titles, gradient buttons, glyphs.
 test.describe('services page matches the home style', () => {
-  test('desktop shows the home navigation pill with services active and a working language switch', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop pill');
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    await expect(page.locator('.sidebar-nav')).toBeVisible();
-    await expect(page.locator('#sidebar li.sidebar-link')).toHaveClass(/active/);
-    await page.locator('.sidebar-nav .lang-option[data-lang="en"]').click();
-    await expect(page.locator('[data-lang-block="en"] h1')).toBeVisible();
-    await expect(page).toHaveTitle(load('en').services.meta.title);
-  });
-
-  test('section buttons in the pill go to that home section', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop pill');
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    await page.locator('#sidebar li[data-menuanchor="du-an"] button').click();
-    await expect(page).toHaveURL(/\/\?lang=vi#du-an$/);
-  });
-
-  test('back link to the home page', async ({ page }) => {
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    const back = page.locator('[data-lang-block="vi"] a.svc-back');
-    await expect(back).toBeVisible();
-    await expect(back).toHaveAttribute('href', '/?lang=vi');
-  });
-
   test('section titles carry the home underline bar', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     const bar = await page.locator('[data-lang-block="vi"] .svc-process h2').evaluate((h) => {
@@ -244,29 +188,12 @@ test.describe('readability', () => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     const example = await page.locator('[data-lang-block="vi"] .svc-example').evaluate((a) => getComputedStyle(a).color);
     expect(contrastOnWhite(example)).toBeGreaterThanOrEqual(4.5);
-    await gotoReady(page, '/?lang=vi');
-    const contact = await page.locator('#lien-he a.contact-services-link').evaluate((a) => getComputedStyle(a).color);
-    expect(contrastOnWhite(contact)).toBeGreaterThanOrEqual(4.5);
+    const cv = await page.locator('.svc-topbar a.svc-cv').evaluate((a) => getComputedStyle(a).color);
+    expect(contrastOnWhite(cv)).toBeGreaterThanOrEqual(4.5);
   });
 });
 
 test.describe('home parity details', () => {
-  test('services item in the pill looks active, like the home item', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop pill');
-    await gotoReady(page, '/?lang=vi');
-    const homeActiveBg = await page.locator('#sidebar li.active button').evaluate((b) => getComputedStyle(b).backgroundColor);
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    const link = page.locator('#sidebar li.sidebar-link a');
-    await expect(link).toHaveAttribute('aria-current', 'page');
-    expect(await link.evaluate((a) => getComputedStyle(a).backgroundColor)).toBe(homeActiveBg);
-  });
-
-  test('no dead voice button on the services page', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop pill');
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    await expect(page.locator('.sidebar-nav [data-voice-toggle]')).toBeHidden();
-  });
-
   test('buttons are the height of the home buttons', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     const home = (await page.locator('.actions a.primary').first().boundingBox())!.height;
@@ -410,10 +337,9 @@ test.describe('polish: cards', () => {
     await expect(vi(page).locator('[data-service-id="management"] .svc-popular')).toHaveText('Phổ biến');
   });
 
-  test('English switch covers the new copy', async ({ page, isMobile }) => {
-    test.skip(isMobile, 'desktop pill switch');
+  test('English switch covers the new copy', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
-    await page.locator('.sidebar-nav .lang-option[data-lang="en"]').click();
+    await page.locator('.svc-topbar .svc-lang[data-lang="en"]').click();
     const en = page.locator('[data-lang-block="en"]');
     await expect(en.locator('.svc-trust-value').first()).toHaveText('9+ years');
     await expect(en.locator('[data-service-id="management"] .svc-popular')).toHaveText('Popular');
@@ -469,7 +395,7 @@ test.describe('polish: a11y', () => {
   test('visible 2px focus ring on links, buttons and FAQ', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible applies
-    for (const sel of ['a.svc-back', '.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-faq summary']) {
+    for (const sel of ['.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-faq summary']) {
       const el = vi(page).locator(sel).first();
       await el.focus();
       const style = await el.evaluate((e) => [e.matches(':focus-visible'), getComputedStyle(e).outlineWidth, getComputedStyle(e).outlineStyle]);
@@ -477,9 +403,11 @@ test.describe('polish: a11y', () => {
     }
   });
 
-  test('back link is a 44px target', async ({ page }) => {
+  test('CV link and language buttons are 44px targets', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
-    expect((await vi(page).locator('a.svc-back').boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    for (const el of await page.locator('.svc-topbar a, .svc-topbar button').all()) {
+      expect((await el.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
   });
 
   test('no motion under reduced motion', async ({ page }) => {
@@ -575,4 +503,59 @@ test.describe('polish: review fixes', () => {
       expect(h, (await el.innerText()).slice(0, 40)).toBeGreaterThanOrEqual(44);
     }
   });
+});
+
+// The home page is the CV for recruiters; the services page is for clients.
+// Home never links to services; services links to the CV once.
+test.describe('separate audiences', () => {
+  test('home page has no link to the services page', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await expect(page.locator('a[href*="dich-vu"]')).toHaveCount(0);
+  });
+
+  test('services page has no home navigation pill', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(page.locator('.sidebar-nav')).toBeHidden();
+    await expect(page.locator('.sidebar-nav-mobile')).toBeHidden();
+  });
+
+  test('exactly one link back to the profile (hồ sơ năng lực)', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const home = await page.locator('a').evaluateAll((as) =>
+      as.filter((a) => (a as HTMLElement).offsetParent !== null)
+        .map((a) => a.getAttribute('href') || '')
+        .filter((h) => h === '/' || h.startsWith('/?') || h.startsWith('/#'))
+    );
+    expect(home).toEqual(['/?lang=vi']);
+    await expect(page.locator('.svc-topbar a.svc-cv')).toHaveText('Xem hồ sơ năng lực');
+  });
+
+  test('"see past work" stays on the page', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(page.locator('[data-lang-block="vi"] .svc-hero a.svc-projects')).toHaveAttribute('href', '#du-an-tieu-bieu');
+    await expect(page.locator('[data-lang-block="vi"] section#du-an-tieu-bieu')).toHaveCount(1);
+  });
+
+  test('language toggle on the page works on every screen', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await page.locator('.svc-topbar .svc-lang[data-lang="en"]').click();
+    await expect(page.locator('[data-lang-block="en"] h1')).toBeVisible();
+    await expect(page).toHaveTitle(load('en').services.meta.title);
+    await expect(page.locator('.svc-topbar a.svc-cv')).toHaveText('View profile');
+    await expect(page.locator('.svc-topbar a.svc-cv')).toHaveAttribute('href', '/?lang=en');
+    await expect(page.locator('.svc-topbar .svc-lang[data-lang="en"]')).toHaveAttribute('aria-pressed', 'true');
+  });
+});
+
+test('hero text stays inside the screen on phones', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'phone widths');
+  for (const width of [360, 375]) {
+    await page.setViewportSize({ width, height: 800 });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const hero = page.locator('[data-lang-block="vi"] .svc-hero');
+    for (const sel of ['h1', '.svc-subtitle', '.svc-actions', '.svc-trust']) {
+      const box = (await hero.locator(sel).boundingBox())!;
+      expect(box.x + box.width, `${sel} at ${width}px`).toBeLessThanOrEqual(width);
+    }
+  }
 });

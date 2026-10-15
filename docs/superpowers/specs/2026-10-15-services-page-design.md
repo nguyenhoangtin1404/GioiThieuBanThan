@@ -6,6 +6,15 @@
 - **Success:** an SME owner who opens the link (shared on Zalo or Facebook, or reached from the portfolio) understands within a minute what they can buy, roughly what it costs, and taps **Zalo** to ask.
 - **Audiences:** the home page keeps speaking to recruiters (Technical Lead). This page is for clients. The two messages stay separate.
 
+## Amendment (owner, 2026-10-15)
+
+The home page (the CV, "hồ sơ năng lực") and `/dich-vu/` serve different audiences and stay separate:
+- The home page carries **no** link to `/dich-vu/`: no sidebar item and no Contact line.
+- `/dich-vu/` does not reuse the home navigation pill. Its only link to the home page is "Xem hồ sơ năng lực" / "View profile", and it has its own VI/EN toggle.
+- `/dich-vu/` stays in the sitemap, so it can be found and shared.
+
+Older lines below about sidebar or Contact links are superseded.
+
 ## Decisions (agreed with the owner)
 
 | Topic | Decision |

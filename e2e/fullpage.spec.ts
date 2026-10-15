@@ -72,12 +72,40 @@ test.describe('desktop fullpage', () => {
     expect(await page.evaluate(() => (window as any).__moves)).toBe(1);
   });
 
-  test('sidebar click after resize changes history once', async ({ page }) => {
+  test('sidebar click after resize adds no history entry', async ({ page }) => {
     await gotoReady(page, '/?lang=vi');
     await crossBreakpoint(page);
     const before = await page.evaluate(() => history.length);
     await page.locator('#sidebar li[data-menuanchor="lien-he"] button').click();
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
-    expect((await page.evaluate(() => history.length)) - before).toBeLessThanOrEqual(1);
+    expect(await page.evaluate(() => history.length)).toBe(before);
+  });
+
+  test('modal stays locked across a breakpoint crossing', async ({ page }) => {
+    await openIgateModal(page);
+    await crossBreakpoint(page);
+    await expect(page.locator('#project-modal')).toHaveClass(/active/);
+    await page.keyboard.press('End');
+    await page.waitForTimeout(300);
+    await expect(page.locator('#du-an')).toHaveClass(/active/);
+  });
+
+  test('section changes do not add history entries', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    await page.waitForFunction(() => (window as any).vanillaFullpage);
+    const before = await page.evaluate(() => history.length);
+    await page.keyboard.press('PageDown');
+    await expect(page.locator('#du-an')).toHaveClass(/active/);
+    await page.waitForTimeout(1000);
+    await page.keyboard.press('End');
+    await expect(page.locator('#lien-he')).toHaveClass(/active/);
+    expect(await page.evaluate(() => history.length)).toBe(before);
+    await expect(page).toHaveURL(/#lien-he$/);
+  });
+
+  test('deep link opens its section', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi#lien-he');
+    await expect(page.locator('#lien-he')).toHaveClass(/active/);
+    await expect(page).toHaveURL(/#lien-he$/);
   });
 });

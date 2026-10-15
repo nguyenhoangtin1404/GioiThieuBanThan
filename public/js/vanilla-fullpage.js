@@ -88,7 +88,7 @@ class VanillaFullpage {
     window.addEventListener('resize', () => this.markOverflow(), { signal });
     this.setupWheel();
     this.setupTouch();
-    this.updateURL();
+    // Không ghi URL lúc init: giữ nguyên hash có sẵn (deep link như #lien-he)
   }
 
   /**
@@ -455,21 +455,14 @@ class VanillaFullpage {
 
   /**
    * Cập nhật URL hash theo anchor của section hiện tại
-   * @description Sử dụng history.pushState để cập nhật URL mà không reload trang
+   * @description Dùng history.replaceState: đổi section không tạo mục lịch sử mới, nên nút Back rời trang.
+   * Giữ nguyên history.state (modal dự án lưu { projectId } ở đó).
    * @private
    */
   updateURL() {
-    // Nếu có anchor cho section hiện tại
-    if (this.anchors[this.currentIndex]) {
-      const anchor = this.anchors[this.currentIndex];
-      
-      // Sử dụng pushState nếu browser hỗ trợ (modern browsers)
-      if (history.pushState) {
-        history.pushState(null, null, '#' + anchor);
-      } else {
-        // Fallback cho browsers cũ
-        window.location.hash = anchor;
-      }
+    const anchor = this.anchors[this.currentIndex];
+    if (anchor) {
+      history.replaceState(history.state, '', '#' + anchor);
     }
   }
 }

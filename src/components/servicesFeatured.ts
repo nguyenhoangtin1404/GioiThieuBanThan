@@ -15,12 +15,13 @@ export interface FeaturedCard {
 
 // Featured work reuses project data by id. A card links to the project's detail page
 // when it has one, else to its demo; ids that are gone or have nowhere to go are skipped.
-export function resolveFeatured(featured: FeaturedRef[], projects: any[], idsWithDetail: string[]): FeaturedCard[] {
+// With `lang`, internal links keep it (?lang=), so a shared ?lang=en link stays in English.
+export function resolveFeatured(featured: FeaturedRef[], projects: any[], idsWithDetail: string[], lang?: 'vi' | 'en'): FeaturedCard[] {
   return (featured || []).flatMap((ref) => {
     const project = (projects || []).find((p) => p?.id === ref.projectId);
     if (!project) return [];
     const hasDetail = idsWithDetail.includes(project.id);
-    const href = hasDetail ? `/projects/${project.id}/` : project.links?.demo;
+    const href = hasDetail ? `/projects/${project.id}/${lang ? `?lang=${lang}` : ''}` : project.links?.demo;
     if (!href) return [];
     return [{
       id: project.id,

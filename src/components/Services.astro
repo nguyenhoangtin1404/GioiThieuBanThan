@@ -26,7 +26,7 @@ interface Props {
 const { services: s, lang, projectIdsWithDetail, projects } = Astro.props;
 const items: ServiceItem[] = s.items || [];
 const external = { target: '_blank', rel: 'noopener noreferrer' };
-const featured = resolveFeatured(s.featured || [], projects, projectIdsWithDetail);
+const featured = resolveFeatured(s.featured || [], projects, projectIdsWithDetail, lang);
 const serviceTitles = Object.fromEntries(items.map((i) => [i.id, i.title]));
 
 // Stroke icons in the style of the home Contact glyphs, one per service
@@ -46,7 +46,7 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       <p class="svc-subtitle">{s.hero.subtitle}</p>
       <div class="svc-actions">
         <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.hero.primaryCta}</a>
-        <a class="svc-btn svc-btn--ghost svc-projects" href="#du-an-tieu-bieu">{s.hero.secondaryCta}</a>
+        <a class="svc-btn svc-btn--ghost svc-projects" href={`#du-an-tieu-bieu-${lang}`}>{s.hero.secondaryCta}</a>
       </div>
       <ul class="svc-trust">
         {(s.trust || []).map((t: { value: string; label: string }) => (
@@ -90,14 +90,14 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
           <span class="svc-duration">{s.labels.duration}: {item.duration}</span>
         </div>
         {item.exampleProjectId && projectIdsWithDetail.includes(item.exampleProjectId) && (
-          <a class="svc-example" href={`/projects/${item.exampleProjectId}/`}>{s.labels.example} →</a>
+          <a class="svc-example" href={`/projects/${item.exampleProjectId}/?lang=${lang}`}>{s.labels.example} →</a>
         )}
         <a class="svc-btn svc-btn--ghost svc-ask" href={CONTACT.zaloHref} {...external}>{s.labels.askCard}</a>
       </article>
     ))}
   </section>
 
-  <ServicesFeatured items={featured} title={s.labels.featuredTitle} serviceTitles={serviceTitles} />
+  <ServicesFeatured items={featured} title={s.labels.featuredTitle} serviceTitles={serviceTitles} lang={lang} />
 
   <section class="svc-process">
     <h2 class="svc-title">{s.process.title}</h2>

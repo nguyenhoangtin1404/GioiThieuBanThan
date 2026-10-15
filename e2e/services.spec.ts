@@ -130,7 +130,7 @@ test.describe('services page', () => {
   test('example link only for a project with a detail page', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await expect(vi(page).locator('.svc-example')).toHaveCount(1);
-    await expect(vi(page).locator('[data-service-id="management"] .svc-example')).toHaveAttribute('href', '/projects/solo-cafe-order/');
+    await expect(vi(page).locator('[data-service-id="management"] .svc-example')).toHaveAttribute('href', '/projects/solo-cafe-order/?lang=vi');
   });
 
   test('no fullpage script', async ({ page }) => {
@@ -278,7 +278,7 @@ test.describe('polish: featured', () => {
     const cards = vi(page).locator('a.svc-featured-card');
     await expect(cards).toHaveCount(4);
     expect(await cards.evaluateAll((as) => as.map((a) => a.getAttribute('data-project-id')))).toEqual(['to-lua-eakar', 'solo-cafe-order', 'dsf-hospital-suite', 'igate']);
-    expect(await cards.evaluateAll((as) => as.map((a) => a.getAttribute('href')))).toEqual(['https://totam.up.railway.app/', '/projects/solo-cafe-order/', '/projects/dsf-hospital-suite/', '/projects/igate/']);
+    expect(await cards.evaluateAll((as) => as.map((a) => a.getAttribute('href')))).toEqual(['https://totam.up.railway.app/', '/projects/solo-cafe-order/?lang=vi', '/projects/dsf-hospital-suite/?lang=vi', '/projects/igate/?lang=vi']);
     await expect(cards.first()).toHaveAttribute('rel', 'noopener noreferrer');
     await expect(cards.first()).toHaveAttribute('target', '_blank');
     await expect(cards.nth(1)).not.toHaveAttribute('target', '_blank');
@@ -312,6 +312,8 @@ test.describe('polish: featured', () => {
     );
     expect(out.map((o) => o.id)).toEqual(['igate']);
     expect(out[0]).toMatchObject({ href: '/projects/igate/', external: false, image: '/igate.webp' });
+    // The page adds ?lang= for the language it renders
+    expect(resolveFeatured([{ projectId: 'igate', serviceId: 'automation' }], [{ id: 'igate', name: 'iGate', links: {} }], ['igate'], 'en')[0].href).toBe('/projects/igate/?lang=en');
   });
 });
 
@@ -532,8 +534,11 @@ test.describe('separate audiences', () => {
 
   test('"see past work" stays on the page', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
-    await expect(page.locator('[data-lang-block="vi"] .svc-hero a.svc-projects')).toHaveAttribute('href', '#du-an-tieu-bieu');
-    await expect(page.locator('[data-lang-block="vi"] section#du-an-tieu-bieu')).toHaveCount(1);
+    await expect(page.locator('[data-lang-block="vi"] .svc-hero a.svc-projects')).toHaveAttribute('href', '#du-an-tieu-bieu-vi');
+    await expect(page.locator('[data-lang-block="vi"] section#du-an-tieu-bieu-vi')).toHaveCount(1);
+    // Ids must be unique: both languages are rendered
+    const ids = await page.locator('[id]').evaluateAll((els) => els.map((e) => e.id));
+    expect(ids.length).toBe(new Set(ids).size);
   });
 
   test('language toggle on the page works on every screen', async ({ page }) => {
@@ -558,4 +563,22 @@ test('hero text stays inside the screen on phones', async ({ page, isMobile }) =
       expect(box.x + box.width, `${sel} at ${width}px`).toBeLessThanOrEqual(width);
     }
   }
+});
+
+test.describe('codex review fixes', () => {
+  test('English "see past projects" scrolls to the English featured work', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=en');
+    await page.locator('[data-lang-block="en"] .svc-hero a.svc-projects').click();
+    await expect(page.locator('[data-lang-block="en"] .svc-featured')).toBeInViewport();
+  });
+
+  test('a shared ?lang=en link keeps English on the project pages', async ({ page }) => {
+    await page.addInitScript(() => { try { if (!sessionStorage.getItem('seeded')) { localStorage.setItem('lang', 'vi'); sessionStorage.setItem('seeded', '1'); } } catch {} });
+    await gotoReady(page, '/dich-vu/?lang=en');
+    const en = page.locator('[data-lang-block="en"]');
+    await expect(en.locator('[data-service-id="management"] .svc-example')).toHaveAttribute('href', '/projects/solo-cafe-order/?lang=en');
+    await en.locator('a.svc-featured-card[data-project-id="igate"]').click();
+    await expect(page).toHaveURL(/\/projects\/igate\/\?lang=en$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  });
 });

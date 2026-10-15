@@ -5,13 +5,15 @@ interface Props {
   items: FeaturedCard[];
   title: string;
   serviceTitles: Record<string, string>;
+  lang: 'vi' | 'en';
 }
 
-const { items, title, serviceTitles } = Astro.props;
+const { items, title, serviceTitles, lang } = Astro.props;
+// One id per language: both language blocks are rendered on the page
 ---
 
 {items.length > 0 && (
-  <section class="svc-featured" id="du-an-tieu-bieu">
+  <section class="svc-featured" id={`du-an-tieu-bieu-${lang}`}>
     <h2 class="svc-title">{title}</h2>
     <div class="svc-featured-grid">
       {items.map((card) => (

@@ -1,0 +1,133 @@
+---
+import type { FeaturedCard } from './servicesFeatured';
+
+interface Props {
+  items: FeaturedCard[];
+  title: string;
+  serviceTitles: Record<string, string>;
+  lang: 'vi' | 'en';
+}
+
+const { items, title, serviceTitles, lang } = Astro.props;
+// One id per language: both language blocks are rendered on the page
+---
+
+{items.length > 0 && (
+  <section class="svc-featured" id={`du-an-tieu-bieu-${lang}`}>
+    <h2 class="svc-title">{title}</h2>
+    <div class="svc-featured-grid">
+      {items.map((card) => (
+        <a
+          class="svc-featured-card"
+          data-project-id={card.id}
+          href={card.href}
+          {...(card.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          <img src={card.image} alt={card.name} width="1200" height="750" loading="lazy" decoding="async" />
+          <span class="svc-featured-body">
+            <span class="svc-featured-chip">{serviceTitles[card.serviceId] || card.serviceId}</span>
+            <h3>{card.name}</h3>
+            {card.highlight && <p>{card.highlight}</p>}
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .svc-featured-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .svc-featured-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .svc-featured-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0f172a;
+    color: #ffffff;
+    text-decoration: none;
+    transition: transform 150ms ease;
+  }
+
+  .svc-featured-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .svc-featured-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-featured-card {
+      transition: none;
+    }
+
+    .svc-featured-card:hover {
+      transform: none;
+    }
+  }
+
+  .svc-featured-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Same bottom gradient as the home project cards, so white text stays readable */
+  .svc-featured-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.2) 30%, rgba(15, 23, 42, 0.78) 62%, rgba(15, 23, 42, 0.96) 100%);
+  }
+
+  .svc-featured-body {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: clamp(0.85rem, 3vw, 1.25rem) clamp(1rem, 3vw, 1.5rem);
+    /* Solid caption panel: white text stays readable over any screenshot */
+    background: rgba(15, 23, 42, 0.82);
+  }
+
+  .svc-featured-chip {
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .svc-featured-card h3 {
+    margin: 0;
+    font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+    color: #ffffff;
+  }
+
+  .svc-featured-card p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+  }
+</style>

@@ -352,5 +352,166 @@
   "layout": {
     "title": "Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer",
     "description": "Portfolio và CV online của Nguyễn Hoàng Tín"
+  },
+  "services": {
+    "meta": {
+      "title": "Dịch vụ làm website, phần mềm quản lý, tự động hóa cho doanh nghiệp nhỏ | Nguyễn Hoàng Tín",
+      "description": "Website, phần mềm quản lý bán hàng và tự động hóa bằng AI cho cửa hàng, doanh nghiệp nhỏ. Giá từ 5 triệu, tư vấn miễn phí qua Zalo."
+    },
+    "hero": {
+      "title": "Website & phần mềm giúp cửa hàng nhỏ bán nhiều hơn",
+      "subtitle": "Làm việc trực tiếp với người làm — hơn 9 năm xây dựng hệ thống cho khu vực công và y tế.",
+      "primaryCta": "Nhắn Zalo tư vấn miễn phí",
+      "secondaryCta": "Xem dự án đã làm"
+    },
+    "labels": {
+      "benefits": "Bạn nhận được",
+      "duration": "Thời gian",
+      "example": "Xem ví dụ đã làm",
+      "floatingZalo": "Nhắn Zalo",
+      "badge": "Dịch vụ freelance",
+      "featuredTitle": "Dự án tiêu biểu",
+      "fit": "Phù hợp với",
+      "askCard": "Hỏi giá gói này qua Zalo",
+      "popular": "Phổ biến",
+      "call": "Gọi",
+      "photoAlt": "Nguyễn Hoàng Tín",
+      "cv": "Xem hồ sơ năng lực"
+    },
+    "items": [
+      {
+        "id": "website",
+        "title": "Website / landing page",
+        "benefits": [
+          "Giao diện đẹp trên điện thoại",
+          "Khách tìm thấy trên Google",
+          "Nút gọi / Zalo / bản đồ",
+          "Tự sửa nội dung được"
+        ],
+        "price": "Từ 5 triệu",
+        "duration": "1–2 tuần",
+        "fit": "cửa hàng, quán, doanh nghiệp cần có mặt trên Google"
+      },
+      {
+        "id": "management",
+        "title": "Phần mềm quản lý",
+        "benefits": [
+          "Quản lý đơn, kho, khách hàng tại một chỗ",
+          "Dùng trên điện thoại và máy tính",
+          "Báo cáo doanh thu",
+          "Phân quyền nhân viên"
+        ],
+        "price": "Từ 15 triệu",
+        "duration": "3–6 tuần",
+        "exampleProjectId": "solo-cafe-order",
+        "fit": "quán cà phê, cửa hàng, cơ sở dịch vụ có đơn hàng mỗi ngày",
+        "featured": true
+      },
+      {
+        "id": "automation",
+        "title": "Tự động hóa & AI",
+        "benefits": [
+          "Chatbot trả lời khách 24/7",
+          "Tự động hóa việc lặp lại (nhập liệu, báo cáo, nhắc việc)",
+          "Kết nối các công cụ đang dùng"
+        ],
+        "price": "Từ 5 triệu",
+        "duration": "1–3 tuần",
+        "fit": "đội ngũ đang mất thời gian cho việc lặp lại"
+      }
+    ],
+    "process": {
+      "title": "Làm việc thế nào?",
+      "steps": [
+        {
+          "title": "Trao đổi miễn phí",
+          "text": "Bạn kể nhu cầu qua Zalo hoặc gọi điện. Mình hỏi thêm để hiểu đúng việc bạn cần."
+        },
+        {
+          "title": "Báo giá & đề xuất rõ ràng",
+          "text": "Bạn nhận báo giá, phạm vi công việc và thời gian cụ thể trước khi bắt đầu."
+        },
+        {
+          "title": "Làm & cập nhật tiến độ hằng tuần",
+          "text": "Mỗi tuần bạn được xem tiến độ thật và góp ý ngay khi cần."
+        },
+        {
+          "title": "Bàn giao, hướng dẫn sử dụng, bảo hành",
+          "text": "Bàn giao đầy đủ, hướng dẫn bạn tự dùng và bảo hành 3 tháng."
+        }
+      ]
+    },
+    "whyMe": {
+      "title": "Vì sao chọn mình?",
+      "points": [
+        "9+ năm, hệ thống lớn cho khu vực công & y tế",
+        "Làm việc trực tiếp, không qua trung gian",
+        "Giá rõ ràng trước khi bắt đầu",
+        "Hỗ trợ sau bàn giao"
+      ]
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "items": [
+        {
+          "q": "Tôi không rành kỹ thuật có sao không?",
+          "a": "Không sao. Bạn chỉ cần kể việc bạn muốn làm, phần kỹ thuật mình lo và hướng dẫn bạn dùng."
+        },
+        {
+          "q": "Chi phí gồm những gì?",
+          "a": "Báo giá ghi rõ từng hạng mục trước khi bắt đầu, gồm cả thời gian bảo hành 3 tháng."
+        },
+        {
+          "q": "Bao lâu thì xong?",
+          "a": "Website thường 1–2 tuần, phần mềm quản lý 3–6 tuần, tự động hóa 1–3 tuần, tùy độ phức tạp."
+        },
+        {
+          "q": "Sau bàn giao ai sửa lỗi?",
+          "a": "Mình sửa lỗi trong 3 tháng bảo hành. Sau đó vẫn hỗ trợ khi bạn cần."
+        },
+        {
+          "q": "Thanh toán thế nào?",
+          "a": "Chia đợt theo tiến độ, thống nhất rõ trong báo giá."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Bắt đầu từ một tin nhắn",
+      "text": "Kể mình nghe bạn cần gì — tư vấn miễn phí.",
+      "zalo": "Nhắn Zalo",
+      "phone": "Gọi ngay"
+    },
+    "trust": [
+      {
+        "value": "9+ năm",
+        "label": "xây dựng hệ thống"
+      },
+      {
+        "value": "10.000+",
+        "label": "cán bộ dùng iOffice"
+      },
+      {
+        "value": "3 phút → 60 giây",
+        "label": "thời gian báo cáo iGate"
+      }
+    ],
+    "featured": [
+      {
+        "projectId": "to-lua-eakar",
+        "serviceId": "website"
+      },
+      {
+        "projectId": "solo-cafe-order",
+        "serviceId": "management"
+      },
+      {
+        "projectId": "dsf-hospital-suite",
+        "serviceId": "management"
+      },
+      {
+        "projectId": "igate",
+        "serviceId": "automation"
+      }
+    ]
   }
 }

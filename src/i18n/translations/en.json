@@ -352,5 +352,166 @@
   "layout": {
     "title": "Tin Nguyen — Technical Lead · Full‑Stack Developer",
     "description": "Online portfolio and CV of Tin Nguyen"
+  },
+  "services": {
+    "meta": {
+      "title": "Websites, management software and automation for small businesses | Nguyen Hoang Tin",
+      "description": "Websites, sales and management software, and AI automation for shops and small businesses. From 5M VND, free consultation on Zalo."
+    },
+    "hero": {
+      "title": "Websites & software that help small shops sell more",
+      "subtitle": "Work directly with the person who builds it — 9+ years building systems for the public sector and healthcare.",
+      "primaryCta": "Free consultation on Zalo",
+      "secondaryCta": "See past projects"
+    },
+    "labels": {
+      "benefits": "What you get",
+      "duration": "Timeline",
+      "example": "See an example",
+      "floatingZalo": "Message on Zalo",
+      "badge": "Freelance services",
+      "featuredTitle": "Featured work",
+      "fit": "Good for",
+      "askCard": "Ask about this on Zalo",
+      "popular": "Popular",
+      "call": "Call",
+      "photoAlt": "Nguyen Hoang Tin",
+      "cv": "View profile"
+    },
+    "items": [
+      {
+        "id": "website",
+        "title": "Website / landing page",
+        "benefits": [
+          "A good-looking site on phones",
+          "Customers find you on Google",
+          "Call / Zalo / map buttons",
+          "Edit your own content"
+        ],
+        "price": "From 5M VND",
+        "duration": "1–2 weeks",
+        "fit": "shops, cafés and businesses that need to be found on Google"
+      },
+      {
+        "id": "management",
+        "title": "Management software",
+        "benefits": [
+          "Orders, stock and customers in one place",
+          "Works on phones and computers",
+          "Revenue reports",
+          "Staff permissions"
+        ],
+        "price": "From 15M VND",
+        "duration": "3–6 weeks",
+        "exampleProjectId": "solo-cafe-order",
+        "fit": "cafés, shops and service businesses with daily orders",
+        "featured": true
+      },
+      {
+        "id": "automation",
+        "title": "Automation & AI",
+        "benefits": [
+          "A chatbot that answers customers 24/7",
+          "Automate repetitive work (data entry, reports, reminders)",
+          "Connect the tools you already use"
+        ],
+        "price": "From 5M VND",
+        "duration": "1–3 weeks",
+        "fit": "teams losing time to repetitive work"
+      }
+    ],
+    "process": {
+      "title": "How it works",
+      "steps": [
+        {
+          "title": "Free conversation",
+          "text": "Tell me what you need on Zalo or by phone. I ask a few questions to get it right."
+        },
+        {
+          "title": "Clear quote & proposal",
+          "text": "You get the price, scope and timeline in writing before any work starts."
+        },
+        {
+          "title": "Build with weekly progress updates",
+          "text": "Every week you see real progress and can give feedback straight away."
+        },
+        {
+          "title": "Handover, user training, warranty",
+          "text": "Full handover, a walkthrough so you can use it yourself, and a 3-month warranty."
+        }
+      ]
+    },
+    "whyMe": {
+      "title": "Why work with me?",
+      "points": [
+        "9+ years, large systems for the public sector & healthcare",
+        "You work with me directly, no middleman",
+        "A clear price before we start",
+        "Support after handover"
+      ]
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": [
+        {
+          "q": "I'm not technical — is that a problem?",
+          "a": "Not at all. Just tell me what you want to get done; I handle the technical side and show you how to use it."
+        },
+        {
+          "q": "What does the price include?",
+          "a": "The quote lists every item before work starts, including the 3-month warranty."
+        },
+        {
+          "q": "How long does it take?",
+          "a": "Websites usually take 1–2 weeks, management software 3–6 weeks, automation 1–3 weeks, depending on complexity."
+        },
+        {
+          "q": "Who fixes bugs after handover?",
+          "a": "I fix bugs during the 3-month warranty. After that I still help when you need it."
+        },
+        {
+          "q": "How do I pay?",
+          "a": "In stages as work progresses, agreed in the quote."
+        }
+      ]
+    },
+    "cta": {
+      "title": "It starts with one message",
+      "text": "Tell me what you need — the consultation is free.",
+      "zalo": "Message on Zalo",
+      "phone": "Call now"
+    },
+    "trust": [
+      {
+        "value": "9+ years",
+        "label": "building systems"
+      },
+      {
+        "value": "10,000+",
+        "label": "officials use iOffice"
+      },
+      {
+        "value": "3 min → 60 s",
+        "label": "iGate report time"
+      }
+    ],
+    "featured": [
+      {
+        "projectId": "to-lua-eakar",
+        "serviceId": "website"
+      },
+      {
+        "projectId": "solo-cafe-order",
+        "serviceId": "management"
+      },
+      {
+        "projectId": "dsf-hospital-suite",
+        "serviceId": "management"
+      },
+      {
+        "projectId": "igate",
+        "serviceId": "automation"
+      }
+    ]
   }
 }

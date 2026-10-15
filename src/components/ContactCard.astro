@@ -1,14 +1,15 @@
 ---
 import { getTranslations, getLang } from '@i18n/utils';
+import { CONTACT } from '../config/contact';
 
 const lang = getLang(Astro.url);
 const t = await getTranslations(lang);
 
 const channels = [
-  { label: t.contact.channels.email, value: 'tinnh.pyn@gmail.com', link: 'mailto:tinnh.pyn@gmail.com', key: 'email' },
-  { label: t.contact.channels.github, value: 'github.com/nguyenhoangtin1404', link: 'https://github.com/nguyenhoangtin1404', key: 'github' },
-  { label: t.contact.channels.phone, value: '+84 8566 947 66', link: 'tel:+84856694766', key: 'phone' },
-  { label: t.contact.channels.telegram, value: '@tinnh94', link: 'https://t.me/tinnh94', key: 'telegram' }
+  { label: t.contact.channels.email, value: CONTACT.email, link: CONTACT.emailHref, key: 'email' },
+  { label: t.contact.channels.github, value: CONTACT.github, link: CONTACT.githubHref, key: 'github' },
+  { label: t.contact.channels.phone, value: CONTACT.phone, link: CONTACT.phoneHref, key: 'phone' },
+  { label: t.contact.channels.telegram, value: CONTACT.telegram, link: CONTACT.telegramHref, key: 'telegram' }
 ];
 
 // Animation delay configuration

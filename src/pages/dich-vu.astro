@@ -1,0 +1,209 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Services from '@components/Services.astro';
+import { getTranslations, getProjectIds } from '@i18n/utils';
+import { CONTACT } from '../config/contact';
+
+// The static build has no query string, so both languages are rendered and
+// CSS shows the one matching <html lang> (same pattern as projects/[id].astro).
+const LANGS = ['vi', 'en'] as const;
+const viServices = (await getTranslations('vi')).services;
+const versions = await Promise.all(
+  LANGS.map(async (lang) => {
+    const t = await getTranslations(lang);
+    return {
+      lang,
+      // A language without `services` falls back to the Vietnamese content
+      services: t.services || viServices,
+      projects: t.projects?.items || []
+    };
+  })
+);
+const projectIdsWithDetail = await getProjectIds();
+const vi = versions[0].services;
+const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.title]));
+---
+
+<BaseLayout title={vi.meta.title} description={vi.meta.description}>
+  <main class="services-page" data-titles={JSON.stringify(titles)}>
+    <!-- This page is for clients; its only way to the profile (the home page, hồ sơ năng lực) is this link -->
+    <header class="svc-topbar">
+      <a class="svc-cv" href="/?lang=vi" data-i18n="services.labels.cv">{vi.labels.cv}</a>
+      <div class="svc-langs" role="group" aria-label="Language">
+        <button type="button" class="svc-lang" data-lang="vi" aria-pressed="true">VI</button>
+        <button type="button" class="svc-lang" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </header>
+    {versions.map((v) => (
+      <div data-lang-block={v.lang}>
+        <Services services={v.services} lang={v.lang} projectIdsWithDetail={projectIdsWithDetail} projects={v.projects} />
+      </div>
+    ))}
+  </main>
+
+  <!-- Mobile: one-tap contact, fixed at the bottom (hidden on desktop) -->
+  <nav class="svc-contact-bar" aria-label={vi.cta.title} data-i18n-attr="aria-label:services.cta.title">
+    <a class="svc-bar-zalo" href={CONTACT.zaloHref} target="_blank" rel="noopener noreferrer">Zalo</a>
+    <a class="svc-bar-call" href={CONTACT.phoneHref} data-i18n="services.labels.call">{vi.labels.call}</a>
+  </nav>
+
+  <script is:inline>
+    // Own language toggle (the home navigation pill is not used on this page).
+    // Same contract as BaseLayout's switcher: save the choice, then announce it.
+    (function() {
+      const current = () => (document.documentElement.lang === 'en' ? 'en' : 'vi');
+      const sync = () => {
+        const lang = current();
+        document.querySelectorAll('.svc-lang').forEach((b) => b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)));
+        const cv = document.querySelector('.svc-cv');
+        if (cv) cv.setAttribute('href', `/?lang=${lang}`);
+      };
+      document.querySelectorAll('.svc-lang').forEach((button) => {
+        button.addEventListener('click', () => {
+          const lang = button.getAttribute('data-lang');
+          if (lang === current()) return;
+          try { localStorage.setItem('lang', lang); } catch {}
+          window.dispatchEvent(new CustomEvent('langchange', { detail: { lang }, bubbles: true, cancelable: true }));
+        });
+      });
+      window.addEventListener('langchange', () => setTimeout(sync, 0));
+      sync();
+    })();
+
+    // Show the page title for the displayed language
+    (function() {
+      const main = document.querySelector('.services-page');
+      let titles = {};
+      try { titles = JSON.parse(main?.getAttribute('data-titles') || '{}'); } catch {}
+      const sync = () => {
+        const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
+        if (titles[lang]) document.title = titles[lang];
+      };
+      window.addEventListener('langchange', () => setTimeout(sync, 0));
+      sync();
+    })();
+  </script>
+
+  <style is:global>
+    html[lang='en'] [data-lang-block='vi'],
+    html:not([lang='en']) [data-lang-block='en'] {
+      display: none;
+    }
+  </style>
+
+  <style>
+    .services-page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.25rem clamp(1rem, 4vw, 3rem) 5rem;
+    }
+
+    .svc-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .svc-cv {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: #0369a1;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    /* Arrow in CSS: data-i18n replaces the text on a language switch */
+    .svc-cv::after {
+      content: ' →';
+      white-space: pre;
+    }
+
+    .svc-cv:hover {
+      text-decoration: underline;
+    }
+
+    .svc-langs {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--surface-weak);
+    }
+
+    .svc-lang {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 0.75rem;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .svc-lang[aria-pressed='true'] {
+      background: rgba(14, 165, 233, 0.15);
+      color: #0369a1;
+    }
+
+    .svc-cv:focus-visible,
+    .svc-lang:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .svc-contact-bar {
+      display: none;
+    }
+
+    @media (max-width: 767px) {
+      .services-page {
+        /* Room for the contact bar so it never covers the final call to action */
+        padding: 0.75rem 1rem calc(64px + 16px + env(safe-area-inset-bottom));
+      }
+
+      .svc-contact-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+        background: #ffffff;
+        box-shadow: 0 -6px 20px rgba(2, 6, 23, 0.08);
+      }
+
+      .svc-contact-bar a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .svc-contact-bar a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      .svc-bar-zalo {
+        background: linear-gradient(135deg, var(--accent), #6366f1);
+        color: #010409;
+      }
+
+      .svc-bar-call {
+        background: var(--surface-weak);
+        color: var(--text);
+      }
+    }
+  </style>
+</BaseLayout>

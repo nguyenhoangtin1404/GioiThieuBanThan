@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getProjectIds } from '@i18n/utils';
 
 export const GET: APIRoute = async ({ site }) => {
-  const paths = ['/', ...(await getProjectIds()).map((id) => `/projects/${id}/`)];
+  const paths = ['/', '/dich-vu/', ...(await getProjectIds()).map((id) => `/projects/${id}/`)];
   const urls = paths.map((p) => `  <url><loc>${new URL(p, site).href}</loc></url>`).join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

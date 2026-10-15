@@ -106,7 +106,7 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     <p>{s.cta.text}</p>
     <div class="svc-actions">
       <a class="svc-btn svc-btn--primary svc-zalo" href={CONTACT.zaloHref} {...external}>{s.cta.zalo}</a>
-      <a class="svc-btn svc-btn--ghost svc-phone" href={CONTACT.phoneHref}>{s.cta.phone} · <span class="svc-phone-number">{CONTACT.phone}</span></a>
+      <a class="svc-btn svc-btn--ghost svc-phone" href={CONTACT.phoneHref}><span>{s.cta.phone} · <span class="svc-phone-number">{CONTACT.phone}</span></span></a>
     </div>
   </section>
 </article>
@@ -171,6 +171,7 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   .svc-btn {
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -224,9 +225,9 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    padding: 11px;
+    width: 44px;
+    height: 44px;
+    padding: 10px;
     border-radius: 50%;
     background: rgba(14, 165, 233, 0.1);
     border: 1px solid rgba(14, 165, 233, 0.12);
@@ -235,14 +236,19 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   .svc-glyph svg {
-    width: 100%;
-    height: 100%;
+    width: 22px;
+    height: 22px;
   }
 
   .svc-glyph--sm {
     width: 32px;
     height: 32px;
     padding: 7px;
+  }
+
+  .svc-glyph--sm svg {
+    width: 16px;
+    height: 16px;
   }
 
   .svc-list {
@@ -405,6 +411,11 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
 
   .svc-phone-number {
     white-space: nowrap;
+  }
+
+  /* Same size as the home Contact title, whose card this block copies */
+  .svc-cta .svc-title {
+    font-size: clamp(2rem, 4vw, 2.6rem);
   }
 
   .svc-cta p {

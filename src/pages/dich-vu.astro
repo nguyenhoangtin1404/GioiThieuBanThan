@@ -49,6 +49,7 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
       document.querySelectorAll('#sidebar li').forEach((li) => {
         li.classList.toggle('active', li.classList.contains('sidebar-link'));
       });
+      document.querySelector('#sidebar li.sidebar-link a')?.setAttribute('aria-current', 'page');
       document.querySelectorAll('#sidebar li[data-menuanchor] button').forEach((button) => {
         button.addEventListener('click', () => {
           const lang = document.documentElement.lang === 'en' ? 'en' : 'vi';
@@ -82,6 +83,11 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
     @media (min-width: 768px) {
       body:not(:has(#fullpage)):has(.services-page) .sidebar-nav {
         display: flex !important;
+      }
+
+      /* Narration exists only on the home page; no dead voice button here */
+      body:has(.services-page) .sidebar-nav [data-voice-toggle] {
+        display: none !important;
       }
     }
   </style>

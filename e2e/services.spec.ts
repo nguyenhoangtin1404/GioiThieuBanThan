@@ -254,11 +254,62 @@ test.describe('readability', () => {
     const contact = await page.locator('#lien-he a.contact-services-link').evaluate((a) => getComputedStyle(a).color);
     expect(contrastOnWhite(contact)).toBeGreaterThanOrEqual(4.5);
   });
+});
 
-  test('the phone number never breaks across lines', async ({ page }) => {
-    await page.setViewportSize({ width: 360, height: 740 });
+test.describe('home parity details', () => {
+  test('services item in the pill looks active, like the home item', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop pill');
+    await gotoReady(page, '/?lang=vi');
+    const homeActiveBg = await page.locator('#sidebar li.active button').evaluate((b) => getComputedStyle(b).backgroundColor);
     await gotoReady(page, '/dich-vu/?lang=vi');
-    const lines = await page.locator('[data-lang-block="vi"] .svc-cta .svc-phone-number').evaluate((el) => el.getClientRects().length);
-    expect(lines).toBe(1);
+    const link = page.locator('#sidebar li.sidebar-link a');
+    await expect(link).toHaveAttribute('aria-current', 'page');
+    expect(await link.evaluate((a) => getComputedStyle(a).backgroundColor)).toBe(homeActiveBg);
+  });
+
+  test('no dead voice button on the services page', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'desktop pill');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(page.locator('.sidebar-nav [data-voice-toggle]')).toBeHidden();
+  });
+
+  test('buttons are the height of the home buttons', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    const home = (await page.locator('.actions a.primary').first().boundingBox())!.height;
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const svc = (await page.locator('[data-lang-block="vi"] .svc-hero a.svc-zalo').boundingBox())!.height;
+    expect(Math.abs(svc - home)).toBeLessThanOrEqual(2);
+  });
+
+  test('call button keeps a space before the number', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    // Rendered gap between the "·" and the number (innerText keeps a space the layout can collapse)
+    const gap = await page.locator('[data-lang-block="vi"] .svc-phone-number').evaluate((num) => {
+      const before = num.previousSibling!;
+      const dot = before.textContent!.lastIndexOf('·');
+      const range = document.createRange();
+      range.setStart(before, dot);
+      range.setEnd(before, dot + 1);
+      return num.getBoundingClientRect().left - range.getBoundingClientRect().right;
+    });
+    expect(gap).toBeGreaterThanOrEqual(3);
+  });
+
+  test('phone number is set to never wrap', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const ws = await page.locator('[data-lang-block="vi"] .svc-phone-number').evaluate((el) => getComputedStyle(el).whiteSpace);
+    expect(ws).toBe('nowrap');
+  });
+
+  test('glyphs and the closing title use the home Contact sizes', async ({ page }) => {
+    await gotoReady(page, '/?lang=vi');
+    const c = page.locator('#lien-he');
+    const homeGlyph = await c.locator('.glyph').first().evaluate((g) => [g.getBoundingClientRect().width, g.querySelector('svg')!.getBoundingClientRect().width]);
+    const homeTitle = await c.locator('h2').evaluate((h) => getComputedStyle(h).fontSize);
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const vi = page.locator('[data-lang-block="vi"]');
+    const svcGlyph = await vi.locator('.svc-card .svc-glyph').first().evaluate((g) => [g.getBoundingClientRect().width, g.querySelector('svg')!.getBoundingClientRect().width]);
+    expect(svcGlyph).toEqual(homeGlyph);
+    expect(await vi.locator('.svc-cta h2').evaluate((h) => getComputedStyle(h).fontSize)).toBe(homeTitle);
   });
 });

@@ -131,7 +131,10 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
     <h2 class="svc-title">{s.faq.title}</h2>
     {s.faq.items.map((f: { q: string; a: string }) => (
       <details>
-        <summary>{f.q}</summary>
+        <summary>
+          <span>{f.q}</span>
+          <svg class="svc-chevron" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+        </summary>
         <p>{f.a}</p>
       </details>
     ))}
@@ -164,7 +167,12 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   /* Back link: same as the project detail pages */
   .svc-back {
     align-self: flex-start;
-    margin-bottom: calc(-1 * clamp(2rem, 5vw, 3.5rem));
+    /* 44px tap target; the negative margins keep the layout as if it were 26px tall */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: -9px;
+    margin-bottom: calc(-1 * clamp(2rem, 5vw, 3.5rem) - 9px);
     color: var(--muted);
     font-weight: 600;
     text-decoration: none;
@@ -632,20 +640,62 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   .svc-faq details {
-    padding: 1rem 1.25rem;
+    /* Vertical room comes from the 48px summary row */
+    padding: 0.25rem 1.25rem;
     margin-bottom: 0.75rem;
     border-radius: var(--radius-md);
     background: var(--surface-weak);
   }
 
+  /* Accordion row: the whole summary is the target, chevron instead of the native marker */
   .svc-faq summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    min-height: 48px;
+    list-style: none;
     cursor: pointer;
     font-weight: 700;
     color: var(--text);
   }
 
+  .svc-faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .svc-chevron {
+    flex-shrink: 0;
+    color: var(--accent);
+    transition: transform 200ms ease;
+  }
+
+  .svc-faq details[open] .svc-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Keyboard focus: one visible ring for every control on the page */
+  .services a:focus-visible,
+  .services summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .services *,
+    .services *::before,
+    .services *::after {
+      transition: none !important;
+    }
+
+    .svc-btn:hover,
+    .svc-card:hover {
+      transform: none;
+    }
+  }
+
   .svc-faq details p {
-    margin: 0.6rem 0 0;
+    margin: 0 0 0.75rem;
   }
 
   /* Closing call to action: the home Contact card background */

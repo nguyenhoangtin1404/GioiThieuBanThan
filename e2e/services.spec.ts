@@ -460,3 +460,43 @@ test('bottom bar hidden on desktop', async ({ page, isMobile }) => {
   await gotoReady(page, '/dich-vu/?lang=vi');
   await expect(page.locator('.svc-contact-bar')).toBeHidden();
 });
+
+test.describe('polish: a11y', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('visible 2px focus ring on links, buttons and FAQ', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible applies
+    for (const sel of ['a.svc-back', '.svc-hero a.svc-zalo', '.svc-card a.svc-ask', '.svc-faq summary']) {
+      const el = vi(page).locator(sel).first();
+      await el.focus();
+      const style = await el.evaluate((e) => [e.matches(':focus-visible'), getComputedStyle(e).outlineWidth, getComputedStyle(e).outlineStyle]);
+      expect(style, sel).toEqual([true, '2px', 'solid']);
+    }
+  });
+
+  test('back link is a 44px target', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    expect((await vi(page).locator('a.svc-back').boundingBox())!.height).toBeGreaterThanOrEqual(44);
+  });
+
+  test('no motion under reduced motion', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    for (const sel of ['.svc-card', '.svc-btn', '.svc-featured-card']) {
+      expect(await vi(page).locator(sel).first().evaluate((c) => getComputedStyle(c).transitionDuration), sel).toBe('0s');
+    }
+  });
+
+  test('FAQ has no native marker and the chevron turns when open', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const s = vi(page).locator('.svc-faq summary').first();
+    expect(await s.evaluate((e) => getComputedStyle(e).listStyleType)).toBe('none');
+    const before = await s.locator('.svc-chevron').evaluate((e) => getComputedStyle(e).transform);
+    await s.click();
+    await page.waitForTimeout(300);
+    const after = await s.locator('.svc-chevron').evaluate((e) => getComputedStyle(e).transform);
+    expect(after).not.toBe(before);
+    expect((await s.boundingBox())!.height).toBeGreaterThanOrEqual(48);
+  });
+});

@@ -131,6 +131,11 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
         text-decoration: none;
       }
 
+      .svc-contact-bar a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
       .svc-bar-zalo {
         background: linear-gradient(135deg, var(--accent), #6366f1);
         color: #010409;

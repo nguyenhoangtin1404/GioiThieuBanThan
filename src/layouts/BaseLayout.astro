@@ -1143,6 +1143,19 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
           transform: translateX(0) !important;
           transition: none !important;
         }
+
+        /* Overrides the !important section transition above (the JS inline one is 'none' too) */
+        .section {
+          transition: none !important;
+        }
+
+        .fade-in-item,
+        h2.fade-in-item {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+          pointer-events: auto;
+        }
       }
     </style>
   </head>

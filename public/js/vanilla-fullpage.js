@@ -108,12 +108,38 @@ class VanillaFullpage {
   }
 
   /**
+   * Người dùng bật "giảm chuyển động" trong hệ điều hành
+   * @private
+   */
+  prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  /**
+   * Thời gian chuyển section (ms): 0 khi giảm chuyển động. Đọc mỗi lần đổi section nên đổi cài đặt có hiệu lực ngay
+   * @private
+   */
+  animationDuration() {
+    return this.prefersReducedMotion() ? 0 : this.scrollingSpeed;
+  }
+
+  /**
+   * Chuỗi CSS transition cho sections; 'none' khi giảm chuyển động
+   * @private
+   */
+  transitionFor() {
+    const ms = this.animationDuration();
+    if (!ms) return 'none';
+    return `transform ${ms}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${ms}ms ease, visibility ${ms}ms ease`;
+  }
+
+  /**
    * Thiết lập trạng thái ban đầu cho các sections
    * @description Section đầu tiên sẽ có class 'active', các section khác có class 'next'
    * @private
    */
   setupSections() {
-    const transitionStr = `transform ${this.scrollingSpeed}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${this.scrollingSpeed}ms ease, visibility ${this.scrollingSpeed}ms ease`;
+    const transitionStr = this.transitionFor();
 
     this.sections.forEach((section, index) => {
       // Xóa tất cả classes cũ
@@ -368,7 +394,7 @@ class VanillaFullpage {
     if (target) target.scrollTop = index < this.currentIndex ? target.scrollHeight : 0;
     this.currentIndex = index;
     const totalSections = this.sections.length;
-    const transitionStr = `transform ${this.scrollingSpeed}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity ${this.scrollingSpeed}ms ease, visibility ${this.scrollingSpeed}ms ease`;
+    const transitionStr = this.transitionFor();
 
     // Cập nhật classes và transform cho tất cả sections
     this.sections.forEach((section, i) => {
@@ -440,7 +466,7 @@ class VanillaFullpage {
         }
       });
       this.hideTimeout = null;
-    }, this.scrollingSpeed);
+    }, this.animationDuration());
 
     // Cập nhật URL
     this.updateURL();
@@ -450,7 +476,7 @@ class VanillaFullpage {
     this.scrollTimeout = setTimeout(() => {
       this.isScrolling = false;
       this.scrollTimeout = null;
-    }, this.scrollingSpeed);
+    }, this.animationDuration());
   }
 
   /**

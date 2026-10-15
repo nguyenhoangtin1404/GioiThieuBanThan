@@ -108,4 +108,16 @@ test.describe('desktop fullpage', () => {
     await expect(page.locator('#lien-he')).toHaveClass(/active/);
     await expect(page).toHaveURL(/#lien-he$/);
   });
+
+  test('reduced motion: no section transition, items visible, hero still', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await gotoReady(page, '/?lang=vi');
+    await page.waitForFunction(() => (window as any).vanillaFullpage);
+    await page.keyboard.press('PageDown');
+    await expect(page.locator('#du-an')).toHaveClass(/active/);
+    expect(await page.locator('#du-an').evaluate((s) => getComputedStyle(s).transitionDuration)).toBe('0s');
+    const card = page.locator('.project-card.fade-in-item').first();
+    expect(await card.evaluate((c) => getComputedStyle(c).opacity)).toBe('1');
+    expect(await page.locator('.chat-bubble').first().evaluate((b) => getComputedStyle(b).animationName)).toBe('none');
+  });
 });

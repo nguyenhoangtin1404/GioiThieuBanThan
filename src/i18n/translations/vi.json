@@ -351,6 +351,126 @@
   },
   "layout": {
     "title": "Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer",
-    "description": "Portfolio và CV online của Nguyễn Hoàng Tín"
+    "description": "Portfolio và CV online của Nguyễn Hoàng Tín",
+    "nav": {
+      "services": "Dịch vụ"
+    }
+  },
+  "services": {
+    "meta": {
+      "title": "Dịch vụ làm website, phần mềm quản lý, tự động hóa cho doanh nghiệp nhỏ | Nguyễn Hoàng Tín",
+      "description": "Website, phần mềm quản lý bán hàng và tự động hóa bằng AI cho cửa hàng, doanh nghiệp nhỏ. Giá rõ ràng từ 5 triệu, tư vấn miễn phí qua Zalo."
+    },
+    "hero": {
+      "title": "Website và phần mềm giúp cửa hàng, doanh nghiệp nhỏ bán được nhiều hơn, bớt việc tay",
+      "subtitle": "Làm việc trực tiếp với người làm — hơn 9 năm xây dựng hệ thống cho khu vực công và y tế.",
+      "primaryCta": "Nhắn Zalo tư vấn miễn phí",
+      "secondaryCta": "Xem dự án đã làm"
+    },
+    "labels": {
+      "benefits": "Bạn nhận được",
+      "duration": "Thời gian",
+      "example": "Xem ví dụ đã làm",
+      "floatingZalo": "Nhắn Zalo"
+    },
+    "items": [
+      {
+        "id": "website",
+        "title": "Website / landing page",
+        "benefits": [
+          "Giao diện đẹp, dễ xem trên điện thoại",
+          "Khách tìm thấy bạn trên Google",
+          "Nút gọi, Zalo và bản đồ chỉ đường",
+          "Tự sửa nội dung, không cần biết code"
+        ],
+        "price": "Từ 5 triệu",
+        "duration": "1–2 tuần"
+      },
+      {
+        "id": "management",
+        "title": "Phần mềm quản lý",
+        "benefits": [
+          "Quản lý đơn hàng, kho, khách hàng ở một chỗ",
+          "Dùng trên cả điện thoại và máy tính",
+          "Báo cáo doanh thu theo ngày, tháng",
+          "Phân quyền cho từng nhân viên"
+        ],
+        "price": "Từ 15 triệu",
+        "duration": "3–6 tuần",
+        "exampleProjectId": "solo-cafe-order"
+      },
+      {
+        "id": "automation",
+        "title": "Tự động hóa & AI",
+        "benefits": [
+          "Chatbot trả lời khách 24/7",
+          "Tự động hóa việc lặp lại: nhập liệu, báo cáo, nhắc việc",
+          "Kết nối các công cụ bạn đang dùng"
+        ],
+        "price": "Từ 5 triệu",
+        "duration": "1–3 tuần"
+      }
+    ],
+    "process": {
+      "title": "Làm việc thế nào?",
+      "steps": [
+        {
+          "title": "Trao đổi miễn phí",
+          "text": "Bạn kể nhu cầu qua Zalo hoặc gọi điện. Mình hỏi thêm để hiểu đúng việc bạn cần."
+        },
+        {
+          "title": "Báo giá & đề xuất rõ ràng",
+          "text": "Bạn nhận báo giá, phạm vi công việc và thời gian cụ thể trước khi bắt đầu."
+        },
+        {
+          "title": "Làm & cập nhật hằng tuần",
+          "text": "Mỗi tuần bạn được xem tiến độ thật và góp ý ngay khi cần."
+        },
+        {
+          "title": "Bàn giao, hướng dẫn, bảo hành",
+          "text": "Bàn giao đầy đủ, hướng dẫn bạn tự dùng và bảo hành miễn phí 3 tháng."
+        }
+      ]
+    },
+    "whyMe": {
+      "title": "Vì sao chọn mình?",
+      "points": [
+        "Hơn 9 năm làm hệ thống lớn cho khu vực công và y tế",
+        "Làm việc trực tiếp, không qua trung gian",
+        "Giá rõ ràng trước khi bắt đầu",
+        "Hỗ trợ sau bàn giao"
+      ]
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "items": [
+        {
+          "q": "Tôi không rành kỹ thuật có sao không?",
+          "a": "Không sao. Bạn chỉ cần kể việc bạn muốn làm, phần kỹ thuật mình lo và hướng dẫn bạn dùng."
+        },
+        {
+          "q": "Chi phí gồm những gì?",
+          "a": "Báo giá ghi rõ thiết kế, lập trình, đưa lên mạng và bảo hành 3 tháng. Tên miền và máy chủ (nếu cần) được tách riêng để bạn tự sở hữu."
+        },
+        {
+          "q": "Bao lâu thì xong?",
+          "a": "Website thường 1–2 tuần, phần mềm quản lý 3–6 tuần, tự động hóa 1–3 tuần, tùy độ phức tạp."
+        },
+        {
+          "q": "Sau bàn giao ai sửa lỗi?",
+          "a": "Mình sửa lỗi miễn phí trong 3 tháng bảo hành. Sau đó vẫn hỗ trợ khi bạn cần, báo giá trước cho từng việc."
+        },
+        {
+          "q": "Thanh toán thế nào?",
+          "a": "Chia đợt theo tiến độ: đặt cọc khi bắt đầu, phần còn lại khi bàn giao từng giai đoạn."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Bắt đầu từ một tin nhắn",
+      "text": "Kể mình nghe bạn cần gì — tư vấn và báo giá miễn phí.",
+      "zalo": "Nhắn Zalo",
+      "phone": "Gọi ngay"
+    }
   }
 }

@@ -313,43 +313,6 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       gap: 0.75rem;
     }
 
-    /* Card: icon beside the title, then the price, then the details */
-    .svc-card {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      column-gap: 0.75rem;
-      padding: 1.25rem;
-    }
-
-    .svc-card > * {
-      grid-column: 1 / -1;
-    }
-
-    .svc-card > .svc-glyph {
-      grid-column: 1;
-    }
-
-    .svc-card > h2 {
-      grid-column: 2;
-      margin: 0;
-    }
-
-    .svc-card > .svc-meta {
-      order: 1;
-      margin-top: 0.25rem;
-    }
-
-    .svc-card > .svc-fit { order: 2; }
-    .svc-card > .svc-label { order: 3; }
-    .svc-card > .svc-benefits { order: 4; }
-    .svc-card > .svc-example { order: 5; }
-    .svc-card > .svc-ask { order: 6; }
-
-    .svc-popular {
-      top: 0.75rem;
-      right: 0.75rem;
-    }
   }
 
   .svc-subtitle {
@@ -398,12 +361,13 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   /* Section titles: home size and the short accent bar (Projects, Timeline, Contact) */
-  .svc-title {
+  /* :global so the title inside ServicesFeatured gets the same look */
+  .services :global(.svc-title) {
     margin: 0 0 1.75rem;
     font-size: clamp(2rem, 4vw, 2.8rem);
   }
 
-  .svc-title::after {
+  .services :global(.svc-title)::after {
     content: '';
     display: block;
     width: 56px;
@@ -710,12 +674,56 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   /* Same size as the home Contact title, whose card this block copies */
-  .svc-cta .svc-title {
+  .svc-cta :global(.svc-title) {
     font-size: clamp(2rem, 4vw, 2.6rem);
   }
 
   .svc-cta p {
     margin: 0 0 1.5rem;
     font-size: 1.05rem;
+  }
+
+  /* Mobile card layout; after the base .svc-card rules so it wins */
+  @media (max-width: 767px) {
+    /* Card: icon beside the title, then the price, then the details */
+    .svc-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      justify-items: start;
+      column-gap: 0.75rem;
+      padding: 1.25rem;
+    }
+
+    .svc-card > * {
+      grid-column: 1 / -1;
+    }
+
+    .svc-card > .svc-glyph {
+      grid-column: 1;
+    }
+
+    .svc-card > h2 {
+      grid-column: 2;
+      margin: 0;
+    }
+
+    .svc-card > .svc-meta {
+      order: 1;
+      margin-top: 0.25rem;
+    }
+
+    .svc-card > .svc-fit { order: 2; }
+    .svc-card > .svc-label { order: 3; }
+    .svc-card > .svc-benefits { order: 4; }
+    .svc-card > .svc-example { order: 5; }
+    .svc-card > .svc-ask { order: 6; }
+
+    /* In the flow on its own row, so it never covers the title */
+    .svc-card > .svc-popular {
+      position: static;
+      order: -1;
+      margin-bottom: 0.5rem;
+    }
   }
 </style>

@@ -500,3 +500,38 @@ test.describe('polish: a11y', () => {
     expect((await s.boundingBox())!.height).toBeGreaterThanOrEqual(48);
   });
 });
+
+test.describe('polish: layout details', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('every section title carries the home bar, featured included', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const titles = vi(page).locator('h2.svc-title');
+    await expect(titles).toHaveCount(5);
+    for (const h of await titles.all()) {
+      const bar = await h.evaluate((e) => { const s = getComputedStyle(e, '::after'); return [s.width, s.height, getComputedStyle(e).fontSize]; });
+      expect([bar[0], bar[1]], await h.innerText()).toEqual(['56px', '4px']);
+      expect(parseFloat(bar[2]), await h.innerText()).toBeGreaterThanOrEqual(32);
+    }
+  });
+
+  test('popular chip never covers the card title', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const card = vi(page).locator('[data-service-id="management"]');
+    const chip = (await card.locator('.svc-popular').boundingBox())!;
+    const title = (await card.locator('> h2').boundingBox())!;
+    const overlap = chip.x < title.x + title.width && title.x < chip.x + chip.width && chip.y < title.y + title.height && title.y < chip.y + chip.height;
+    expect(overlap).toBe(false);
+  });
+
+  test('mobile card: icon beside a left-aligned title', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'mobile layout');
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const card = vi(page).locator('[data-service-id="website"]');
+    const glyph = (await card.locator('> .svc-glyph').boundingBox())!;
+    const title = (await card.locator('> h2').boundingBox())!;
+    expect(Math.abs((glyph.y + glyph.height / 2) - (title.y + title.height / 2)), 'same row').toBeLessThan(8);
+    expect(title.x).toBeGreaterThan(glyph.x + glyph.width);
+    expect(await card.locator('> h2').evaluate((e) => getComputedStyle(e).textAlign)).not.toBe('center');
+  });
+});

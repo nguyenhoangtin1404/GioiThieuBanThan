@@ -58,6 +58,27 @@ test.describe('translations', () => {
     for (const claim of ['domain', 'hosting', 'deposit', 'free 3-month', 'for free during', 'quote are free']) {
       expect(enText, claim).not.toContain(claim);
     }
+    // Phase 1 polish content
+    expect(vi.services.trust).toEqual([
+      { value: '9+ năm', label: 'xây dựng hệ thống' },
+      { value: '10.000+', label: 'cán bộ dùng iOffice' },
+      { value: '3 phút → 60 giây', label: 'thời gian báo cáo iGate' }
+    ]);
+    expect(en.services.trust.map((t: any) => t.value)).toEqual(['9+ years', '10,000+', '3 min → 60 s']);
+    const featured = [
+      { projectId: 'to-lua-eakar', serviceId: 'website' }, { projectId: 'solo-cafe-order', serviceId: 'management' },
+      { projectId: 'dsf-hospital-suite', serviceId: 'management' }, { projectId: 'igate', serviceId: 'automation' }
+    ];
+    expect(vi.services.featured).toEqual(featured);
+    expect(en.services.featured).toEqual(featured);
+    expect(vi.services.items.map((i: any) => i.fit)).toEqual([
+      'cửa hàng, quán, doanh nghiệp cần có mặt trên Google',
+      'quán cà phê, cửa hàng, cơ sở dịch vụ có đơn hàng mỗi ngày',
+      'đội ngũ đang mất thời gian cho việc lặp lại'
+    ]);
+    expect(vi.services.items.map((i: any) => !!i.featured)).toEqual([false, true, false]);
+    expect(vi.services.labels).toMatchObject({ featuredTitle: 'Dự án tiêu biểu', fit: 'Phù hợp với', askCard: 'Hỏi giá gói này qua Zalo', popular: 'Phổ biến', call: 'Gọi', photoAlt: 'Nguyễn Hoàng Tín' });
+    expect(en.services.labels).toMatchObject({ featuredTitle: 'Featured work', fit: 'Good for', askCard: 'Ask about this on Zalo', popular: 'Popular', call: 'Call', photoAlt: 'Nguyen Hoang Tin' });
     expect(vi.layout.nav.services).toBe('Dịch vụ');
     expect(en.layout.nav.services).toBe('Services');
   });

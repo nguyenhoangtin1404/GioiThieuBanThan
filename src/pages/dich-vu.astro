@@ -33,18 +33,11 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
     ))}
   </main>
 
-  <a
-    class="svc-zalo-float"
-    href={CONTACT.zaloHref}
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label={vi.labels.floatingZalo}
-    data-i18n-attr="aria-label:services.labels.floatingZalo"
-  >
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 512 512" width="26" height="26">
-      <path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z" />
-    </svg>
-  </a>
+  <!-- Mobile: one-tap contact, fixed at the bottom (hidden on desktop) -->
+  <nav class="svc-contact-bar" aria-label={vi.cta.title} data-i18n-attr="aria-label:services.cta.title">
+    <a class="svc-bar-zalo" href={CONTACT.zaloHref} target="_blank" rel="noopener noreferrer">Zalo</a>
+    <a class="svc-bar-call" href={CONTACT.phoneHref} data-i18n="services.labels.call">{vi.labels.call}</a>
+  </nav>
 
   <script is:inline>
     // The home navigation pill is shown here too (desktop): services is the active item
@@ -104,30 +97,48 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
       padding: 6.5rem clamp(1rem, 4vw, 3rem) 5rem;
     }
 
-    .svc-zalo-float {
+    .svc-contact-bar {
       display: none;
     }
 
     @media (max-width: 767px) {
       .services-page {
-        /* Room for the floating Zalo button so it never covers the final CTA */
-        padding: 1.5rem 1rem calc(56px + 1rem + 16px + env(safe-area-inset-bottom));
+        /* Room for the contact bar so it never covers the final call to action */
+        padding: 1.5rem 1rem calc(64px + 16px + env(safe-area-inset-bottom));
       }
 
-      .svc-zalo-float {
+      .svc-contact-bar {
         position: fixed;
-        right: 1rem;
-        bottom: calc(1rem + env(safe-area-inset-bottom));
+        left: 0;
+        right: 0;
+        bottom: 0;
         z-index: 50;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+        background: #ffffff;
+        box-shadow: 0 -6px 20px rgba(2, 6, 23, 0.08);
+      }
+
+      .svc-contact-bar a {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 56px;
-        height: 56px;
+        min-height: 48px;
         border-radius: 999px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .svc-bar-zalo {
         background: linear-gradient(135deg, var(--accent), #6366f1);
         color: #010409;
-        box-shadow: 0 6px 20px rgba(2, 6, 23, 0.2);
+      }
+
+      .svc-bar-call {
+        background: var(--surface-weak);
+        color: var(--text);
       }
     }
   </style>

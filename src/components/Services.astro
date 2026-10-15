@@ -257,12 +257,28 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       gap: 1rem;
     }
 
+    /* Small avatar in the badge row, so the first screen reaches the prices */
+    .svc-hero {
+      position: relative;
+    }
+
     .svc-hero-media {
-      order: -1;
-      justify-self: start;
-      width: 96px;
-      height: 96px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 56px;
+      height: 56px;
+      border-width: 3px;
       border-radius: 50%;
+    }
+
+    .svc-badge {
+      margin-bottom: 1.25rem;
+    }
+
+    .svc-subtitle {
+      font-size: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .svc-hero h1 {
@@ -274,11 +290,57 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       flex-wrap: nowrap;
       overflow-x: auto;
       gap: 1.5rem;
-      margin-top: 1.25rem;
+      margin-top: 0.75rem;
     }
 
     .svc-trust li {
       flex: 0 0 auto;
+    }
+
+    .services {
+      gap: 2rem;
+    }
+
+    .svc-hero .svc-actions {
+      gap: 0.75rem;
+    }
+
+    /* Card: icon beside the title, then the price, then the details */
+    .svc-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      column-gap: 0.75rem;
+      padding: 1.25rem;
+    }
+
+    .svc-card > * {
+      grid-column: 1 / -1;
+    }
+
+    .svc-card > .svc-glyph {
+      grid-column: 1;
+    }
+
+    .svc-card > h2 {
+      grid-column: 2;
+      margin: 0;
+    }
+
+    .svc-card > .svc-meta {
+      order: 1;
+      margin-top: 0.25rem;
+    }
+
+    .svc-card > .svc-fit { order: 2; }
+    .svc-card > .svc-label { order: 3; }
+    .svc-card > .svc-benefits { order: 4; }
+    .svc-card > .svc-example { order: 5; }
+    .svc-card > .svc-ask { order: 6; }
+
+    .svc-popular {
+      top: 0.75rem;
+      right: 0.75rem;
     }
   }
 

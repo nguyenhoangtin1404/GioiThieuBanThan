@@ -143,33 +143,6 @@ test.describe('services page', () => {
     await expectNoHorizontalScroll(page);
   });
 
-  test('floating Zalo: visible on mobile, hidden on desktop', async ({ page, isMobile }) => {
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    const floating = page.locator('a.svc-zalo-float');
-    await expect(floating).toHaveAttribute('href', 'https://zalo.me/84856694766');
-    if (isMobile) await expect(floating).toBeVisible();
-    else await expect(floating).toBeHidden();
-  });
-
-  test('final CTA is clickable at page bottom on mobile', async ({ page, isMobile }) => {
-    test.skip(!isMobile, 'floating button is mobile-only');
-    await gotoReady(page, '/dich-vu/?lang=vi');
-    // Jump to the real end (the site scrolls smoothly, which would still be animating)
-    await page.evaluate(() => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      window.scrollTo(0, document.documentElement.scrollHeight);
-    });
-    await page.waitForTimeout(200);
-    const atEnd = (await vi(page).locator('.svc-cta').boundingBox())!;
-    expect(atEnd.y + atEnd.height, 'scrolled to the end').toBeLessThanOrEqual(page.viewportSize()!.height);
-    const floating = (await page.locator('a.svc-zalo-float').boundingBox())!;
-    for (const button of await vi(page).locator('.svc-cta a').all()) {
-      const box = (await button.boundingBox())!;
-      const overlap = box.x < floating.x + floating.width && floating.x < box.x + box.width &&
-        box.y < floating.y + floating.height && floating.y < box.y + box.height;
-      expect(overlap, 'final CTA button under the floating Zalo button').toBe(false);
-    }
-  });
 });
 
 test.describe('site links', () => {
@@ -447,4 +420,43 @@ test.describe('polish: cards', () => {
     await expect(en.locator('h2.svc-title', { hasText: 'Featured work' })).toBeVisible();
     await expect(en.locator('.svc-card a.svc-ask').first()).toHaveText('Ask about this on Zalo');
   });
+});
+
+test.describe('polish: mobile', () => {
+  test.beforeEach(({ isMobile }) => test.skip(!isMobile, 'mobile only'));
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+
+  test('bottom bar with Zalo and call; no floating bubble', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await expect(page.locator('a.svc-zalo-float')).toHaveCount(0);
+    await expect(page.locator('.svc-contact-bar a.svc-bar-zalo')).toHaveText('Zalo');
+    await expect(page.locator('.svc-contact-bar a.svc-bar-zalo')).toHaveAttribute('href', 'https://zalo.me/84856694766');
+    await expect(page.locator('.svc-contact-bar a.svc-bar-call')).toHaveAttribute('href', 'tel:+84856694766');
+  });
+
+  test('first price visible on a 375x812 screen, even before images load', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.route(/\.(webp|jpg)$/, async (r) => { await new Promise((res) => setTimeout(res, 2000)); await r.continue(); });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const price = (await vi(page).locator('.svc-price').first().boundingBox())!;
+    const bar = (await page.locator('.svc-contact-bar').boundingBox())!;
+    expect(price.y + price.height).toBeLessThanOrEqual(bar.y);
+  });
+
+  test('final CTA clear of the bottom bar', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, document.documentElement.scrollHeight); });
+    await page.waitForTimeout(200);
+    const bar = (await page.locator('.svc-contact-bar').boundingBox())!;
+    for (const b of await vi(page).locator('.svc-cta a').all()) {
+      const box = (await b.boundingBox())!;
+      expect(box.y + box.height, 'CTA above the bar').toBeLessThanOrEqual(bar.y);
+    }
+  });
+});
+
+test('bottom bar hidden on desktop', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'desktop only');
+  await gotoReady(page, '/dich-vu/?lang=vi');
+  await expect(page.locator('.svc-contact-bar')).toBeHidden();
 });

@@ -103,13 +103,16 @@ const { items, title, serviceTitles } = Astro.props;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
-    padding: clamp(1rem, 3vw, 1.5rem);
+    padding: clamp(0.85rem, 3vw, 1.25rem) clamp(1rem, 3vw, 1.5rem);
+    /* Solid caption panel: white text stays readable over any screenshot */
+    background: rgba(15, 23, 42, 0.82);
   }
 
   .svc-featured-chip {
     padding: 0.25rem 0.7rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.18);
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     font-size: 0.8rem;
     font-weight: 700;
   }

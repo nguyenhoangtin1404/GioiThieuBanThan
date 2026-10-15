@@ -452,6 +452,8 @@ test.describe('polish: mobile', () => {
       const box = (await b.boundingBox())!;
       expect(box.y + box.height, 'CTA above the bar').toBeLessThanOrEqual(bar.y);
     }
+    const card = (await vi(page).locator('.svc-cta').boundingBox())!;
+    expect(card.y + card.height, 'whole CTA card above the bar').toBeLessThanOrEqual(bar.y);
   });
 });
 
@@ -467,7 +469,7 @@ test.describe('polish: a11y', () => {
   test('visible 2px focus ring on links, buttons and FAQ', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible applies
-    for (const sel of ['a.svc-back', '.svc-hero a.svc-zalo', '.svc-card a.svc-ask', '.svc-faq summary']) {
+    for (const sel of ['a.svc-back', '.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-faq summary']) {
       const el = vi(page).locator(sel).first();
       await el.focus();
       const style = await el.evaluate((e) => [e.matches(':focus-visible'), getComputedStyle(e).outlineWidth, getComputedStyle(e).outlineStyle]);
@@ -533,5 +535,44 @@ test.describe('polish: layout details', () => {
     expect(Math.abs((glyph.y + glyph.height / 2) - (title.y + title.height / 2)), 'same row').toBeLessThan(8);
     expect(title.x).toBeGreaterThan(glyph.x + glyph.width);
     expect(await card.locator('> h2').evaluate((e) => getComputedStyle(e).textAlign)).not.toBe('center');
+  });
+});
+
+test.describe('polish: review fixes', () => {
+  const vi = (p: Page) => p.locator('[data-lang-block="vi"]');
+  // White text contrast over a translucent dark background, worst case: pure white behind it
+  const contrastWhiteOver = (rgba: string) => {
+    const [r, g, b, a = 1] = rgba.match(/[\d.]+/g)!.map(Number);
+    const lin = (v: number) => { const c = (v * a + 255 * (1 - a)) / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+    const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    return 1.05 / (L + 0.05);
+  };
+
+  test('featured card text stays readable over any screenshot', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const card = vi(page).locator('a.svc-featured-card').first();
+    const body = await card.locator('.svc-featured-body').evaluate((e) => getComputedStyle(e).backgroundColor);
+    expect(contrastWhiteOver(body), 'caption panel').toBeGreaterThanOrEqual(4.5);
+    const chip = await card.locator('.svc-featured-chip').evaluate((e) => getComputedStyle(e).backgroundColor);
+    expect(contrastWhiteOver(chip), 'chip').toBeGreaterThanOrEqual(4.5);
+  });
+
+  test('third trust stat peeks into view on a 375px phone', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'mobile row');
+    await page.setViewportSize({ width: 375, height: 812 });
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const row = (await vi(page).locator('.svc-trust').boundingBox())!;
+    const third = (await vi(page).locator('.svc-trust li').nth(2).boundingBox())!;
+    expect(third.x, 'third stat starts inside the visible row').toBeLessThan(row.x + row.width - 24);
+  });
+
+  test('every link and control is at least 44px tall', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const els = [...(await vi(page).locator('a, summary').all()), ...(await page.locator('.svc-contact-bar a').all())];
+    for (const el of els) {
+      if (!(await el.isVisible())) continue;
+      const h = (await el.boundingBox())!.height;
+      expect(h, (await el.innerText()).slice(0, 40)).toBeGreaterThanOrEqual(44);
+    }
   });
 });

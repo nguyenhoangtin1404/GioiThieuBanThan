@@ -293,16 +293,39 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
       font-size: clamp(1.6rem, 7vw, 2rem);
     }
 
-    /* One line that scrolls inside itself, never the page */
+    /* One line that scrolls inside itself, never the page; the third stat peeks in
+       under a fade so it is clear there is more to swipe */
     .svc-trust {
       flex-wrap: nowrap;
       overflow-x: auto;
-      gap: 1.5rem;
+      gap: 1rem;
       margin-top: 0.75rem;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(90deg, #000 80%, transparent);
+      mask-image: linear-gradient(90deg, #000 80%, transparent);
+    }
+
+    .svc-trust::-webkit-scrollbar {
+      display: none;
     }
 
     .svc-trust li {
       flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+
+    .svc-trust li:last-child {
+      padding-right: 2rem;
+    }
+
+    .svc-trust-value {
+      font-size: 1.1rem;
+    }
+
+    .svc-trust-label {
+      font-size: 0.78rem;
+      white-space: nowrap;
     }
 
     .services {
@@ -532,6 +555,11 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   }
 
   .svc-example {
+    /* 44px tap target; negative margins keep the visual spacing */
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-block: -9px;
     color: #0369a1;
     font-weight: 700;
     text-decoration: none;

@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "generate:og-image": "node scripts/generate-og-image.js",
+    "generate:og-services": "node scripts/generate-og-services.mjs",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
     "generate:voice": "node scripts/generate-voice.mjs",

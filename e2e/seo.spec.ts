@@ -28,6 +28,21 @@ test.describe('SEO files', () => {
     expect(body).not.toContain('/projects/pyn-world/');
   });
 
+  test('services page shares its own 1200x630 preview image; home keeps its own', async ({ page, request }) => {
+    await page.goto('/dich-vu/');
+    const og = `${SITE}/og-dich-vu.png`;
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', og);
+    await expect(page.locator('meta[name="twitter:image"]')).toHaveAttribute('content', og);
+    const res = await request.get('/og-dich-vu.png');
+    expect(res.ok()).toBeTruthy();
+    const png = await res.body();
+    // PNG header: width and height are big-endian at bytes 16 and 20
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]);
+
+    await page.goto('/');
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', `${SITE}/og-image.png`);
+  });
+
   test('pages have a canonical URL without query string', async ({ page }) => {
     await page.goto('/?lang=en');
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `${SITE}/`);

@@ -512,6 +512,37 @@
         "projectId": "igate",
         "serviceId": "automation"
       }
-    ]
+    ],
+    "caseStudy": {
+      "projectId": "solo-cafe-order",
+      "title": "Case study: đặt món qua QR cho quán cà phê",
+      "tag": "Dự án mẫu, mình tự xây dựng",
+      "problem": "Vấn đề",
+      "solution": "Giải pháp",
+      "impact": "Lợi ích",
+      "demo": "Dùng thử bản demo",
+      "detail": "Xem chi tiết dự án",
+      "ask": "Hỏi giải pháp tương tự qua Zalo",
+      "shots": [
+        {
+          "src": "/vibe-cafe-1.webp",
+          "width": 470,
+          "height": 973,
+          "caption": "Khách xem menu qua QR"
+        },
+        {
+          "src": "/vibe-cafe-3.webp",
+          "width": 465,
+          "height": 939,
+          "caption": "Khách theo dõi đơn"
+        },
+        {
+          "src": "/vibe-cafe-4.webp",
+          "width": 485,
+          "height": 980,
+          "caption": "Chủ quán nhận đơn"
+        }
+      ]
+    }
   }
 }

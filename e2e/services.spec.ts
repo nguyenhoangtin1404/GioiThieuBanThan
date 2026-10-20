@@ -362,13 +362,25 @@ test.describe('polish: mobile', () => {
     await expect(page.locator('.svc-contact-bar a.svc-bar-call')).toHaveAttribute('href', 'tel:+84856694766');
   });
 
-  test('first price visible on a 375x812 screen, even before images load', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 812 });
-    await page.route(/\.(webp|jpg)$/, async (r) => { await new Promise((res) => setTimeout(res, 2000)); await r.continue(); });
+  for (const [width, height] of [[360, 740], [375, 812]]) {
+    test(`first price visible on a ${width}x${height} screen, even before images load`, async ({ page }) => {
+      await page.setViewportSize({ width, height });
+      await page.route(/\.(webp|jpg)$/, async (r) => { await new Promise((res) => setTimeout(res, 2000)); await r.continue(); });
+      await gotoReady(page, '/dich-vu/?lang=vi');
+      const price = (await vi(page).locator('.svc-price').first().boundingBox())!;
+      const bar = (await page.locator('.svc-contact-bar').boundingBox())!;
+      expect(price.y + price.height).toBeLessThanOrEqual(bar.y);
+    });
+  }
+
+  test('sections below the hero keep the 32px rhythm', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
-    const price = (await vi(page).locator('.svc-price').first().boundingBox())!;
-    const bar = (await page.locator('.svc-contact-bar').boundingBox())!;
-    expect(price.y + price.height).toBeLessThanOrEqual(bar.y);
+    const tops = await vi(page).locator('article.services > *').evaluateAll((els) =>
+      els.map((e) => { const r = e.getBoundingClientRect(); return [e.className, r.top, r.bottom] as [string, number, number]; }));
+    // From the cards on: only the hero gap is tightened to reach the first price
+    for (let i = 2; i < tops.length; i++) {
+      expect(tops[i][1] - tops[i - 1][2], `${tops[i - 1][0]} → ${tops[i][0]}`).toBeGreaterThanOrEqual(32);
+    }
   });
 
   test('final CTA clear of the bottom bar', async ({ page }) => {
@@ -397,7 +409,7 @@ test.describe('polish: a11y', () => {
   test('visible 2px focus ring on links, buttons and FAQ', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible applies
-    for (const sel of ['.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-faq summary']) {
+    for (const sel of ['.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-case a.svc-case-ask', '.svc-case a.svc-case-link', '.svc-faq summary']) {
       const el = vi(page).locator(sel).first();
       await el.focus();
       const style = await el.evaluate((e) => [e.matches(':focus-visible'), getComputedStyle(e).outlineWidth, getComputedStyle(e).outlineStyle]);
@@ -439,7 +451,7 @@ test.describe('polish: layout details', () => {
   test('every section title carries the home bar, featured included', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     const titles = vi(page).locator('h2.svc-title');
-    await expect(titles).toHaveCount(5);
+    await expect(titles).toHaveCount(6);
     for (const h of await titles.all()) {
       const bar = await h.evaluate((e) => { const s = getComputedStyle(e, '::after'); return [s.width, s.height, getComputedStyle(e).fontSize]; });
       expect([bar[0], bar[1]], await h.innerText()).toEqual(['56px', '4px']);
@@ -580,5 +592,52 @@ test.describe('codex review fixes', () => {
     await en.locator('a.svc-featured-card[data-project-id="igate"]').click();
     await expect(page).toHaveURL(/\/projects\/igate\/\?lang=en$/);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  });
+});
+
+test.describe('case study', () => {
+  const project = (lang: string) => load(lang).projects.items.find((p: any) => p.id === 'solo-cafe-order');
+
+  for (const lang of ['vi', 'en'] as const) {
+    test(`Vibe Cafe told from the project data (${lang})`, async ({ page }) => {
+      const p = project(lang);
+      const cs = load(lang).services.caseStudy;
+      await gotoReady(page, `/dich-vu/?lang=${lang}`);
+      const s = page.locator(`[data-lang-block="${lang}"] section.svc-case`);
+      await expect(s.locator('h2')).toHaveText(cs.title);
+      // Honest framing: a demo the owner built, so benefits and no business results
+      await expect(s.locator('.svc-case-tag')).toHaveText(cs.tag);
+      await expect(s.locator('.svc-case-problem')).toHaveText(p.problem);
+      await expect(s.locator('.svc-case-solution li')).toHaveText(p.tasks);
+      await expect(s.locator('.svc-case-impact')).toHaveText(p.impact);
+      await expect(s.locator('a.svc-case-demo')).toHaveAttribute('href', p.links.demo);
+      await expect(s.locator('a.svc-case-demo')).toHaveAttribute('target', '_blank');
+      await expect(s.locator('a.svc-case-demo')).toHaveAttribute('rel', 'noopener noreferrer');
+      await expect(s.locator('a.svc-case-detail')).toHaveAttribute('href', `/projects/solo-cafe-order/?lang=${lang}`);
+      await expect(s.locator('a.svc-case-ask')).toHaveAttribute('href', 'https://zalo.me/84856694766');
+      await expect(s.locator('a.svc-case-ask')).toHaveText(cs.ask);
+      const shots = s.locator('figure img');
+      await expect(shots).toHaveCount(3);
+      for (const img of await shots.all()) {
+        await expect(img).toHaveAttribute('loading', 'lazy');
+        await expect(img).toHaveAttribute('width', /\d+/);
+        await expect(img).toHaveAttribute('height', /\d+/);
+        expect((await img.getAttribute('alt'))!.length).toBeGreaterThan(0);
+      }
+      await expect(s.locator('figcaption')).toHaveText(cs.shots.map((x: any) => x.caption));
+    });
+  }
+
+  test('sits right after the featured work', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const next = await page.locator('[data-lang-block="vi"] section.svc-featured').evaluate((el) => el.nextElementSibling?.className || '');
+    expect(next).toContain('svc-case');
+  });
+
+  test('no result claims in the case study copy', () => {
+    // Everything the section shows: its own labels and the project text it reads
+    const shown = (lang: string) => JSON.stringify([load(lang).services.caseStudy, project(lang)]).toLowerCase();
+    for (const claim of ['%', 'doanh thu tăng', 'tăng doanh thu', 'khách hàng thật']) expect(shown('vi'), claim).not.toContain(claim);
+    for (const claim of ['%', 'revenue', 'real client', 'increased sales']) expect(shown('en'), claim).not.toContain(claim);
   });
 });

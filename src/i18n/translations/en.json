@@ -512,6 +512,37 @@
         "projectId": "igate",
         "serviceId": "automation"
       }
-    ]
+    ],
+    "caseStudy": {
+      "projectId": "solo-cafe-order",
+      "title": "Case study: QR ordering for a coffee shop",
+      "tag": "Demo project, built by me",
+      "problem": "The problem",
+      "solution": "The solution",
+      "impact": "The benefit",
+      "demo": "Try the demo",
+      "detail": "See project details",
+      "ask": "Ask about a similar system on Zalo",
+      "shots": [
+        {
+          "src": "/vibe-cafe-1.webp",
+          "width": 470,
+          "height": 973,
+          "caption": "Customer browses the QR menu"
+        },
+        {
+          "src": "/vibe-cafe-3.webp",
+          "width": 465,
+          "height": 939,
+          "caption": "Customer tracks the order"
+        },
+        {
+          "src": "/vibe-cafe-4.webp",
+          "width": 485,
+          "height": 980,
+          "caption": "Owner receives orders"
+        }
+      ]
+    }
   }
 }

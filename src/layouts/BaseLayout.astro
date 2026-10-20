@@ -9,11 +9,14 @@ import '@fontsource/be-vietnam-pro/700.css';
 export interface Props {
   title?: string;
   description?: string;
+  // Preview image for link shares (Zalo, Facebook…), a path under public/
+  ogImage?: string;
 }
 
 const {
   title = 'Nguyễn Hoàng Tín — Technical Lead · Full‑Stack Developer',
-  description = 'Portfolio và CV online của Nguyễn Hoàng Tín'
+  description = 'Portfolio và CV online của Nguyễn Hoàng Tín',
+  ogImage = '/og-image.png'
 } = Astro.props;
 
 // Get initial language (server-side)
@@ -28,7 +31,7 @@ const GA_ID = 'G-C00KEFJSZR';
 
 // Get site URL for OG image
 const siteUrl = import.meta.env.SITE || 'https://profilio.local';
-const ogImageUrl = `${siteUrl}/og-image.png`;
+const ogImageUrl = `${siteUrl}${ogImage}`;
 const pageUrl = Astro.url.href;
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---

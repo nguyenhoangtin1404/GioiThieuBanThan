@@ -1,0 +1,235 @@
+---
+import { CONTACT } from '../config/contact';
+
+// One worked example for clients: the problem, solution and benefit come from
+// projects.items, so the case study never drifts from the project page.
+interface Shot {
+  src: string;
+  width: number;
+  height: number;
+  caption: string;
+}
+
+interface Props {
+  caseStudy: {
+    projectId: string;
+    title: string;
+    tag: string;
+    problem: string;
+    solution: string;
+    impact: string;
+    demo: string;
+    detail: string;
+    ask: string;
+    shots: Shot[];
+  };
+  projects: any[];
+  projectIdsWithDetail: string[];
+  lang: 'vi' | 'en';
+}
+
+const { caseStudy: cs, projects, projectIdsWithDetail, lang } = Astro.props;
+const project = projects.find((p) => p.id === cs?.projectId);
+const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
+---
+
+{project && (
+  <section class="svc-case">
+    <div class="svc-case-text">
+      <span class="svc-case-tag">{cs.tag}</span>
+      <h2 class="svc-title">{cs.title}</h2>
+
+      <h3>{cs.problem}</h3>
+      <p class="svc-case-problem">{project.problem}</p>
+
+      <h3>{cs.solution}</h3>
+      <ul class="svc-case-solution">
+        {project.tasks.map((t: string) => (
+          <li>
+            <span class="svc-case-check">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={CHECK} />
+            </span>
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+
+      <h3>{cs.impact}</h3>
+      <p class="svc-case-impact">{project.impact}</p>
+
+      <div class="svc-case-actions">
+        <a class="svc-case-ask" href={CONTACT.zaloHref} target="_blank" rel="noopener noreferrer">{cs.ask}</a>
+        {project.links?.demo && (
+          <a class="svc-case-link svc-case-demo" href={project.links.demo} target="_blank" rel="noopener noreferrer">{cs.demo} ↗</a>
+        )}
+        {projectIdsWithDetail.includes(project.id) && (
+          <a class="svc-case-link svc-case-detail" href={`/projects/${project.id}/?lang=${lang}`}>{cs.detail} →</a>
+        )}
+      </div>
+    </div>
+
+    <div class="svc-case-shots">
+      {cs.shots.map((shot) => (
+        <figure>
+          <img src={shot.src} width={shot.width} height={shot.height} loading="lazy" decoding="async" alt={`${project.name}: ${shot.caption}`} />
+          <figcaption>{shot.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+)}
+
+<style>
+  .svc-case {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .svc-case-tag {
+    display: inline-flex;
+    margin-bottom: 0.75rem;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    background: var(--surface-weak);
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .svc-case h3 {
+    margin: 1.25rem 0 0.4rem;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .svc-case p {
+    margin: 0;
+  }
+
+  .svc-case-solution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .svc-case-solution li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  /* Same check glyph as the service cards */
+  .svc-case-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-top: 0.15rem;
+    border-radius: 50%;
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(14, 165, 233, 0.12);
+    box-sizing: border-box;
+    color: var(--accent);
+  }
+
+  .svc-case-check svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .svc-case-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  /* The page's primary pill (Services .svc-btn--primary); scoped styles do not reach here */
+  .svc-case-ask {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.85rem 1.75rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
+    color: #010409;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .svc-case-ask:hover {
+    filter: brightness(0.97);
+  }
+
+  .svc-case-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: #0369a1;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .svc-case-link:hover {
+    text-decoration: underline;
+  }
+
+  .svc-case-ask:focus-visible,
+  .svc-case-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* Three phone screenshots side by side */
+  .svc-case-shots {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .svc-case-shots figure {
+    margin: 0;
+  }
+
+  .svc-case-shots img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 2;
+    object-fit: cover;
+    object-position: top;
+    border-radius: var(--radius-md);
+    background: var(--surface-weak);
+    box-shadow: 0 10px 24px rgba(2, 6, 23, 0.12);
+  }
+
+  .svc-case-shots figcaption {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .svc-case {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .svc-case-ask {
+      width: 100%;
+    }
+  }
+</style>

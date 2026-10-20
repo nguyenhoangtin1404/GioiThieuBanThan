@@ -24,7 +24,7 @@ const vi = versions[0].services;
 const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.title]));
 ---
 
-<BaseLayout title={vi.meta.title} description={vi.meta.description}>
+<BaseLayout title={vi.meta.title} description={vi.meta.description} ogImage="/og-dich-vu.png">
   <main class="services-page" data-titles={JSON.stringify(titles)}>
     <!-- This page is for clients; its only way to the profile (the home page, hồ sơ năng lực) is this link -->
     <header class="svc-topbar">
@@ -164,6 +164,10 @@ const titles = Object.fromEntries(versions.map((v) => [v.lang, v.services.meta.t
       .services-page {
         /* Room for the contact bar so it never covers the final call to action */
         padding: 0.75rem 1rem calc(64px + 16px + env(safe-area-inset-bottom));
+      }
+
+      .svc-topbar {
+        margin-bottom: 0.75rem;
       }
 
       .svc-contact-bar {

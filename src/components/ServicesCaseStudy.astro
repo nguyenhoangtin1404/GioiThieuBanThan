@@ -206,10 +206,8 @@ const CHECK = '<path d="m5 12.5 4.5 4.5L19 7.5"/>';
   .svc-case-shots img {
     display: block;
     width: 100%;
+    /* Natural ratio from the width/height attributes: no crop */
     height: auto;
-    aspect-ratio: 1 / 2;
-    object-fit: cover;
-    object-position: top;
     border-radius: var(--radius-md);
     background: var(--surface-weak);
     box-shadow: 0 10px 24px rgba(2, 6, 23, 0.12);

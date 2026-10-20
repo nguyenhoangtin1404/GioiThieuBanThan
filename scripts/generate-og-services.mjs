@@ -1,6 +1,7 @@
 // Renders public/og-dich-vu.png (1200x630), the link preview for /dich-vu/.
 // HTML + the site font (Be Vietnam Pro) in headless Chromium, so Vietnamese
 // diacritics render exactly as on the page. Run: npm run generate:og-services
+// Re-run after editing services.hero.title, the item titles or the first price.
 import { chromium } from '@playwright/test';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,9 +10,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const vi = JSON.parse(readFileSync(`${root}src/i18n/translations/vi.json`, 'utf8')).services;
-const font = () => `${root}node_modules/@fontsource/be-vietnam-pro/files/be-vietnam-pro`;
+const FONT = `${root}node_modules/@fontsource/be-vietnam-pro/files/be-vietnam-pro`;
 const face = (w) => ['vietnamese', 'latin']
-  .map((s) => `@font-face{font-family:BVP;font-weight:${w};src:url(file://${font()}-${s}-${w}-normal.woff2) format('woff2')}`)
+  .map((s) => `@font-face{font-family:BVP;font-weight:${w};src:url(file://${FONT}-${s}-${w}-normal.woff2) format('woff2')}`)
   .join('');
 // Entry price: the first package (website), "Từ 5 triệu"
 const minPrice = vi.items[0].price;

@@ -373,6 +373,16 @@ test.describe('polish: mobile', () => {
     });
   }
 
+  test('sections below the hero keep the 32px rhythm', async ({ page }) => {
+    await gotoReady(page, '/dich-vu/?lang=vi');
+    const tops = await vi(page).locator('article.services > *').evaluateAll((els) =>
+      els.map((e) => { const r = e.getBoundingClientRect(); return [e.className, r.top, r.bottom] as [string, number, number]; }));
+    // From the cards on: only the hero gap is tightened to reach the first price
+    for (let i = 2; i < tops.length; i++) {
+      expect(tops[i][1] - tops[i - 1][2], `${tops[i - 1][0]} → ${tops[i][0]}`).toBeGreaterThanOrEqual(32);
+    }
+  });
+
   test('final CTA clear of the bottom bar', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await page.evaluate(() => { document.documentElement.style.scrollBehavior = 'auto'; window.scrollTo(0, document.documentElement.scrollHeight); });
@@ -399,7 +409,7 @@ test.describe('polish: a11y', () => {
   test('visible 2px focus ring on links, buttons and FAQ', async ({ page }) => {
     await gotoReady(page, '/dich-vu/?lang=vi');
     await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible applies
-    for (const sel of ['.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-faq summary']) {
+    for (const sel of ['.svc-hero a.svc-zalo', '.svc-card a.svc-ask', 'a.svc-featured-card', '.svc-case a.svc-case-ask', '.svc-case a.svc-case-link', '.svc-faq summary']) {
       const el = vi(page).locator(sel).first();
       await el.focus();
       const style = await el.evaluate((e) => [e.matches(':focus-visible'), getComputedStyle(e).outlineWidth, getComputedStyle(e).outlineStyle]);
@@ -625,7 +635,9 @@ test.describe('case study', () => {
   });
 
   test('no result claims in the case study copy', () => {
-    const vi = JSON.stringify(load('vi').services.caseStudy);
-    for (const claim of ['%', 'doanh thu tăng', 'khách hàng thật']) expect(vi, claim).not.toContain(claim);
+    // Everything the section shows: its own labels and the project text it reads
+    const shown = (lang: string) => JSON.stringify([load(lang).services.caseStudy, project(lang)]).toLowerCase();
+    for (const claim of ['%', 'doanh thu tăng', 'tăng doanh thu', 'khách hàng thật']) expect(shown('vi'), claim).not.toContain(claim);
+    for (const claim of ['%', 'revenue', 'real client', 'increased sales']) expect(shown('en'), claim).not.toContain(claim);
   });
 });

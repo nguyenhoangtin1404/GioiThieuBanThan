@@ -87,15 +87,15 @@
         "problem": "Multi-branch spas and clinics need one platform for booking, bed scheduling and customer care.",
         "myRole": "Technical Lead · Full-stack: own the Spa domain end to end, built the technical foundation, review developers' pull requests against project standards, facilitate Sprint Reviews and sign off on quality.",
         "tasks": [
-          "Built the foundation in the first month: RBAC, account lockout that ends active sessions immediately, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E.",
+          "Built the foundation in the first month: RBAC, account lockout that ends active sessions immediately, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E (60 cases covering 47 work packages).",
           "Designed a multi-tenant MISA AMIS sync: a fault-tolerant queue with a monitoring screen, ledger mapping, inventory vouchers with unit-of-measure conversion, OAuth and webhooks.",
           "Built the Spa modules: technician shifts synced with HRM and payroll, a 4-state bed map, consumables tracking (BOM), and treatment packages with before/after photos.",
           "Customer 360 (18 REST endpoints, interaction timeline, VIP tiers, Zalo OA/ZNS reminders) and Employee 360 (title history, skills matrix, append-only commission ledger).",
-          "Booking system: a state-machine appointment lifecycle, staff and room calendars, a lobby queue and an online booking portal.",
+          "Booking system: a state-machine appointment lifecycle, staff and room/bed calendars, bed and technician-shift conflict checks, a lobby queue and an online booking portal; date-effective price versioning and capacity reporting.",
           "Review developers' pull requests for architecture, structure and project standards, resolving security issues weekly; stabilized multi-tenant migrations and the Docker/Linux CI pipeline.",
           "Apply AI to streamline and automate workflows, raising product quality."
         ],
-        "impact": "A real-time Front Desk Dashboard (appointments, waiting guests, free beds) and a CRM reporting lead sources, return rate and staff performance.",
+        "impact": "Delivered and launched the core Spa features and the core platform for the whole project; 200+ pull requests merged into develop in 3 months (Aug–Nov 2026). Includes a real-time Front Desk Dashboard and a CRM reporting lead sources, return rate and staff performance.",
         "gallery": [
           "/dsf1.webp",
           "/dsf2.webp",
@@ -315,9 +315,10 @@
           "Enterprise software company in Healthcare IT, SaaS and multi-agent AI.",
           "Lead engineering governance, facilitate Sprint Reviews, sign off on quality and support customers.",
           "Review developers' pull requests for architecture, structure and adherence to project standards; resolve the security issues surfaced in weekly reviews.",
-          "Built the technical foundation in the first month: RBAC, account security, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E.",
+          "Built the technical foundation in the first month: RBAC, account security, a service-layer architecture, a Design System with a shared data table, vi/en localization, and automated testing with xUnit and Playwright E2E (60 cases covering 47 work packages).",
           "Designed a multi-tenant MISA AMIS accounting sync with a fault-tolerant queue, OAuth and webhooks.",
           "Own the Spa domain end to end across Angular and .NET: Customer 360, Employee 360, a state-machine booking system, a real-time Front Desk Dashboard and Zalo OA/ZNS reminders.",
+          "Delivered and launched the core Spa features and the core platform for the whole project; 200+ pull requests merged into develop in 3 months (Aug–Nov 2026).",
           "Apply AI to streamline and automate workflows, raising product quality."
         ],
         "achievements": []
